@@ -138,13 +138,3 @@ const self = module.exports = {
         return {botCommand: true};
     }
 }
-
-// function runCommand(text) {
-    
-// }
-
-// function getCommandByName(name) {
-    
-// }
-
-// function 

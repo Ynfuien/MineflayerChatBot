@@ -22,10 +22,6 @@ function addCompletions(main, tabbing = false) {
     }
 
     if (completionsList.length < 1) {
-        console.log({
-            text: "Mniej niż 1!",
-            completionsList,
-        });
         list.textContent = '';
         return;
     }
@@ -96,7 +92,6 @@ function updateInputCompletion(main) {
     const {list, type, prefix, start, length} = completions;
 
     const text = input.innerText;
-    // invisible.innerText = text;
     
     visible.textContent = '';
     if (list.length < 1) {
@@ -104,12 +99,6 @@ function updateInputCompletion(main) {
         return;
     };
 
-    // if (typeof vi sible !== "string") {
-    //     return;
-    // }
-    // console.log(instanceof visible);
-    // Element.is
-    // if (!(visible instanceof HTMLElement)) return;
     if (start !== undefined) {
         invisible.innerText = text.substring(0, start);
         
@@ -127,12 +116,6 @@ function updateInputCompletion(main) {
         }
 
         if (!toComplete.startsWith(text.substr(start))) return;
-
-        console.log({
-            res: toComplete.startsWith(text.substr(start, length)),
-            toComplete,
-            substr: text.substr(start, length)
-        });
 
         const visibleNode = document.createTextNode(toComplete.substr(length));
         visible.appendChild(visibleNode);
@@ -168,10 +151,6 @@ function updateInputCompletion(main) {
     invisibleCompletion.classList.add("invisible");
     invisibleCompletion.innerText = lastWord === '' ? ' ' : witoutPrefix;
     visible.appendChild(invisibleCompletion);
-    console.log(visible);
-
-    // console.log({words: words, slice: words.slice(0, -1)});
-
     
 
     let toComplete = list[currentlySelected];
@@ -181,22 +160,11 @@ function updateInputCompletion(main) {
         toComplete = list[0];
     }
     
-    // console.log({
-    //     toComplete: toComplete,
-    //     toCompleteSub: toComplete.substr(witoutPrefix.length),
-    //     length: witoutPrefix.length,
-    //     witoutPrefix: witoutPrefix,
-    //     currentlySelected: currentlySelected
-    // });
-    // return;
     const visibleNode = document.createTextNode(toComplete.substr(witoutPrefix.length));
     visible.appendChild(visibleNode);
-    // visible.innerText += (lastWord === '' ? ' ' : '') + toComplete.substr(witoutPrefix.length);
-    // window.visible = visible;
 }
 
 function getCompletions(main, command) {
-    // console.log({send_command: command});
     main.socket.emit("get-tab-completions", {command: command, timestamp: Date.now()});
 }
 
@@ -232,7 +200,6 @@ function complete(main, shift = false) {
         if (list.length < 2) return;
         const {beforeTabbing} = tabCompletion;
 
-        // If currently selected completion is the same that is tabbed in input
         if (insertTextInString(beforeTabbing, list[currentlySelected], start) === inputValue) {
             moveSelection(main, shift ? -1 : 1);
         }
@@ -244,7 +211,6 @@ function complete(main, shift = false) {
         input.innerText = insertTextInString(beforeTabbing, completion, start);
 
         moveWindowSelection(start + completion.length);
-        // console.log(start + completion.length);
         return;
     }
 
@@ -280,8 +246,6 @@ function complete(main, shift = false) {
     if (!visibleValue) return;
     input.innerText += visibleValue;
 
-    
-//     getCompletions(main, input.innerText);
 
     moveWindowSelection(input.innerText.length);
 

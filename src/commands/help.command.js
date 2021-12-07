@@ -29,10 +29,8 @@ module.exports = {
         let size = 0;
         for (const key in list) size++;
         
-        // let i = 0;
         logBot(`&3Available commands &7(${size})&3:`);
         for (const commandName in list) {
-            // i++;
             let cmd = list[commandName];
 
 

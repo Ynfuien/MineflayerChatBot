@@ -1,4 +1,4 @@
-import {appendChatMessage, getDateAndTime} from './utils.js';
+import {getDateAndTime} from './utils.js';
 import {parseMessage} from './YnfuMotdParser.js';
 import {addCompletions} from './tabComplete.js';
 

@@ -2,10 +2,9 @@ const express = require('express');
 const http = require('http');
 const { Server } = require("socket.io");
 
-const {logBot, sendToOnlinePanel} = require('./utils/logger');
+const {logBot} = require('./utils/logger');
 const {executeCommand} = require('./handlers/command.handler.js');
 const {getTabCompletions} = require('./handlers/tabcomplete.handler.js');
-// const in
 
 
 module.exports = (main, callback) => {
@@ -81,14 +80,9 @@ module.exports = (main, callback) => {
                 query = "SELECT * FROM messages";
             }
 
-            console.log(query);
-            let before = Date.now();
             let messages = db.prepare(query).all();
-
             if (type === "count") messages.reverse();
 
-            let after = Date.now();
-            console.log(`Time: ${after - before}`);
             socket.emit("logs-data", {messages});
         });
     });

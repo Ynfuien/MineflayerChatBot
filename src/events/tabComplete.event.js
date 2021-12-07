@@ -1,6 +1,3 @@
-// const { startBot } = require('../utils/botManager.js');
-// const {logBot} = require('../utils/logger.js');
-
 module.exports = {
     name: "tab_complete",
     lowLevelApi: true,

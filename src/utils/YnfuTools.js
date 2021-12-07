@@ -65,10 +65,6 @@ function objectToString(object, deep = 0) {
     }
 
     if (typeof object !== "object") {
-        // if (Array.isArray(object)) {
-        //     console.log("array");
-        //     return "array";
-        // }
 
         let type = typeof object;
         if (type === "string") {
@@ -76,7 +72,6 @@ function objectToString(object, deep = 0) {
         }
 
         if (type === "bigint" || type === "number") {
-            // console.log({isNan: isNaN(object), object: object});
             return "§#B5CEA8" + object;
         }
 

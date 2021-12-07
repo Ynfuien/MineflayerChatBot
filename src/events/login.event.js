@@ -19,7 +19,7 @@ module.exports = {
             usernames.sort();
             logBot("&5Players in game:");
             logBot("§d" + usernames.join("§7, §d"), '§');
-        }, 1000);
+        }, 1500);
 
         if (temp.bot.joined) {
             logBot("&dBot switched subserver!");

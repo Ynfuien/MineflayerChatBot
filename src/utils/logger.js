@@ -1,5 +1,4 @@
 const chalk = require('chalk');
-const fs = require('fs');
 
 const { parseToMotd } = require('./messageParser.js');
 
@@ -107,11 +106,9 @@ function logToFile(message, codesChar = '§', date) {
         message = message.replace(new RegExp(codesChar, 'g'), '§');
     }
 
-    // logsWriteStream.write(`${date.getTime()}:${message}\n`);
     db.prepare("INSERT INTO messages(message, timestamp) VALUES(?, ?)").run(message, date.getTime());
     logsMessagesCount++;
 
-    // console.log(logsMessagesCount);
 
     // Limit by infinity
     if (type === "infinity") return;
@@ -133,22 +130,12 @@ function logToFile(message, codesChar = '§', date) {
     if (type === "time") {
         const maxLastMessageTimestamp = date.getTime() - (limit * 60 * 1000);
         if (logsLastMessageTimestamp < maxLastMessageTimestamp) {
-            // console.log({
-            //     logsLastMessageTimestamp: logsLastMessageTimestamp,
-            //     maxLastMessageTimestamp: maxLastMessageTimestamp
-            // });
 
             let res = db.prepare("DELETE FROM messages WHERE timestamp<?").run(maxLastMessageTimestamp);
             logsMessagesCount -= res.changes;
 
             let timestamp = db.prepare("SELECT timestamp FROM messages ORDER BY timestamp LIMIT 1").pluck().get();
             logsLastMessageTimestamp = timestamp;
-
-            console.log({
-                res: res,
-                logsMessagesCount: logsMessagesCount,
-                logsLastMessageTimestamp: logsLastMessageTimestamp
-            });
         }
         return;
     }
@@ -249,7 +236,6 @@ function logColor(message, codesChar = '§', timestamp) {
         }
     }
 
-    // let date = `${d.getFullYear()}.${addLeadingZero(d.getMonth() + 1)}.${addLeadingZero(d.getDate())}`;
     let date = `${addLeadingZero(d.getMonth() + 1)}.${addLeadingZero(d.getDate())}`;
     let time = `${addLeadingZero(d.getHours())}:${addLeadingZero(d.getMinutes())}:${addLeadingZero(d.getSeconds())}`;
 

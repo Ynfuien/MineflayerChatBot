@@ -1,4 +1,5 @@
-import {clearCompletions, getCompletions, updateInputCompletion, complete, moveSelection} from "./tabComplete.js";
+// import {clearCompletions, getCompletions, updateInputCompletion, complete, moveSelection} from "./tabComplete.js";
+import * as tc from "./tabComplete.js";
 export {loadInputEvents};
 
 function loadInputEvents(main) {
@@ -8,7 +9,7 @@ function loadInputEvents(main) {
     
     let scrollDown = true;
     let scrollingDown = false;
-
+    
     output.addEventListener("scroll", (e) => {
         if (scrollingDown) {
             scrollingDown = false;
@@ -51,17 +52,13 @@ function loadInputEvents(main) {
         scrollingDown = true;
         output.scrollTo(output.scrollLeft, output.scrollHeight);
     }, 1);
-        
-    // });
-    // if (!(input instanceof HTMLDivElement)) return;
+    
     input.addEventListener("keydown", (e) => {
-        console.log("vvvvvvvvvvvvvvvvvvvvvvvvvv");
-        // console.log(`Jest keydown! Code: ${e.code}, shift: ${e.shiftKey}`);
         const {code} = e;
 
         if (code === "ArrowLeft" || code === "ArrowRight") {
             setTimeout(() => {
-                getTabCompletions();
+                tc.getTabCompletions();
             }, 5);
             return;
         }
@@ -70,32 +67,31 @@ function loadInputEvents(main) {
         cancelEvent(e);
 
         if (code === "Tab") {
-            return complete(main, e.shiftKey);
+            return tc.complete(main, e.shiftKey);
         }
 
         if (code === "Escape") {
-            return clearCompletions(main, "list");
+            return tc.clearCompletions(main, "list");
         }
 
         if (code === "ArrowDown") {
-            return moveSelection(main, 1);
+            return tc.moveSelection(main, 1);
         }
 
         if (code === "ArrowUp") {
-            return moveSelection(main, -1);
+            return tc.moveSelection(main, -1);
         }
     });
 
     input.addEventListener("keypress", (e) => {
-        // console.log("Jest keypress! Code: " + e.code);
         let value = input.innerText;
         if (e.code === "Enter") {
             if (!value) return cancelEvent(e);
 
             socket.emit("send-command", {command: value});
             input.innerText = "";
-            clearCompletions(main);
-            getCompletions(main, '');
+            tc.clearCompletions(main);
+            tc.getCompletions(main, '');
             return cancelEvent(e);
         }
 
@@ -129,13 +125,12 @@ function loadInputEvents(main) {
             selection.modify("move", "right", "paragraphboundary");
         }
 
-        updateInputCompletion(main);
+        tc.updateInputCompletion(main);
         getTabCompletions();
     });
 
-    // let lastInput = Date.now();
+    
     input.addEventListener("input", (e) => {
-        // console.log("Jest input!");
         let value = input.innerText;
 
 
@@ -146,7 +141,7 @@ function loadInputEvents(main) {
 
         getTabCompletions();
 
-        clearCompletions(main, "visible");
+        tc.clearCompletions(main, "visible");
     });
 
     function getTabCompletions() {
@@ -157,7 +152,7 @@ function loadInputEvents(main) {
         const value = input.innerText;
         const firstWord = value.split(' ')[0];
         if (firstWord.startsWith('/') && firstWord.length > 65) {
-            clearCompletions(main);
+            tc.clearCompletions(main);
             return;
         }
         
@@ -168,7 +163,7 @@ function loadInputEvents(main) {
             substring: value.substring(0, cursorIndex)
         });
         
-        getCompletions(main, value.substring(0, cursorIndex));
+        tc.getCompletions(main, value.substring(0, cursorIndex));
     }
 }
 

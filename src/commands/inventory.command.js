@@ -105,10 +105,10 @@ module.exports = {
     }
 }
 
-function getItem(slot) {
-    if (!slot) {
-        return "";
-    }
+// function getItem(slot) {
+//     if (!slot) {
+//         return "";
+//     }
 
-    return `x${slot.count} ${slot.name}`;
-}
+//     return `x${slot.count} ${slot.name}`;
+// }

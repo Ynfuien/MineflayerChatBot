@@ -5,15 +5,12 @@ const { logBot, setMain, onStartup } = require('./utils/logger.js');
 const {startBot} = require('./utils/botManager.js');
 const cm = require('./utils/configManager.js');
 
-
-const {parseToMotd} = require('./utils/messageParser.js');
-
 // Database setup
 const db = require('better-sqlite3')('logs.db');
 // Creating main table in db if not exist
 db.prepare("CREATE TABLE IF NOT EXISTS messages (message TEXT DEFAULT \"\", timestamp INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP) WITHOUT ROWID").run();
 
-(async function(){
+(function(){
     // Main setup
     const main = {
         commands: {

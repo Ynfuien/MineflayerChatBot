@@ -151,27 +151,16 @@ module.exports = {
             if (arg1 !== "get" && arg1 !== "set") {
                 return [];
             }
-            console.log("VVVVVVVVVVVV");
             const arg2 = args[1];
 
             const split = arg2.split('.');
             if (!arg2 || split.length < 2) return yt.filterElementsThatStartsWith(Object.keys(config), arg2);
 
             
-            // let path = split.splice(0, -1).join('.');
-            // console.log(path);
             let path = arg2.substr(0, arg2.length - 1);
             if (!arg2.endsWith('.')) {
                 path = split.slice(0, -1).join('.');
             }
-            console.log({
-               split,
-               slice: split.slice(0, -1),
-               path: path 
-            });
-            // if (arg2.endsWith('.')) {
-                // arg2.substr(0, arg2.length - 1)
-                // console.log(path);
 
             const settings = yt.isKeyExist(config, path);
             console.log(settings);
@@ -186,7 +175,6 @@ module.exports = {
                 console.log(completions);
                 return completions;
             }
-            // }
             
             return [];
         }
