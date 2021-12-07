@@ -33,8 +33,8 @@ module.exports = {
         logBot(`&5Host: &f${config.server.host}`);
 
         let botRunning = true;
-        for (const message of main.temp.config.onJoin.messages) {
-            let split = message.split(':');
+        for (const command of main.temp.config.onJoin.commands) {
+            let split = command.split(':');
             const timeout = parseInt(split.shift());
 
             const text = split.join(':');

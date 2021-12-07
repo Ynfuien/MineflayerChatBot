@@ -8,9 +8,9 @@ const cm = require('./utils/configManager.js');
 // Database setup
 const db = require('better-sqlite3')('logs.db');
 // Creating main table in db if not exist
-db.prepare("CREATE TABLE IF NOT EXISTS messages (message TEXT DEFAULT \"\", timestamp INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP) WITHOUT ROWID").run();
+db.prepare("CREATE TABLE IF NOT EXISTS messages (message TEXT DEFAULT \"\", timestamp INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
 
-(function(){
+(async function(){
     // Main setup
     const main = {
         commands: {
@@ -29,7 +29,7 @@ db.prepare("CREATE TABLE IF NOT EXISTS messages (message TEXT DEFAULT \"\", time
                     limit: null
                 },
                 onJoin: {
-                    messages: []
+                    commands: []
                 },
                 autoRejoin: {
                     enabled: false,

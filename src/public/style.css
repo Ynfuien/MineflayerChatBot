@@ -128,8 +128,6 @@ section#chat > section.output {
     padding: 0 4px 4px 4px;
     font-family: inherit;
     flex-grow: 1;
-
-    /* scroll-behavior: smooth; */
 }
 
 section#chat > section.output > pre:first-child {
@@ -148,9 +146,10 @@ section#chat > section.input {
 
 section#chat > section.input > div {
     height: 20px;
-    width: calc(100% - 30px - 3px);
+    /* width: calc(100% - 30px - 3px); */
+    width: calc(100% - 6px - 3px);
     padding: 3px;
-    margin-right: 30px;
+    /* margin-right: 30px; */
     
     white-space: nowrap;
 }

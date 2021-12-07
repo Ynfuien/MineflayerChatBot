@@ -230,29 +230,29 @@ module.exports = {
         })(config.chat);
 
         // On join
-        main.temp.config.onJoin.messages = (function(onJoin){
+        main.temp.config.onJoin.commands = (function(onJoin){
             if (!onJoin) return [];
-            if (!onJoin.messages) return [];
+            if (!onJoin.commands) return [];
 
-            const {messages} = onJoin;
-            if (!Array.isArray(messages)) {
-                logError("On join messages must be an array!");
+            const {commands} = onJoin;
+            if (!Array.isArray(commands)) {
+                logError("On join commands must be an array!");
                 return [];
             }
             
-            let correctMessages = [];
+            let correctCommands = [];
 
             const pattern = new RegExp("\\d+:.+", 'g');
-            for (const message of messages) {
+            for (const command of commands) {
                 if (!message.match(pattern)) {
-                    logError(`Message '${message}' doesn't match pattern! Correct it to work`);
+                    logError(`Command '${command}' doesn't match pattern! Correct it to work`);
                     continue;
                 }
 
-                correctMessages.push(message);
+                correctCommands.push(command);
             }
 
-            return correctMessages;
+            return correctCommands;
         })(config["on-join"]);
 
         // Auto rejoin

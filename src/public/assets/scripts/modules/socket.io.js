@@ -6,7 +6,7 @@ export {loadSocketIoListeners};
 
 function loadSocketIoListeners(main) {
     const {socket} = main;
-    const {output} = main.chat;
+    const {output, scrollDownButton} = main.chat;
 
     let gettingLogs = true;
 
@@ -25,34 +25,25 @@ function loadSocketIoListeners(main) {
     socket.on("logs-data", data => {
         let messagesData = data.messages;
 
-        console.log(messagesData);
-        (async function() {
-            console.log("Displaying last logs...");
-            const before = Date.now();
+        console.log("Displaying last logs...");
+        const before = Date.now();
 
-            for (const msgData of messagesData) {
-                const {message, timestamp} = msgData;
-                let msg = `§#bdbdbd[${getDateAndTime(timestamp)}] §f${message}`;
-                output.appendChild(parseMessage(msg));
-            }
+        for (const msgData of messagesData) {
+            const {message, timestamp} = msgData;
+            let msg = `§#bdbdbd[${getDateAndTime(timestamp)}] §f${message}`;
+            output.appendChild(parseMessage(msg));
+        }
 
-            gettingLogs = false;
-            // let string = '';
-            // for (const msgData of messagesData) {
-            //     const {message, timestamp} = msgData;
-            //     let msg = `§#bdbdbd[${getDateAndTime(timestamp)}] §f${message}`;
-            //     string += parseMessage(msg).outerHTML;
-            // }
-            // output.innerHTML = string;
-            
-            const after = Date.now();
-            console.log(`Time: ${(after - before) / 1000}`);
-            
-            console.log("Last logs displayed!");
-            setTimeout(() => {
-                output.scrollTo(0, output.scrollHeight);
-            }, 100);
-        })();
+        gettingLogs = false;
+        
+        const after = Date.now();
+        console.log(`Time elapsed: ${(after - before) / 1000}s`);
+        
+        console.log("Last logs displayed!");
+        setTimeout(() => {
+            output.scrollTo(0, output.scrollHeight);
+            scrollDownButton.style.zIndex = "";
+        }, 100);
     });
 
     socket.on("tab-completions", data => {

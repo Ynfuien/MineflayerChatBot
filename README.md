@@ -1,6 +1,63 @@
+# **YnfuBot - Minecraft bot**
+This is Minecraft bot written in Javascript with [NodeJs](https://nodejs.org) using [mineflayer](https://www.npmjs.com/package/mineflayer). It was created mainly to save chat logs to be able to read them later and to help server owners in testing various functions without having to start another launcher.
+
+**On public servers you use the bot at your own risk!**
+
+
+# **Description**
+### **Features**:
+- Connecting to any server with any port
+- Connecting using Mojang or Microsoft account or in offline mode
+- Bot commands
+  - Stopping, starting and restarting bot
+  - Config reload and display, setting and getting config's settigns
+  - Right/left clicking inventory slots
+- Ignoring chat messages by RegEx patterns
+- Chat logs in SQLite3 database
+- On join commands to execute
+- Auto rejoin function with custom timeout
+- Online panel with
+  - chat
+  - sending commands
+  - tab completion
+- Almost all configurable (If not all, code is open source, so play with it!)
+
+### **In project are used packages:**
+- [ascii-table](https://www.npmjs.com/package/ascii-table)
+- [better-sqlite3](https://www.npmjs.com/package/better-sqlite3)
+- [chalk](https://www.npmjs.com/package/chalk)
+- [express](https://www.npmjs.com/package/express)
+- [js-yaml](https://www.npmjs.com/package/js-yaml)
+- [mineflayer](https://www.npmjs.com/package/mineflayer)
+- [nodemon](https://www.npmjs.com/package/nodemon)
+- [socket.io](https://www.npmjs.com/package/socket.io)
+- [yawn-yaml](https://www.npmjs.com/package/yawn-yaml)
+
+### **How to install (Windows)**
+1. Download source code
+2. Unpack archive to some folder
+3. Run `first-start.bat` file and after successfully packages instalation close console
+4. Edit `config.yml` for your preferences
+5. Run `start.bat` and enjoy your bot!
+
+### **How to install (Linux)**
+So, since you are using linux I assume you know how to use NodeJs and you will handle it without problems
+
+## **Todo:**
+- Tab list in online panel
+- Config options for turning on/off logging some events (player join, leave, spawn etc)
+
+# **Media**
+## **Console**
+![Screenshot](https://i.imgur.com/l6YLHuB.gif)
+## **Online panel**
+![Screenshot](https://i.imgur.com/Fx8WeTX.gif)
+
+# **Default config**
+```yaml
 server:
   # Server ip
-  host: '192.168.100.36'
+  host: 'localhost'
 
   # Default Minecraft servers port is 25565. Set this only if server has different port
   # port: 25565
@@ -12,7 +69,7 @@ server:
 
 login:
   # Set this to your email for Minecraft account or to username for online-mode servers
-  username: 'YnfuBot'
+  username: ''
 
   # Set this only if you use Minecraft account
   # password: ''
@@ -112,3 +169,4 @@ online-panel:
 
     # Set it to whatever if type is 'infinity'. 1440 minutes is 24h
     limit: 2000
+```

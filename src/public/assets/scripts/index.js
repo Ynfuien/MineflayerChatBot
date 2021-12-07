@@ -31,7 +31,7 @@ import {getCompletions} from './modules/tabComplete.js';
             inputChatLimit: 256
         }
     }
-    
+
 
     try {
         main.socket = io();

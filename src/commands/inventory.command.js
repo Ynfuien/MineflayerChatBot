@@ -1,4 +1,4 @@
-const ascii = require('ascii-table');
+// const ascii = require('ascii-table');
 
 const {logBot} = require('../utils/logger.js');
 const {filterElementsThatStartsWith} = require('../utils/YnfuTools.js');

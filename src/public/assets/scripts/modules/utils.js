@@ -1,4 +1,4 @@
-export {getDateAndTime, insertTextInString, spliceString, moveWindowSelection, appendChatMessage};
+export {getDateAndTime, insertTextInString, spliceString, moveWindowSelection};
 
 function insertTextInString(string, text, index) {
     if (typeof string !== "string") return null;
