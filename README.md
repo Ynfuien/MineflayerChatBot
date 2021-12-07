@@ -8,6 +8,7 @@ This is Minecraft bot written in Javascript with [NodeJs](https://nodejs.org) us
 ### **Features**:
 - Connecting to any server with any port
 - Connecting using Mojang or Microsoft account or in offline mode
+- Support (In theory) 1.8-1.17 - Tested on 1.17.1 and 1.16.5
 - Bot commands
   - Stopping, starting and restarting bot
   - Config reload and display, setting and getting config's settigns
