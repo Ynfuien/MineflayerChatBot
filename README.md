@@ -1,11 +1,11 @@
-# **YnfuBot - Minecraft bot**
+# YnfuBot - Minecraft bot
 This is Minecraft bot written in Javascript with [NodeJs](https://nodejs.org) using [mineflayer](https://www.npmjs.com/package/mineflayer). It was created mainly to save chat logs to be able to read them later and to help server owners in testing various functions without having to start another launcher.
 
 **On public servers you use the bot at your own risk!**
 
 
-# **Description**
-### **Features**:
+# Description
+### Features:
 - Connecting to any server with any port
 - Connecting using Mojang or Microsoft account or in offline mode
 - Support (In theory) 1.8-1.17 - Tested on 1.17.1 and 1.16.5
@@ -23,7 +23,7 @@ This is Minecraft bot written in Javascript with [NodeJs](https://nodejs.org) us
   - tab completion
 - Almost all configurable (If not all, code is open source, so play with it!)
 
-### **In project are used packages:**
+### In project are used packages:
 - [ascii-table](https://www.npmjs.com/package/ascii-table)
 - [better-sqlite3](https://www.npmjs.com/package/better-sqlite3)
 - [chalk](https://www.npmjs.com/package/chalk)
@@ -34,28 +34,28 @@ This is Minecraft bot written in Javascript with [NodeJs](https://nodejs.org) us
 - [socket.io](https://www.npmjs.com/package/socket.io)
 - [yawn-yaml](https://www.npmjs.com/package/yawn-yaml)
 
-### **How to install (Windows)**
+### How to install (Windows)
 1. Download source code
 2. Unpack archive to some folder
 3. Run `first-start.bat` file and after successfully packages instalation close console
 4. Edit `config.yml` for your preferences
 5. Run `start.bat` and enjoy your bot!
 
-### **How to install (Linux)**
+### How to install (Linux)
 So, since you are using linux I assume you know how to use NodeJs and you will handle it without problems
 
-## **Todo:**
+## Todo:
 - Tab list in online panel
 - Config options for turning on/off logging some events (player join, leave, spawn etc)
 
-# **Media**
-## **Console**
-### (In windows I recommend using [Windows Terminal](https://github.com/microsoft/terminal))
+# Media
+## Console
+#### (In windows I recommend using [Windows Terminal](https://github.com/microsoft/terminal))
 ![Screenshot](https://i.imgur.com/l6YLHuB.gif)
-## **Online panel**
+## Online panel
 ![Screenshot](https://i.imgur.com/Fx8WeTX.gif)
 
-# **Default config**
+# Default config
 ```yaml
 server:
   # Server ip
