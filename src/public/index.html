@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YnfuBot Panel</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+
+    <script src="socket.io/socket.io.js"></script>
+    <!-- <script src="assets/scripts/colors.js"></script> -->
+    <!-- <script src="assets/scripts/ynfu-mc-parser.js"></script> -->
+    <script type="module" defer src="assets/scripts/index.js"></script>
+</head>
+
+<body>
+    <main class="main">
+        <section id="chat">
+            <section class="output"></section>
+            <section class="input">
+                <!-- <textarea class="input" rows="1" autofocus></textarea> -->
+                <div class="input" contenteditable="plaintext-only" autofocus></div>
+                <div class="tab-completion">
+                    <span class="invisible"></span><section></section><span class="visible"></span>
+                </div>
+            </section>
+
+            <span id="scrollDown"></span>
+        </section>
+        <!-- <section id="inventory">
+            <iframe src="http://localhost:3001" title="description" width="500px" height="500px"></iframe>
+        </section> -->
+
+        <!-- <section style="position:fixed; left:200px; top:200px; width: 300px; height: 300px; background-color:red;">
+            <div style="width: 100px; height: 100px; background-color:blue; scrollbar-width: none; overflow-x:hidden; overflow-y:hidden; white-space: nowrap;" contenteditable="plaintext-only"></div>
+            <textarea style="overflow-y:hidden;overflow-x: auto;"></textarea>
+        </section> -->
+    </main>
+</body>
+
+</html>
