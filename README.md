@@ -50,6 +50,7 @@ So, since you are using linux I assume you know how to use NodeJs and you will h
 
 # **Media**
 ## **Console**
+### (In windows I recommend using [Windows Terminal](https://github.com/microsoft/terminal))
 ![Screenshot](https://i.imgur.com/l6YLHuB.gif)
 ## **Online panel**
 ![Screenshot](https://i.imgur.com/Fx8WeTX.gif)
