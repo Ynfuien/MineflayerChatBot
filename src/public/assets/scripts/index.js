@@ -28,6 +28,7 @@ import {getCompletions} from './modules/tabComplete.js';
                     prefix: ''
                 }
             },
+            usedCommands: [],
             inputChatLimit: 256
         }
     }

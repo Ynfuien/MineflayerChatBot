@@ -1,5 +1,6 @@
-// import {clearCompletions, getCompletions, updateInputCompletion, complete, moveSelection} from "./tabComplete.js";
 import * as tc from "./tabComplete.js";
+import {changeSelectedUsedCommand, addUsedCommand, resetCurrentSelectedUsedCommand} from "./usedCommands.js";
+
 export {loadInputEvents};
 
 function loadInputEvents(main) {
@@ -57,8 +58,10 @@ function loadInputEvents(main) {
         const {code} = e;
 
         if (code === "ArrowLeft" || code === "ArrowRight") {
+            if (!input.innerText) return;
+            
             setTimeout(() => {
-                tc.getTabCompletions();
+                getTabCompletions();
             }, 5);
             return;
         }
@@ -74,12 +77,23 @@ function loadInputEvents(main) {
             return tc.clearCompletions(main, "list");
         }
 
+        if (main.chat.tabCompletion.tabbing) {
+            if (code === "ArrowDown") {
+                return tc.moveSelection(main, 1);
+            }
+    
+            if (code === "ArrowUp") {
+                return tc.moveSelection(main, -1);
+            }
+            return;
+        }
+
         if (code === "ArrowDown") {
-            return tc.moveSelection(main, 1);
+            return changeSelectedUsedCommand(main, "down");
         }
 
         if (code === "ArrowUp") {
-            return tc.moveSelection(main, -1);
+            return changeSelectedUsedCommand(main, "up");
         }
     });
 
@@ -89,9 +103,13 @@ function loadInputEvents(main) {
             if (!value) return cancelEvent(e);
 
             socket.emit("send-command", {command: value});
+
+            addUsedCommand(main, value);
+
             input.innerText = "";
             tc.clearCompletions(main);
             tc.getCompletions(main, '');
+            resetCurrentSelectedUsedCommand();
             return cancelEvent(e);
         }
 
@@ -157,11 +175,6 @@ function loadInputEvents(main) {
         }
         
         const cursorIndex = window.getSelection().focusOffset;
-        console.log({
-            cursorIndex,
-            value,
-            substring: value.substring(0, cursorIndex)
-        });
         
         tc.getCompletions(main, value.substring(0, cursorIndex));
     }
