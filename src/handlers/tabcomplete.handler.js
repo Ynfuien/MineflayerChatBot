@@ -85,6 +85,8 @@ module.exports = {
 
         // Bot command
         const prefix = main.config.commands.prefix;
+        if (!command.startsWith(prefix)) return {list: [], type: "usernames"};
+
         const commands = main.commands.list;
 
         let args = command.split(' ');
