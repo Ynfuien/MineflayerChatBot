@@ -36,11 +36,12 @@ This is Minecraft bot written in Javascript with [NodeJs](https://nodejs.org) us
 - [yawn-yaml](https://www.npmjs.com/package/yawn-yaml)
 
 ### How to install (Windows)
-1. Download source code
-2. Unpack archive to some folder
-3. Run `first-start.bat` file and after successfully packages instalation close console
-4. Edit `config.yml` for your preferences
-5. Run `start.bat` and enjoy your bot!
+1. Download and install [NodeJs](https://nodejs.org) if don't have it
+2. Download source code
+3. Unpack archive to some folder
+4. Run `first-start.bat` file and after successfully packages instalation close console
+5. Edit `config.yml` for your preferences
+6. Run `start.bat` and enjoy your bot!
 
 ### How to install (Linux)
 So, since you are using linux I assume you know how to use NodeJs and you will handle it without problems
