@@ -44,7 +44,7 @@ This is Minecraft bot written in Javascript with [NodeJs](https://nodejs.org) us
 6. Run `start.bat` and enjoy your bot!
 
 ### How to install (Linux)
-So, since you are using linux I assume you know how to use NodeJs and you will handle it without problems
+So, since you are using linux I assume you know how to use NodeJs and you will handle it without problems, and even if you haven't used NodeJs before then you know how to use [Google](https://google.com) :p
 
 ## Todo:
 - Tab list in online panel
