@@ -137,11 +137,11 @@ on-join:
 
   commands:
     # Some examples:
-    # '500:/login mYsUpErSeCrEtPaSsWoRd123'
-    # '1000:Hello everyone!''
-    # '5000:/home'
-    # '5500:/panel'
-    # '6000:-inv leftclick 5'
+    # - '500:/login mYsUpErSeCrEtPaSsWoRd123'
+    # - '1000:Hello everyone!''
+    # - '5000:/home'
+    # - '5500:/panel'
+    # - '6000:-inv leftclick 5'
 
 
 auto-rejoin:
