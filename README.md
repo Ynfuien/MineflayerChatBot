@@ -21,6 +21,7 @@ This is Minecraft bot written in Javascript with [NodeJs](https://nodejs.org) us
   - chat
   - sending commands
   - tab completion
+  - up/down arrows function for before used commands
 - Almost all configurable (If not all, code is open source, so play with it!)
 
 ### In project are used packages:
