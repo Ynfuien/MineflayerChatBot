@@ -18,7 +18,7 @@ module.exports = {
             }
         }
 
-        if (chatPosition === "action_bar") {
+        if (chatPosition === "game_info") {
             logMessage(message, "§#12ff98[ActionBar] §f");
             return;
         }
