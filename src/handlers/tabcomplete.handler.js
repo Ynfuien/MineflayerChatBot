@@ -63,11 +63,7 @@ module.exports = {
                 // Players usernames
                 const split = command.split(' ');
                 let startIndex = split.slice(0, -1).join(' ').length + (split.length > 1 ? 1 : 0);
-                // console.log({
-                //     startIndex,
-                //     tak: split.slice(0, -1).join(' '),
-                //     nie: command.substr(startIndex)
-                // });
+                
                 const lastWord = split[split.length - 1].toLowerCase();
 
                 const usernames = Object.keys(bot.players).filter(
