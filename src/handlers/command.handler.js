@@ -34,7 +34,7 @@ const self = module.exports = {
 
             if (!command.run) {
                 logBot(`&cCommand &e${evecommandnt.name}&c, missing run function!`);
-                console.logBot(chalk.redBright(`Event ${command.name} !`));
+                logBot(chalk.redBright(`Event ${command.name} !`));
 
                 table.addRow(file, "❌ -> missing 'run'!");
                 continue;
