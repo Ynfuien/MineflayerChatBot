@@ -163,16 +163,13 @@ module.exports = {
             }
 
             const settings = yt.isKeyExist(config, path);
-            console.log(settings);
-            if (settings !== undefined) {
+            if (typeof settings === "object") {
                 let completions = [];
 
                 for (const key of Object.keys(settings)) {
                     const setting = split.slice(0, -1).join('.') + '.' + key;
-                    console.log(setting);
                     if (setting.startsWith(arg2)) completions.push(setting);
                 }
-                console.log(completions);
                 return completions;
             }
             
