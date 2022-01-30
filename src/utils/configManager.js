@@ -244,7 +244,7 @@ module.exports = {
 
             const pattern = new RegExp("\\d+:.+", 'g');
             for (const command of commands) {
-                if (!message.match(pattern)) {
+                if (!command.match(pattern)) {
                     logError(`Command '${command}' doesn't match pattern! Correct it to work`);
                     continue;
                 }
