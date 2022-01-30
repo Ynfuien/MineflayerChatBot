@@ -19,6 +19,7 @@ module.exports = {
         }
 
         if (chatPosition === "game_info") {
+            if (main.temp.bot.actionbar === false) return;
             logMessage(message, "§#12ff98[ActionBar] §f");
             return;
         }
