@@ -72,7 +72,7 @@ const self = module.exports = {
         });
     },
 
-    executeCommand(text) {
+    async executeCommand(text) {
         const {bot, config} = _main;
 
         try {
@@ -94,7 +94,7 @@ const self = module.exports = {
             if (!cmd.command) return logBot(`&c${cmd.error}`);
             const {command} = cmd;
     
-            const result = command.run(_main, args);
+            const result = await command.run(_main, args);
             if (result === false) {
                 logBot(`&cCorrect command usage: ${config.commands.prefix}${commandName} ${command.usage}`);
             }
