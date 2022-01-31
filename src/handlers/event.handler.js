@@ -43,7 +43,14 @@ module.exports = (main) => {
         }
 
         bot.on(event.name, (arg1, arg2)=> {
-            event.run(main, arg1, arg2);
+            try {
+                event.run(main, arg1, arg2);
+            } catch (error) {
+                logBot("&cAn error occurred while executing an event!");
+                logBot(`&4Event name: &f${event.name}`);
+                logBot(`&4Error message: &f${error}`);
+                console.log(error);
+            }
         });
         
     }

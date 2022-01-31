@@ -75,27 +75,34 @@ const self = module.exports = {
     executeCommand(text) {
         const {bot, config} = _main;
 
-        const botCommand = self.isBotCommand(text);
-        if (!botCommand.botCommand) {
-            if (!bot) {
-                return logBot("&cBot isn't working!");
+        try {
+            const botCommand = self.isBotCommand(text);
+            if (!botCommand.botCommand) {
+                if (!bot) {
+                    return logBot("&cBot isn't working!");
+                }
+                
+                bot.chat(botCommand.command);
+                return;
             }
-            
-            bot.chat(botCommand.command);
-            return;
-        }
-
-
-        let args = text.split(' ');
-        const commandName = args.shift().substring(config.commands.prefix.length).toLowerCase();
-
-        const cmd = self.getCommand(commandName);
-        if (!cmd.command) return logBot(`&c${cmd.error}`);
-        const {command} = cmd;
-
-        const result = command.run(_main, args);
-        if (result === false) {
-            logBot(`&cCorrect command usage: ${config.commands.prefix}${commandName} ${command.usage}`);
+    
+    
+            let args = text.split(' ');
+            const commandName = args.shift().substring(config.commands.prefix.length).toLowerCase();
+    
+            const cmd = self.getCommand(commandName);
+            if (!cmd.command) return logBot(`&c${cmd.error}`);
+            const {command} = cmd;
+    
+            const result = command.run(_main, args);
+            if (result === false) {
+                logBot(`&cCorrect command usage: ${config.commands.prefix}${commandName} ${command.usage}`);
+            }
+        } catch (error) {
+            logBot("&cAn error occurred while executing a command!");
+            logBot(`&4Command: &f${text}}`);
+            logBot(`&4Error message: &f${error}`);
+            console.log(error);
         }
     },
 
