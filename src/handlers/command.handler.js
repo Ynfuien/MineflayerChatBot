@@ -100,7 +100,7 @@ const self = module.exports = {
             }
         } catch (error) {
             logBot("&cAn error occurred while executing a command!");
-            logBot(`&4Command: &f${text}}`);
+            logBot(`&4Command: &f${text}`);
             logBot(`&4Error message: &f${error}`);
             console.log(error);
         }

@@ -1,0 +1,140 @@
+// const ascii = require('ascii-table');
+
+const {logBot} = require('../utils/logger.js');
+const {filterElementsThatStartsWith} = require('../utils/YnfuTools.js');
+
+module.exports = {
+    name: "hotbar",
+    enable: true,
+    usage: "<change | use | eat> [slot]",
+    description: "Command for hotbar manage.",
+
+    async run (main, args) {
+        const {bot} = main;
+
+
+        let arg1 = args.shift();
+        if (!arg1) return false;
+        arg1 = arg1.toLowerCase();
+
+        // Change
+        if (arg1 === "change") {
+            if (args.length === 0) {
+                logBot("&cYou have to provide slot to change!");
+                return;
+            }
+
+            const slot = parseInt(args.shift());
+            if (isNaN(slot)) {
+                logBot("&cSlot must be a number!");
+                return;
+            }
+
+            if (slot < 0) {
+                logBot("&cSlot can't be lower than 0!");
+                return;
+            }
+
+            if (slot > 8) {
+                logBot("&cSlot can't be higher than 8!");
+                return;
+            }
+
+            bot.setQuickBarSlot(slot);
+            logBot(`&bSlot &asuccessfully &bchanged to &3${slot}&b!`);
+            return;
+        }
+
+        // Use
+        if (arg1 === "use") {
+            const {quickBarSlot} = bot;
+            let slot = quickBarSlot;
+
+            if (args.length !== 0) {
+                slot = parseInt(args.shift());
+                if (isNaN(slot)) {
+                    logBot("&cSlot must be a number!");
+                    return;
+                }
+
+                if (slot < 0) {
+                    logBot("&cSlot can't be lower than 0!");
+                    return;
+                }
+
+                if (slot > 8) {
+                    logBot("&cSlot can't be higher than 8!");
+                    return;
+                }
+            }
+            
+            if (quickBarSlot !== slot) bot.setQuickBarSlot(slot);
+            bot.activateItem();
+            bot.deactivateItem();
+            if (quickBarSlot !== slot) bot.setQuickBarSlot(quickBarSlot);
+
+            logBot(`&bItem in slot &3${slot} &asuccessfully &bused!`);
+            return;
+        }
+
+        // Eat
+        if (arg1 === "eat") {
+            const {quickBarSlot} = bot;
+            let slot = quickBarSlot;
+
+            if (args.length !== 0) {
+                slot = parseInt(args.shift());
+                if (isNaN(slot)) {
+                    logBot("&cSlot must be a number!");
+                    return;
+                }
+
+                if (slot < 0) {
+                    logBot("&cSlot can't be lower than 0!");
+                    return;
+                }
+
+                if (slot > 8) {
+                    logBot("&cSlot can't be higher than 8!");
+                    return;
+                }
+            }
+            
+            if (quickBarSlot !== slot) bot.setQuickBarSlot(slot);
+            bot.consume();
+            if (quickBarSlot !== slot) bot.setQuickBarSlot(quickBarSlot);
+
+            logBot(`&bItem in slot &3${slot} &asuccessfully &beaten!`);
+            return;
+        }
+
+        return false;
+    },
+    
+    tabCompletion(main, args) {
+        if (!args) return [];
+        if (args.length > 2) return [];
+
+        const arg1 = args[0].toLowerCase();
+
+        const subCommands = ["change", "use", "eat"];
+
+        if (args.length === 1) {
+            return filterElementsThatStartsWith(subCommands, arg1);
+        }
+
+        if (args.length === 2) {
+            if (!subCommands.includes(arg1)) {
+                return [];
+            }
+
+            let slotsStrings = [
+                "0", "1", "2", "3", "4", "5", "6", "7", "8"
+            ];
+            
+            return filterElementsThatStartsWith(slotsStrings, args[1]);
+        }
+
+        return [];
+    }
+}
