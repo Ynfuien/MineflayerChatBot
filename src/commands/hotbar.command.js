@@ -79,7 +79,13 @@ module.exports = {
 
         // Eat
         if (arg1 === "eat") {
-            const {quickBarSlot} = bot;
+            const {quickBarSlot, food} = bot;
+
+            if (food === 20) {
+                logBot("&cFood is full!");
+                return;
+            }
+
             let slot = quickBarSlot;
 
             if (args.length !== 0) {
@@ -101,7 +107,20 @@ module.exports = {
             }
             
             if (quickBarSlot !== slot) bot.setQuickBarSlot(slot);
-            bot.consume();
+            const {heldItem} = bot;
+            if (heldItem == null) {
+                logBot(`&cThere is no item in slot &4${slot}&c!`);
+                return;
+            }
+
+            const foods = require('minecraft-data')(bot.version).foodsByName;
+            const {name} = heldItem;
+            if (!foods[name] && name !== "potion") {
+                logBot(`&cItem in slot &4${slot} &ccan't be consumed!`);
+                return;
+            }
+
+            await bot.consume();
             if (quickBarSlot !== slot) bot.setQuickBarSlot(quickBarSlot);
 
             logBot(`&bItem in slot &3${slot} &asuccessfully &beaten!`);
