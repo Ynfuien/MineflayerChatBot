@@ -1,6 +1,6 @@
 const chalk = require('chalk');
 
-const { parseToMotd } = require('./messageParser.js');
+// const { parseToMotd } = require('./messageParser.js');
 
 
 let logsMessagesCount = 0;
@@ -45,7 +45,7 @@ let self = module.exports = {
     },
 
     logMessage(message, prefix = '') {
-        logColor(prefix + parseToMotd(message));
+        logColor(prefix + message.toMotd());
     },
 
     logWithCustomChar(message, codesChar = '§') {

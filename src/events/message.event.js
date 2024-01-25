@@ -1,4 +1,6 @@
-const {logMessage} = require('../utils/logger.js');
+const {logMessage, logMotd} = require('../utils/logger.js');
+const {parseToMotd} = require("../utils//messageParser.js");
+
 
 module.exports = {
     name: "message",
@@ -7,6 +9,9 @@ module.exports = {
     run (main, message, chatPosition) {
         const {chat} = main.config;
 
+        // console.log(message.toMotd());
+        if (message.unsigned) message = message.unsigned;
+        // console.dir(message, {depth: 3});
         if (chat && chat["ignored-messages"]) {
             const ignoredMessages = chat["ignored-messages"];
             

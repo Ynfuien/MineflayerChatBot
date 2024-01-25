@@ -38,11 +38,13 @@ module.exports = {
             const timeout = parseInt(split.shift());
 
             const text = split.join(':');
+            console.log({timeout, text});
 
             setTimeout(() => {
                 if (!main.bot) botRunning = false;
                 if (!botRunning) return;
 
+                console.log({timeout, text});
                 executeCommand(text);
             }, timeout);
         }

@@ -60,6 +60,8 @@ module.exports = {
                 return;
             }
 
+            // bot.inventory
+
             if (arg1 === "leftclick") {
                 bot.simpleClick.leftMouse(slot);
                 return;

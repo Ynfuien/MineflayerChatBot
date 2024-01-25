@@ -73,28 +73,28 @@ module.exports = {
                     return false;
                 }
 
-                let supportedVersions = [
-                    "1\\.8(\\.[1-9]|)",
-                    "1\\.9(\\.[1-4]|)",
-                    "1\\.10(\\.[1-2]|)",
-                    "1\\.11(\\.[1-2]|)",
-                    "1\\.12(\\.[1-2]|)",
-                    "1\\.13(\\.[1-2]|)",
-                    "1\\.14(\\.[1-4]|)",
-                    "1\\.15(\\.[1-2]|)",
-                    "1\\.16(\\.[1-5]|)",
-                    "1\\.17(\\.1|)"
-                ];
+                // let supportedVersions = [
+                //     "1\\.8(\\.[1-9]|)",
+                //     "1\\.9(\\.[1-4]|)",
+                //     "1\\.10(\\.[1-2]|)",
+                //     "1\\.11(\\.[1-2]|)",
+                //     "1\\.12(\\.[1-2]|)",
+                //     "1\\.13(\\.[1-2]|)",
+                //     "1\\.14(\\.[1-4]|)",
+                //     "1\\.15(\\.[1-2]|)",
+                //     "1\\.16(\\.[1-5]|)",
+                //     "1\\.17(\\.1|)"
+                // ];
 
-                for (let supVersion of supportedVersions) {
-                    if (version.match(new RegExp(`^${supVersion}$`, 'g'))) break;
-                    if (version.match(new RegExp("1\\.[0-7](\\.\\d(\\d|)|)", 'g'))) {
-                        logError("Provided minecraft version isn't supported! Privide another version and start script again");
-                        return false;
-                    }
-                    logError("Provided minecraft version is incorrect! Correct it and restart script");
-                    return false;
-                }
+                // for (let supVersion of supportedVersions) {
+                //     if (version.match(new RegExp(`^${supVersion}$`, 'g'))) break;
+                //     if (version.match(new RegExp("1\\.[0-7](\\.\\d\\d?)?", 'g'))) {
+                //         logError("Provided minecraft version isn't supported! Privide another version and start script again");
+                //         return false;
+                //     }
+                //     logError("Provided minecraft version is incorrect! Correct it and restart script");
+                //     return false;
+                // }
 
             }
 

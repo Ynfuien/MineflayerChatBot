@@ -1,0 +1,7 @@
+node_modules/
+assets/
+
+logs.db
+package-lock.json
+
+local-start.bat

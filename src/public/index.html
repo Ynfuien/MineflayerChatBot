@@ -9,8 +9,6 @@
     <link rel="stylesheet" href="style.css" type="text/css">
 
     <script src="socket.io/socket.io.js"></script>
-    <!-- <script src="assets/scripts/colors.js"></script> -->
-    <!-- <script src="assets/scripts/ynfu-mc-parser.js"></script> -->
     <script type="module" defer src="assets/scripts/index.js"></script>
 </head>
 
@@ -18,8 +16,7 @@
     <main class="main">
         <section id="chat">
             <section class="output"></section>
-            <section class="input">
-                <!-- <textarea class="input" rows="1" autofocus></textarea> -->
+            <section class="input"> 
                 <div class="input" contenteditable="plaintext-only" autofocus></div>
                 <div class="tab-completion">
                     <span class="invisible"></span><section></section><span class="visible"></span>
@@ -27,6 +24,9 @@
             </section>
 
             <span id="scrollDown" style="z-index: -1;"></span>
+        </section>
+        <section id="tab">
+            
         </section>
         <!-- <section id="inventory">
             <iframe src="http://localhost:3001" title="description" width="500px" height="500px"></iframe>

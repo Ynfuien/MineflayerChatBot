@@ -5,6 +5,9 @@ const { logBot, setMain, onStartup } = require('./utils/logger.js');
 const {startBot} = require('./utils/botManager.js');
 const cm = require('./utils/configManager.js');
 
+// const mcData = require('minecraft-data')("1.19.2");
+// console.log(mcData?.version);
+
 // Database setup
 const db = require('better-sqlite3')('logs.db');
 // Creating main table in db if not exist

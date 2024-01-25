@@ -1,3 +1,4 @@
+/* Fonts */
 @font-face {
     font-family: 'Lato';
     src: url('assets/fonts/Lato-Light.ttf');
@@ -52,9 +53,15 @@ section#chat {
 }
 
 span#scrollDown.visible {
+    /* transform: translateY(0px); */
     animation: scrollDownShow 300ms ease-in;
+    opacity: 1;
     visibility: visible;
 }
+/* span#scrollDown.visible:hover {
+    opacity: 0.5;
+    visibility: visible;
+} */
 
 span#scrollDown {
     position: fixed;
@@ -67,10 +74,12 @@ span#scrollDown {
     border-radius: 50%;
     box-sizing: border-box;
     cursor: pointer;
-    transition: opacity 0.3s;
+
+    /* transition: opacity 0.3s, transform 0.3s; */
 
     animation: scrollDownHide 300ms ease-in;
-
+    /* opacity: 0;
+    transform: translateY(15px); */
     visibility: hidden;
 }
 span#scrollDown:hover {
