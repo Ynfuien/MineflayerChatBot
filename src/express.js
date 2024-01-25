@@ -6,7 +6,7 @@ const {logBot} = require('./utils/logger');
 const {executeCommand} = require('./handlers/command.handler.js');
 const {getTabCompletions} = require('./handlers/tabcomplete.handler.js');
 
-
+// Yeah, Im not ready to change this
 module.exports = (main, callback) => {
     const {config} = main;
 

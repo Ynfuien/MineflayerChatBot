@@ -1,7 +1,5 @@
 const chalk = require('chalk');
 
-// const { parseToMotd } = require('./messageParser.js');
-
 
 let logsMessagesCount = 0;
 let logsLastMessageTimestamp = Date.now();
