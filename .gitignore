@@ -3,5 +3,6 @@ assets/
 
 logs.db
 package-lock.json
+debug.log
 
 local-start.bat
