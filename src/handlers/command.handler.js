@@ -1,6 +1,6 @@
 const fs = require('fs');
 const {logBot} = require('../utils/logger.js');
-const {isKeyExist} = require('../utils/YnfuTools.js');
+const {doesKeyExist} = require('../utils/YnfuTools.js');
 const ascii = require('ascii-table');
 
 // Console read text
@@ -61,7 +61,7 @@ const self = module.exports = {
         table.toString().split('\n').forEach(line => logBot("&#d1d1d1"+line));
         logBot(`&aRegistered &b${count} &acommand(s)!`);
 
-        if (isKeyExist(config, "commands.enabled") !== true) {
+        if (doesKeyExist(config, "commands.enabled") !== true) {
             logBot(`&cBot commands are not enabled so thay won't work!`);
         }
 

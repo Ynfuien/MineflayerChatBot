@@ -3,7 +3,7 @@ const {logBot} = require('../utils/logger.js');
 
 module.exports = {
     name: "end",
-    enable: true,
+    enable: false,
 
     run (main) {
         logBot("&cBot has been turned off.");

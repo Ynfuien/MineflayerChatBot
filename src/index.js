@@ -1,96 +1,138 @@
-const {loadCommands} = require('./handlers/command.handler.js');
-const express = require('./express.js');
+const mineflayer = require('mineflayer');
 
-const { logBot, setMain, onStartup } = require('./utils/logger.js');
-const {startBot} = require('./utils/botManager.js');
-const cm = require('./utils/configManager.js');
+const database = require('better-sqlite3')('logs.db');
+database.prepare("CREATE TABLE IF NOT EXISTS messages (message TEXT DEFAULT \"\", timestamp INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
 
-// const mcData = require('minecraft-data')("1.19.2");
-// console.log(mcData?.version);
+const webpanel = require('./webpanel/panel.js');
+const configManager = require('./utils/configManager.js');
 
-// Database setup
-const db = require('better-sqlite3')('logs.db');
-// Creating main table in db if not exist
-db.prepare("CREATE TABLE IF NOT EXISTS messages (message TEXT DEFAULT \"\", timestamp INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+const eventHandler = require('./handlers/event.handler.js');
 
-(async function(){
-    // Main setup
+const { logBot, setup: setupLogger } = require('./utils/logger.js');
+
+/**
+ * @typedef {{
+ *      bot: import('mineflayer').Bot,
+ *      database: import('better-sqlite3').Database,
+ *      config: {
+ *          values: import('./utils/configManager.js').Config,
+ *          yawn: YAWN.default
+ *      },
+ *      vars: {
+ *          
+ *      }
+ * }} Main
+ */
+
+
+(async function() {
+    /** @type {Main} */
     const main = {
-        commands: {
-            list: {},
-            tabComplete: {}
-        },
-        config: null,
-        botOptions: null,
-        temp: {
-            bot: {},
-            config: {
-                commands: false,
-                logs: {
-                    enabled: false,
-                    type: "infinity",
-                    limit: null
-                },
-                onJoin: {
-                    commands: []
-                },
-                autoRejoin: {
-                    enabled: false,
-                    timeout: 10
-                },
-                onlinePanel: {
-                    enabled: false,
-                    lastMessages: {
-                        type: "count",
-                        limit: 0
-                    }
-                }
-            }
-        },
-        bot: null,
-        db: db
+        database,
+        vars: {
+            
+        }
     };
 
-    
+    setupLogger(main);
+
     // Loading config from file
     logBot(`&bLoading config..`);
-    const configLoading = cm.loadConfig(main);
-    if (!configLoading.success) {
-        logBot(`&cAn error occured when loading config file! Fix it and start script again. Error: ${configLoading.error}`);
+    const configResult = configManager.loadConfig(`${__dirname}/../config.yml`);
+    if (!configResult.success) {
+        logBot(`&cAn error occured while loading config file! Fix it and start the bot again.\n${configResult.error}`);
         process.exit(1);
     }
+    main.config = configResult.config;
 
     // Checking config for user's mistakes
-    const checkConfig = cm.checkConfig(main);
-    if (checkConfig === false) {
-        process.exit(1);
-    }
+    const checkConfig = configManager.checkConfig(main);
+    if (checkConfig === false) process.exit(1);
+
+
     
-    setMain(main);
-
-    cm.loadBotOptions(main);
-    onStartup();
-
-    let timeout = 0;
-    if (checkConfig.softError) {
-        timeout = 5 * 1000;
-        logBot("&cThere is an error in config. Best for you will be fixing it and reloading configuration!");
-    } else {
-        logBot("&bConfig &asuccessfully &bloaded!");
-    }
-    
-
-    setTimeout(async () => {
-        // Online panel
-        if (main.temp.config.onlinePanel.enabled) {
-            await express(main);
-        }
-
-        // Bot creation
-        logBot("&bCreating bot..");
-        startBot(main);
-
-        // Commands setup
-        loadCommands(main);
-    }, timeout);
+    logBot("&bCreating bot..");
+    const botOptions = {...main.config.values.server, ...main.config.values.login};
+    console.log(botOptions);
+    // main.bot = mineflayer.createBot(botOptions);
+    // eventHandler(main);
 })();
+
+
+
+
+
+
+// const {loadCommands} = require('./handlers/command.handler.js');
+// const express = require('./express.js');
+
+// const { logBot, setMain, onStartup } = require('./utils/logger.js');
+// const {startBot} = require('./utils/botManager.js');
+// const cm = require('./utils/configManager.js');
+
+
+// (async function(){
+//     // Main setup
+//     const main = {
+//         commands: {
+//             list: {},
+//             tabComplete: {}
+//         },
+//         config: null,
+//         botOptions: null,
+//         temp: {
+//             bot: {},
+//             config: {
+//                 commands: false,
+//                 logs: {
+//                     enabled: false,
+//                     type: "infinity",
+//                     limit: null
+//                 },
+//                 onJoin: {
+//                     commands: []
+//                 },
+//                 autoRejoin: {
+//                     enabled: false,
+//                     timeout: 10
+//                 },
+//                 onlinePanel: {
+//                     enabled: false,
+//                     lastMessages: {
+//                         type: "count",
+//                         limit: 0
+//                     }
+//                 }
+//             }
+//         },
+//         bot: null,
+//         db: db
+//     };
+
+
+    
+//     setMain(main);
+
+//     cm.loadBotOptions(main);
+//     onStartup();
+
+//     let timeout = 0;
+//     if (checkConfig.softError) {
+//         timeout = 5 * 1000;
+//         logBot("&cThere is an error in config. Best for you will be fixing it and reloading configuration!");
+//     } else {
+//         logBot("&bConfig &asuccessfully &bloaded!");
+//     }
+    
+
+//     setTimeout(async () => {
+//         // Online panel
+//         if (main.temp.config.onlinePanel.enabled) {
+//             await express(main);
+//         }
+
+
+//         // Commands setup
+//         loadCommands(main);
+//     }, timeout);
+// })();

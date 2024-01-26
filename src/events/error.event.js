@@ -5,7 +5,7 @@ module.exports = {
     enable: true,
 
     run (main, error) {
-        console.log(error);
         logBot(`&cOccurred bot error: ${error}`);
+        console.log(error);
     }
 }

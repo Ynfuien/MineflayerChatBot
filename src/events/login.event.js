@@ -1,10 +1,9 @@
 const {logBot} = require('../utils/logger.js');
-const {parseToMotd} = require('../utils/messageParser.js');
 const {executeCommand} = require('../handlers/command.handler.js');
 
 module.exports = {
     name: "login",
-    enable: true,
+    enable: false,
 
     run (main) {
         const {bot, temp, config} = main;
@@ -14,7 +13,7 @@ module.exports = {
             main.temp.bot.onServer = true;
 
             const players = bot.players;
-            const usernames = Object.keys(players).map(player => parseToMotd(players[player].displayName));
+            const usernames = Object.keys(players).map(player => players[player].displayName);
             
             usernames.sort();
             logBot("&5Players in game:");

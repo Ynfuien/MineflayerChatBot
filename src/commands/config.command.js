@@ -24,7 +24,7 @@ module.exports = {
                 return;
             }
 
-            const setting = yt.isKeyExist(config, arg2);
+            const setting = yt.doesKeyExist(config, arg2);
 
             if (setting == undefined) {
                 logBot(`&cSetting '${arg2}' doesn't exist.`);
@@ -162,7 +162,7 @@ module.exports = {
                 path = split.slice(0, -1).join('.');
             }
 
-            const settings = yt.isKeyExist(config, path);
+            const settings = yt.doesKeyExist(config, path);
             if (typeof settings === "object") {
                 let completions = [];
 

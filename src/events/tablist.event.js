@@ -1,4 +1,3 @@
-const {parseToBukkit} = require('../utils/messageParser');
 const {log, logWithCustomChar} = require('../utils/logger');
 
 const before = [];

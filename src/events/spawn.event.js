@@ -5,7 +5,7 @@ const Mineflayer = require('mineflayer');
 
 module.exports = {
     name: "spawn",
-    enable: true,
+    enable: false,
 
     async run (main) {
         /**

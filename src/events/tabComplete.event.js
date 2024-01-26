@@ -1,7 +1,7 @@
 module.exports = {
     name: "tab_complete",
     lowLevelApi: true,
-    enable: true,
+    enable: false,
 
     run (main, packet) {
         const {transactionId, matches} = packet;

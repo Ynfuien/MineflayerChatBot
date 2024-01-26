@@ -1,21 +1,42 @@
 module.exports = {
-    writeBotTabCompletionPacket(bot, text, transactionId) {
-        if (typeof transactionId !== "bigint" && typeof transactionId !== "number") {
-            return false;
+    doesKeyExist(object, keyPath) {
+        let keys = keyPath.split('.');
+
+        let currentChild = object;
+        for (const key of keys) {
+            if (!(key in object)) return false;
+            currentChild = object[key];
         }
 
-        bot._client.write('tab_complete', {
-            text,
-            assumeCommand: false,
-            lookedAtBlock: undefined,
-            transactionId
-        });
-        
         return true;
     },
 
-    filterElementsThatStartsWith(array, startsString) {
-        return array.filter(element => element.startsWith(startsString));
+    setValueByKeyPath(object, keyPath, value) {
+        let keys = keyPath.split('.');
+
+        let previous = [];
+        {
+            let currentSetting = object;
+            for (const key of keys) {
+                previous.push(currentSetting);
+                currentSetting = currentSetting[key];
+                if (currentSetting === undefined) return false;
+            }
+        }
+        
+
+        let returnObject = value;
+        for (let i = previous.length - 1; i >= 0; i--) {
+            let pre = previous[i];
+            pre[keys[i]] = returnObject;
+            returnObject = pre;
+        }
+
+        return returnObject;
+    },
+
+    convertObjectToString(object) {
+        return objectToString(object);
     }
 }
 

@@ -1,6 +1,9 @@
 const fs = require('fs');
 const { logBot } = require('../utils/logger.js');
 
+/**
+ * @param {import('../index.js').Main} main
+ */
 module.exports = (main) => {
     const {bot} = main;
     const events = fs.readdirSync(__dirname + "/../events").filter(file => file.endsWith("event.js"));
@@ -29,14 +32,19 @@ module.exports = (main) => {
             process.exit(1);
         }
 
-        if (event.enable === false) {
-            continue;
-        }
+        if (event.enable === false) continue;
 
         registeredEventCount++;
         if (event.lowLevelApi === true) {
-            bot._client.on(event.name, (arg1, arg2)=> {
-                event.run(main, arg1, arg2);
+            bot._client.on(event.name, async (arg1, arg2) => {
+                try {
+                    await event.run(main, arg1, arg2);
+                } catch (error) {
+                    logBot("&cAn error occurred while executing a low level api event!");
+                    logBot(`&4Event name: &f${event.name}`);
+                    logBot(`&4Error message: &f${error}`);
+                    console.log(error);
+                }
             });
 
             continue;

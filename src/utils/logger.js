@@ -1,12 +1,7 @@
 const chalk = require('chalk');
 
-
-let logsMessagesCount = 0;
-let logsLastMessageTimestamp = Date.now();
-
-let main = null;
-
-let chalkColors = {
+// Legacy codes mapped to hex colors and chalk formats
+const CHALK_COLORS = {
     colors: {
         '0': "000000",
         '1': "0000AA",
@@ -31,81 +26,78 @@ let chalkColors = {
         'm': chalk.strikethrough,
         'o': chalk.italic
     }
-}
+};
 
-let self = module.exports = {
-    log(message) {
-        logColor(message, '&');
+
+
+let savedMessagesCount = 0;
+let lastMessageTimestamp = Date.now();
+
+/** @type {import('..').Main} */
+let main;
+
+
+const self = module.exports = {
+    log(message, codeChar = '&') {
+        const time = new Date();
+
+        logToConsole(message, time, codeChar);
+        logToOnlinePanel(message, time, codeChar);
+        logToDatabase(message, time, codeChar);
     },
 
-    logMotd(message) {
-        logColor(message);
+    logBot(message) {
+        self.log(`&f&l[BOT] &f${message}`);
     },
 
-    logMessage(message, prefix = '') {
-        logColor(prefix + message.toMotd());
+    logChatMessage(message, prefix = '') {
+        self.log(prefix + message.toMotd(), '§');
     },
 
-    logWithCustomChar(message, codesChar = '§') {
-        logColor(message, codesChar);
-    },
 
-    logBot(message, codesChar = '&') {
-        let ch = codesChar;
+    setup(_main) {
+        main = _main;
 
-        message = `${ch}f${ch}l[BOT] ${ch}f${message}`;
-        logColor(message, ch);
-    },
+        const {database} = main;
+        if (!database) return;
 
-    setMain(providedMain) {
-        main = providedMain;
-    },
-
-    onStartup() {
-        if (!main) return null;
-        if (!main.db) return null;
-        const {db} = main;
-
-        let messagesCount = db.prepare("SELECT COUNT(*) FROM messages").pluck().get();
-
-        logsMessagesCount = messagesCount;
-
+        const messagesCount = database.prepare("SELECT COUNT(*) FROM messages").pluck().get();
+        savedMessagesCount = messagesCount;
         if (messagesCount < 1) return;
 
-        let timestamp = db.prepare("SELECT timestamp FROM messages ORDER BY timestamp LIMIT 1").pluck().get();
-        logsLastMessageTimestamp = timestamp;
-    },
-
-    sendToOnlinePanel(message, codesChar = '&', date) {
-        if (!main) return;
-        if (!main.panel) return;
-        if (!main.panel.io) return;
-    
-        main.panel.io.emit("chat-message", {
-            type: "message",
-            timestamp: date ? date.getTime() : Date.now(),
-            message: codesChar != '§' ? message.replace(new RegExp(`${codesChar}`, 'g'), '§') : message
-        });
+        const timestamp = database.prepare("SELECT timestamp FROM messages ORDER BY timestamp DESC LIMIT 1").pluck().get();
+        lastMessageTimestamp = timestamp;
     }
 }
 
-function logToFile(message, codesChar = '§', date) {
+function logToOnlinePanel(message, date, codeChar = '&') {
     if (!main) return;
-    if (!main.db) return;
-    const {db} = main;
+    if (!main.panel) return;
+    if (!main.panel.io) return;
 
-    const {logs}  = main.temp.config;
+    main.panel.io.emit("chat-message", {
+        type: "message",
+        timestamp: date ? date.getTime() : Date.now(),
+        message: codeChar != '§' ? message.replace(new RegExp(codeChar, 'g'), '§') : message
+    });
+}
+
+function logToDatabase(message, date, codeChar = '§') {
+    if (!main) return;
+    const {database} = main;
+    if (!database) return;
+
+    return;
+    const {logs} = main.temp.config;
     if (!logs.enabled) return;
 
     
     const {type, limit} = logs;
 
-    if (codesChar !== '§') {
-        message = message.replace(new RegExp(codesChar, 'g'), '§');
-    }
+    if (codeChar !== '§') message = message.replace(new RegExp(codeChar, 'g'), '§');
 
-    db.prepare("INSERT INTO messages(message, timestamp) VALUES(?, ?)").run(message, date.getTime());
-    logsMessagesCount++;
+    database.prepare("INSERT INTO messages(message, timestamp) VALUES(?, ?)").run(message, date.getTime());
+    savedMessagesCount++;
 
 
     // Limit by infinity
@@ -113,12 +105,11 @@ function logToFile(message, codesChar = '§', date) {
 
     // Limit by count
     if (type === "count") {
-        if (logsMessagesCount > limit) {
-            let difference = logsMessagesCount - limit;
+        if (savedMessagesCount > limit) {
+            const difference = savedMessagesCount - limit;
 
-            db.prepare(`DELETE FROM messages ORDER BY timestamp LIMIT ${difference}`).run();
-            
-            logsMessagesCount -= difference;
+            database.prepare(`DELETE FROM messages ORDER BY timestamp LIMIT ${difference}`).run();
+            savedMessagesCount -= difference;
         }
 
         return;
@@ -126,55 +117,55 @@ function logToFile(message, codesChar = '§', date) {
 
     // Limit by time
     if (type === "time") {
-        const maxLastMessageTimestamp = date.getTime() - (limit * 60 * 1000);
-        if (logsLastMessageTimestamp < maxLastMessageTimestamp) {
+        const limitTimestamp = date.getTime() - (limit * 60 * 1000);
+        // if (lastMessageTimestamp < limitTimestamp) {
 
-            let res = db.prepare("DELETE FROM messages WHERE timestamp<?").run(maxLastMessageTimestamp);
-            logsMessagesCount -= res.changes;
+        const result = database.prepare("DELETE FROM messages WHERE timestamp<?").run(limitTimestamp);
+        savedMessagesCount -= result.changes;
 
-            let timestamp = db.prepare("SELECT timestamp FROM messages ORDER BY timestamp LIMIT 1").pluck().get();
-            logsLastMessageTimestamp = timestamp;
-        }
+        const timestamp = database.prepare("SELECT timestamp FROM messages ORDER BY timestamp LIMIT 1").pluck().get();
+        lastMessageTimestamp = timestamp;
+        // }
         return;
     }
 }
 
 
-function logColor(message, codesChar = '§', timestamp) {
-    let d = new Date();
-    if (timestamp) d = new Date(timestamp);
-
-    self.sendToOnlinePanel(message, codesChar, d);
-    logToFile(message, codesChar, d);
-
+/**
+ * @param {string} message 
+ * @param {Date} time 
+ * @param {string} codeChar 
+ */
+function logToConsole(message, time, codeChar = '§') {
     let chars = message.split('');
 
     let toLog = "";
 
-    let actualColorHex = "#FFFFFF";
-    let actualColor = chalk.hex(actualColorHex);
+    let currentColorHex = "#FFFFFF";
+    let currentColor = chalk.hex(currentColorHex);
 
+    // Im not gonna touch that
     for (let i = 0; i < chars.length; i++) {
         let char = chars[i];
 
-        if (char != codesChar) {
-            toLog += actualColor(char);
+        if (char != codeChar) {
+            toLog += currentColor(char);
             continue;
         }
 
         let nextChar = chars[i + 1];
 
         if (!nextChar) {
-            toLog += actualColor(char);
+            toLog += currentColor(char);
             continue;
         }
 
         nextChar = nextChar.toLowerCase();
 
-        let color = chalkColors.colors[nextChar];
+        let color = CHALK_COLORS.colors[nextChar];
         if (color) {
-            actualColorHex = `#${color}`;
-            actualColor = chalk.hex(actualColorHex);
+            currentColorHex = `#${color}`;
+            currentColor = chalk.hex(currentColorHex);
             i++;
             continue;
         }
@@ -196,24 +187,24 @@ function logColor(message, codesChar = '§', timestamp) {
 
             if (isHex) {
                 let hexChars = chars.slice(i, i + 1 + 1 + 6);
-                actualColorHex = `#${hexChars.join('')}`;
-                actualColor = chalk.hex(actualColorHex);
+                currentColorHex = `#${hexChars.join('')}`;
+                currentColor = chalk.hex(currentColorHex);
 
                 i += 7;
                 continue;
             }
         }
 
-        let format = chalkColors.formats[nextChar];
+        let format = CHALK_COLORS.formats[nextChar];
         if (format) {
             if (format == chalk.bold) {
-                actualColor = actualColor.bold;
+                currentColor = currentColor.bold;
             } else if (format == chalk.underline) {
-                actualColor = actualColor.underline;
+                currentColor = currentColor.underline;
             } else if (format == chalk.strikethrough) {
-                actualColor = actualColor.strikethrough;
+                currentColor = currentColor.strikethrough;
             } else if (format == chalk.italic) {
-                actualColor = actualColor.italic;
+                currentColor = currentColor.italic;
             }
 
             i++;
@@ -221,8 +212,8 @@ function logColor(message, codesChar = '§', timestamp) {
         }
 
         if (nextChar === 'r') {
-            actualColorHex = "#FFFFFF";
-            actualColor = chalk.hex(actualColorHex);
+            currentColorHex = "#FFFFFF";
+            currentColor = chalk.hex(currentColorHex);
 
             i++;
             continue;
@@ -234,17 +225,7 @@ function logColor(message, codesChar = '§', timestamp) {
         }
     }
 
-    let date = `${addLeadingZero(d.getMonth() + 1)}.${addLeadingZero(d.getDate())}`;
-    let time = `${addLeadingZero(d.getHours())}:${addLeadingZero(d.getMinutes())}:${addLeadingZero(d.getSeconds())}`;
 
-    let dateTime = `[${date} ${time}]`;
-
-
+    const dateTime = `[${time.toLocaleDateString("pl-PL", {month: "2-digit", day: "2-digit"})} ${time.toLocaleTimeString("pl-pl")}]`;
     console.log(chalk.hex("#969696")(`${dateTime} `) + toLog);
-}
-
-function addLeadingZero(number) {
-    if (number < 10) return `0${number}`;
-
-    return number;
 }

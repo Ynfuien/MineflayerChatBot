@@ -2,7 +2,7 @@ const {logBot} = require('../utils/logger.js');
 
 module.exports = {
     name: "playerJoined",
-    enable: true,
+    enable: false,
 
     run (main, player) {
         const {onServer} = main.temp.bot;
