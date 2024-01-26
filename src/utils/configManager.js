@@ -77,7 +77,7 @@ module.exports = {
     /**
      * @param {import('../index.js').Main} main 
      * @param {boolean} logErrors
-     * @returns {boolean}
+     * @returns {boolean | {softError: boolean}}
      */
     checkConfig(main, logErrors = true) {
         const config = main.config.values;

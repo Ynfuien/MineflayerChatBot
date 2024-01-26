@@ -1,68 +1,85 @@
 const fs = require('fs');
-const {logBot} = require('../utils/logger.js');
-const {doesKeyExist} = require('../utils/YnfuTools.js');
 const ascii = require('ascii-table');
 
-// Console read text
+const { logBot } = require('../utils/logger.js');
+const { doesKeyExist } = require('../utils/objectUtils.js');
+
+// Console reading
 const readline = require("readline");
 const rl = readline.createInterface(process.stdin);
 
+/**
+ * @typedef {{
+ *      name: string,
+ *      enable: boolean,
+ *      aliases?: string[],
+ *      usage?: string,
+ *      description?: string,
+ *      run: Function
+ * }} BotCommand
+ */
 
-const table = new ascii().setHeading("Command", "Load status");
-let _main = null;
+/** @type {import('../index.js').Main} */
+let main;
+/** @type {Object.<string, BotCommand>} */
 let commands = {};
 
 
 const self = module.exports = {
-    loadCommands(main) {
-        _main = main;
-        const {config} = main;
+    /**
+     * @param {import('../index.js').Main} _main 
+     */
+    loadCommands(_main) {
+        main = _main;
+        // const {config} = _main;
 
-        const commandFiles = fs.readdirSync(__dirname + "/../commands").filter(file => file.endsWith("command.js"));
+        const commandFiles = fs.readdirSync(`${__dirname}/../commands`).filter(file => file.endsWith("command.js"));
 
         logBot(`&aRegistering commands..`);
+        const asciiTable = new ascii().setHeading("Command", "Status");
         let count = 0;
+
         for (const file of commandFiles) {
             const command = require(__dirname + `/../commands/${file}`);
 
             if (!command.name) {
-                logBot(`&cCommand missing name!`);
+                // logBot(`&cCommand is missing name!`);
 
-                table.addRow(file, "❌ -> missing 'name'!");
+                asciiTable.addRow(file, "❌ -> missing 'name'!");
                 continue;
             }
 
             if (!command.run) {
-                logBot(`&cCommand &e${evecommandnt.name}&c, missing run function!`);
-                logBot(chalk.redBright(`Event ${command.name} !`));
+                // logBot(`&cCommand &e${evecommandnt.name}&c, missing run function!`);
+                // logBot(chalk.redBright(`Event ${command.name} !`));
 
-                table.addRow(file, "❌ -> missing 'run'!");
+                asciiTable.addRow(file, "❌ -> missing 'run'!");
                 continue;
             }
             
             if (typeof command.run !== "function") {
-                logBot(`&cCommand &e${command.name}&c, run must be a function!`);
+                // logBot(`&cCommand &e${command.name}&c, run must be a function!`);
                 
-                table.addRow(file, "❌ -> 'run' is not function!");
+                asciiTable.addRow(file, "❌ -> 'run' isn't a function!");
                 continue;
             }
 
             if (command.enable === false) {
-                table.addRow(file, "❌");
+                asciiTable.addRow(file, "❌");
                 continue;
             }
 
             
-            table.addRow(file, "✅");
+            asciiTable.addRow(file, "✅");
             commands[command.name] = command;
             count++;
         }
 
-        table.toString().split('\n').forEach(line => logBot("&#d1d1d1"+line));
+        asciiTable.toString().split('\n').forEach(line => logBot("&#d1d1d1"+line));
         logBot(`&aRegistered &b${count} &acommand(s)!`);
 
-        if (doesKeyExist(config, "commands.enabled") !== true) {
-            logBot(`&cBot commands are not enabled so thay won't work!`);
+        if (main.vars.botCommands.enabled !== true) {
+            logBot(`&cBot commands are not enabled so they won't work!`);
         }
 
         main.commands.list = commands;
@@ -72,32 +89,40 @@ const self = module.exports = {
         });
     },
 
+    /**
+     * Execute command/send message. Used for console and online panel input.
+     * Depending on the text, one of the following will happen:
+     * - executed bot command
+     * - executed Minecraft command
+     * - sent chat message
+     * @param {string} text
+     */
     async executeCommand(text) {
-        const {bot, config} = _main;
+        const {bot} = main;
+        const botPrefix = main.vars.botCommands.prefix;
 
         try {
-            const botCommand = self.isBotCommand(text);
-            if (!botCommand.botCommand) {
-                if (!bot) {
-                    return logBot("&cBot isn't working!");
-                }
+            //// Minecraft command or chat message
+            if (!self.isBotCommand(text)) {
+                if (!bot) return logBot("&cBot isn't working!");
                 
-                bot.chat(botCommand.command);
+                // If bot prefix is escaped, remove escape char ('\')
+                if (text.startsWith(`\\${botPrefix}`)) text = text.substring(1); 
+
+                bot.chat(text);
                 return;
             }
     
+            
+            //// Bot command
+            const args = text.split(' ');
+            const commandName = args.shift().substring(botPrefix.length).toLowerCase();
     
-            let args = text.split(' ');
-            const commandName = args.shift().substring(config.commands.prefix.length).toLowerCase();
+            const command = self.getBotCommand(commandName);
+            if (command === null) return logBot("&cThere is no such command!");
     
-            const cmd = self.getCommand(commandName);
-            if (!cmd.command) return logBot(`&c${cmd.error}`);
-            const {command} = cmd;
-    
-            const result = await command.run(_main, args);
-            if (result === false) {
-                logBot(`&cCorrect command usage: ${config.commands.prefix}${commandName} ${command.usage}`);
-            }
+            const result = await command.run(main, args);
+            if (result === false) logBot(`&cCorrect command usage: ${botPrefix}${commandName} ${command.usage}`);
         } catch (error) {
             logBot("&cAn error occurred while executing a command!");
             logBot(`&4Command: &f${text}`);
@@ -106,42 +131,34 @@ const self = module.exports = {
         }
     },
 
-    getCommand(name) {
-        let command = commands[name];
-        if (!command) {
-            for (const commandName in commands) {
-                const cmd = commands[commandName];
-                if (!cmd.aliases) continue;
+    /**
+     * @param {string} commandName 
+     * @returns {BotCommand | null}
+     */
+    getBotCommand(commandName) {
+        const command = commands[commandName];
+        if (command) return command;
 
-                if (!cmd.aliases.includes(name)) continue;
+        for (const name in commands) {
+            const cmd = commands[name];
+            if (!cmd.aliases) continue;
+            if (!cmd.aliases.includes(commandName)) continue;
 
-                command = cmd;
-            }
-
-            if (!command) {
-                return {command: null, error: "There is no such command!"};
-            }
+            return cmd;
         }
 
-        return {command: command};
+        return null;
     },
 
+    /**
+     * @param {string} command 
+     * @returns {boolean}
+     */
     isBotCommand(command) {
-        const {config, temp} = _main;
+        const {enabled, prefix} = main.vars.botCommands;
     
-        if (!temp.config.commands) {
-            return {botCommand: false, command: command};
-        }
-            
-        const prefix = config.commands.prefix;
-        if (!command.startsWith(prefix)) {
-            if (command.startsWith('\\' + prefix)) {
-                command = command.substr(1);
-            }
-    
-            return {botCommand: false, command: command};
-        }
-    
-        return {botCommand: true};
+        if (!enabled) return false;
+        
+        return command.startsWith(prefix);
     }
 }

@@ -3,10 +3,14 @@ const { logBot } = require("../utils/logger.js");
 
 module.exports = {
     name: "bot",
-    enable: true,
+    enable: false,
     usage: "<start | stop | restart>",
     description: "Starts, stops or restarts bot.",
 
+    /**
+     * @param {import("..").Main} main
+     * @param {string[]} args
+     */
     run (main, args) {
         const {bot} = main;
 
@@ -45,6 +49,10 @@ module.exports = {
         return false;
     },
 
+    /**
+     * @param {import("..").Main} main
+     * @param {string[]} args
+     */
     tabCompletion(main, args) {
         if (!args) return [];
         if (args.length !== 1) return [];

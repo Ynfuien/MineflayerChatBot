@@ -5,11 +5,15 @@ const {writeFileSync} = require('fs');
 
 module.exports = {
     name: "config",
-    enable: true,
+    enable: false,
     aliases: ["cfg"],
     usage: "<set | get | showall | reload> [setting] [new value]",
     description: "Manage config settings.",
 
+    /**
+     * @param {import("..").Main} main
+     * @param {string[]} args
+     */
     run (main, args) {
 
         let arg1 = args[0];
@@ -134,6 +138,10 @@ module.exports = {
         return false;
     },
 
+    /**
+     * @param {import("..").Main} main
+     * @param {string[]} args
+     */
     tabCompletion(main, args) {
         const {config} = main;
 

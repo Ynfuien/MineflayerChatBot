@@ -1,10 +1,11 @@
 const database = require('better-sqlite3')('logs.db');
 database.prepare("CREATE TABLE IF NOT EXISTS messages (message TEXT DEFAULT \"\", timestamp INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
 
-const webpanel = require('./webpanel/panel.js');
+const webPanel = require('./webpanel/panel.js');
 const configManager = require('./utils/configManager.js');
 
 const eventHandler = require('./handlers/event.handler.js');
+const {loadCommands} = require('./handlers/command.handler.js');
 
 const { logBot, setup: setupLogger } = require('./utils/logger.js');
 const { startBot } = require('./utils/botManager.js');
@@ -13,9 +14,13 @@ const { startBot } = require('./utils/botManager.js');
  * @typedef {{
  *      bot: import('mineflayer').Bot | null,
  *      database: import('better-sqlite3').Database,
+ *      commands: {
+ *          list: Object.<string, import('./handlers/command.handler.js').BotCommand>,
+ *          tabComplete: Object
+ *      },
  *      prismarine: {
  *          ChatMessage: import('prismarine-chat').ChatMessage
- *      }
+ *      },
  *      config: {
  *          values: import('./utils/configManager.js').Config,
  *          yawn: YAWN.default
@@ -60,6 +65,10 @@ const { startBot } = require('./utils/botManager.js');
     const main = {
         bot: null,
         database,
+        commands: {
+            list: {},
+            tabComplete: {}
+        },
         prismarine: {},
         vars: {
             chatLogs: { enabled: false },
@@ -92,15 +101,32 @@ const { startBot } = require('./utils/botManager.js');
         process.exit(1);
     }
     main.config = configResult.config;
-
+    
     // Checking config for user's mistakes
     const checkConfig = configManager.checkConfig(main);
     if (checkConfig === false) process.exit(1);
-
+    
+    let timeout = 0;
+    if (checkConfig.softError) {
+        timeout = 5 * 1000;
+        logBot("&cThere is an error in config. Best for you will be fixing it and reloading configuration!");
+    } else {
+        logBot("&bConfig &asuccessfully &bloaded!");
+    }
 
     
     logBot("&bCreating bot..");
     startBot(main);
+
+    setTimeout(async () => {
+        // Online panel
+        if (main.vars.onlinePanel.enabled) {
+            await webPanel.setup(main);
+        }
+
+        // Commands setup
+        loadCommands(main);
+    }, timeout);
 })();
 
 
@@ -161,23 +187,5 @@ const { startBot } = require('./utils/botManager.js');
 //     cm.loadBotOptions(main);
 //     onStartup();
 
-//     let timeout = 0;
-//     if (checkConfig.softError) {
-//         timeout = 5 * 1000;
-//         logBot("&cThere is an error in config. Best for you will be fixing it and reloading configuration!");
-//     } else {
-//         logBot("&bConfig &asuccessfully &bloaded!");
-//     }
     
-
-//     setTimeout(async () => {
-//         // Online panel
-//         if (main.temp.config.onlinePanel.enabled) {
-//             await express(main);
-//         }
-
-
-//         // Commands setup
-//         loadCommands(main);
-//     }, timeout);
 // })();

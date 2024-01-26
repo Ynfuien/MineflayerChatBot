@@ -1,24 +1,26 @@
 const { logBot } = require("../utils/logger");
+const { getBotCommand } = require("../handlers/command.handler");
 
 module.exports = {
     name: "help",
     enable: true,
     usage: "[command]",
-    description: "Shows commands help.",
+    description: "Shows information about commands.",
 
+    /**
+     * @param {import("..").Main} main
+     * @param {string[]} args
+     */
     run (main, args) {
-        const {list} = main.commands;
-        const {prefix} = main.config.commands;
-
-        let arg = args[0];
+        const arg = args[0]?.toLowerCase();
         if (arg) {
-            let command = list[arg.toLowerCase()];
+            const command = getBotCommand(arg);
             if (!command) {
                 logBot("&cCommand with that name doesn't exist!");
                 return;
             }
 
-            logBot(`&3Help for command &b${command.name}&3:`);
+            logBot(`&3Help for this command:`);
             logBot(`&bName: &9${command.name}`);
             logBot(`&bUsage: &9${command.usage ? command.usage : "none"}`);
             logBot(`&bAliases: &9${command.aliases ? command.aliases.join("&7, &9") : "none"}`);
@@ -26,37 +28,42 @@ module.exports = {
             return;
         }
 
-        let size = 0;
-        for (const key in list) size++;
         
-        logBot(`&3Available commands &7(${size})&3:`);
+        const {list} = main.commands;
+        const {prefix} = main.vars.botCommands;
+
+        logBot(`&3Available commands &7(${Object.keys(list).length})&3:`);
         for (const commandName in list) {
-            let cmd = list[commandName];
+            const command = list[commandName];
 
-
-            logBot(`&9${prefix}${commandName}${cmd.usage ? ` ${cmd.usage}` : ''}${cmd.description ? ` &f- &b${cmd.description}` : ''}`);
+            logBot(`&9${prefix}${commandName}${command.usage ? ` ${command.usage}` : ''}${command.description ? ` &f- &b${command.description}` : ''}`);
         }
     },
 
+    /**
+     * @param {import("..").Main} main
+     * @param {string[]} args
+     */
     tabCompletion(main, args) {
         if (!args) return [];
         if (args.length !== 1) return [];
-        const commands = main.commands.list;
+        const {list} = main.commands;
 
         const arg1 = args[0].toLowerCase();
 
-        let completions = [];
-        
-        for (const cmdName in commands) {
-            if (cmdName.startsWith(arg1)) completions.push(cmdName);
+        const completions = [];
+        for (const commandName in list) {
+            if (commandName.startsWith(arg1)) completions.push(commandName);
             
-            const cmd = commands[cmdName];
-            if (!cmd.aliases) continue;
-            if (!Array.isArray(cmd.aliases)) continue;
-            cmd.aliases.forEach(alias => {
+            const command = list[commandName];
+            if (!command.aliases) continue;
+            if (!Array.isArray(command.aliases)) continue;
+
+            command.aliases.forEach(alias => {
                 if (alias.startsWith(arg1)) completions.push(alias);
             });
         }
+
         return completions;
     }
 }

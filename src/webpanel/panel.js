@@ -4,14 +4,17 @@ const http = require('http');
 const { Server } = require("socket.io");
 
 // Functions
-const {logBot} = require('../utils/logger.js');
-const {executeCommand} = require('../handlers/command.handler.js');
-const {getTabCompletions} = require('../handlers/tabcomplete.handler.js');
+const { logBot } = require('../utils/logger.js');
+const { executeCommand } = require('../handlers/command.handler.js');
+const { getTabCompletions } = require('../handlers/tabcomplete.handler.js');
 
 
 module.exports = {
+    /**
+     * @param {import('../index.js').Main} main 
+     */
     setup: (main) => {
-        const {config} = main;
+        const {port} = main.config.values['online-panel'];
 
         const app = express();
         const server = http.createServer(app);
@@ -38,8 +41,6 @@ module.exports = {
             server: server
         };
         
-        const port = config["online-panel"].port;
-
         server.listen(port, () => {
             logBot(`&eOnline panel is running on port &6${port}&e!`);
         });
@@ -63,24 +64,23 @@ module.exports = {
 
             socket.on("get-last-logs", () => {
                 if (!main) return;
-                if (!main.db) return;
-                const {db} = main;
 
-                const {type, limit} = main.temp.config.onlinePanel.lastMessages;
+                const {database} = main;
+                if (!database) return;
+
+                const {messagesLimitType, messagesLimit} = main.vars.onlinePanel;
 
                 let query;
-                if (type === "count") {
-                    query = `SELECT * FROM messages ORDER BY timestamp DESC LIMIT ${limit}`;
-                }
-                else if (type === "time") {
-                    query = `SELECT * FROM messages WHERE timestamp>${Date.now() - limit * 60 * 1000}`;
-                }
-                else if (type === "all") {
+                if (messagesLimitType === "count") {
+                    query = `SELECT * FROM messages ORDER BY timestamp DESC LIMIT ${messagesLimit}`;
+                } else if (messagesLimitType === "time") {
+                    query = `SELECT * FROM messages WHERE timestamp>${Date.now() - messagesLimit * 60 * 1000}`;
+                } else if (messagesLimitType === "all") {
                     query = "SELECT * FROM messages";
                 }
 
-                let messages = db.prepare(query).all();
-                if (type === "count") messages.reverse();
+                const messages = database.prepare(query).all();
+                if (messagesLimitType === "count") messages.reverse();
 
                 socket.emit("logs-data", {messages});
             });

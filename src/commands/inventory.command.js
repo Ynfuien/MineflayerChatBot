@@ -1,15 +1,18 @@
-// const ascii = require('ascii-table');
+const { logBot } = require('../utils/logger.js');
+const { filterElementsThatStartsWith } = require('../utils/YnfuTools.js');
 
-const {logBot} = require('../utils/logger.js');
-const {filterElementsThatStartsWith} = require('../utils/YnfuTools.js');
-
+// Also, not now
 module.exports = {
     name: "inventory",
     enable: true,
     usage: "<clear | leftclick | rightclick> [slot]",
     aliases: ["inv"],
-    description: "Inventory functions.",
+    description: "Inventory functions. - WIP",
 
+    /**
+     * @param {import("..").Main} main
+     * @param {string[]} args
+     */
     run (main, args) {
         const {bot} = main;
 
@@ -74,6 +77,10 @@ module.exports = {
         return false;
     },
     
+    /**
+     * @param {import("..").Main} main
+     * @param {string[]} args
+     */
     tabCompletion(main, args) {
         if (!args) return [];
         if (args.length > 2) return [];

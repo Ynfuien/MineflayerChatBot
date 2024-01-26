@@ -1,31 +1,39 @@
-const {writeBotTabCompletionPacket} = require('../utils/YnfuTools.js');
-const {getCommand, isBotCommand} = require('./command.handler.js');
+const { writeBotTabCompletionPacket } = require('../utils/YnfuTools.js');
+const { getBotCommand, isBotCommand } = require('./command.handler.js');
 
-let actualTabCompletionTransactionId = 0;
+let currentTabCompletionTransactionId = 0;
 let lastCompletionTimestamp = 0;
 
 module.exports = {
+    /**
+     * @param {import("..").Main} main
+     * @param {string} args
+     * @param {any} socket
+     * @param {number} timestamp
+     */
     async getTabCompletions(main, command, socket, timestamp) {
         const {bot} = main;
+        const {prefix} = main.vars.botCommands;
+
         lastCompletionTimestamp = timestamp;
         if (typeof command !== "string") return {list: [], type: "usernames"};
 
         if (bot) {
-            const botCommand = isBotCommand(command);
             
             // Not bot command
-            if (!botCommand.botCommand) {
-                // Minecraft command
-                let cmd = botCommand.command;
-                if (cmd.startsWith('/')) {
-                    actualTabCompletionTransactionId++;
-                    if (actualTabCompletionTransactionId > 30) {
-                        main.commands.tabComplete = {};
-                        actualTabCompletionTransactionId = 1;
-                    }
-                    const transId = actualTabCompletionTransactionId;
+            if (!isBotCommand(command)) {
+                if (command.startsWith(`\\${prefix}`)) command = command.substring(1);
 
-                    writeBotTabCompletionPacket(bot, cmd.substr(1), transId);
+                // Minecraft command
+                if (command.startsWith('/')) {
+                    currentTabCompletionTransactionId++;
+                    if (currentTabCompletionTransactionId > 30) {
+                        main.commands.tabComplete = {};
+                        currentTabCompletionTransactionId = 1;
+                    }
+                    const transId = currentTabCompletionTransactionId;
+
+                    writeBotTabCompletionPacket(bot, command.substr(1), transId);
 
                     const completions = await new Promise(resolve => {
                         let respond = false;
@@ -80,10 +88,9 @@ module.exports = {
         }
 
         // Bot command
-        const prefix = main.config.commands.prefix;
         if (!command.startsWith(prefix)) return {list: [], type: "usernames"};
 
-        const commands = main.commands.list;
+        const {list} = main.commands;
 
         let args = command.split(' ');
         const start = args.slice(0, -1).join(' ').length + prefix.length;
@@ -94,10 +101,10 @@ module.exports = {
             let completions = [];
 
             if (args.length === 0) {
-                for (const cmdName in commands) {
+                for (const cmdName in list) {
                     if (cmdName.startsWith(commandName)) completions.push(cmdName);
                     
-                    const cmd = commands[cmdName];
+                    const cmd = list[cmdName];
                     if (!cmd.aliases) continue;
                     if (!Array.isArray(cmd.aliases)) continue;
                     cmd.aliases.forEach(alias => {
@@ -107,7 +114,7 @@ module.exports = {
                 return completions;
             }
 
-            const cmd = getCommand(commandName);
+            const cmd = getBotCommand(commandName);
             if (!cmd.command) {
                 return completions;
             }

@@ -1,14 +1,17 @@
-// const ascii = require('ascii-table');
+const { logBot } = require('../utils/logger.js');
+const { filterElementsThatStartsWith } = require('../utils/YnfuTools.js');
 
-const {logBot} = require('../utils/logger.js');
-const {filterElementsThatStartsWith} = require('../utils/YnfuTools.js');
-
+// Yeah, maybe later
 module.exports = {
     name: "hotbar",
     enable: true,
     usage: "<change | use | eat> [slot]",
-    description: "Command for hotbar manage.",
+    description: "Command for hotbar manage. - WIP",
 
+    /**
+     * @param {import("..").Main} main
+     * @param {string[]} args
+     */
     async run (main, args) {
         const {bot} = main;
 
@@ -130,6 +133,10 @@ module.exports = {
         return false;
     },
     
+    /**
+     * @param {import("..").Main} main
+     * @param {string[]} args
+     */
     tabCompletion(main, args) {
         if (!args) return [];
         if (args.length > 2) return [];

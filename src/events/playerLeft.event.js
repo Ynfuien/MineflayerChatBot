@@ -2,7 +2,7 @@ const {logBot} = require('../utils/logger.js');
 
 module.exports = {
     name: "playerLeft",
-    enable: false,
+    enable: true,
 
     /**
      * @param {import("..").Main} main
