@@ -1,20 +1,23 @@
 const { startBot } = require('../utils/botManager.js');
-const {logBot} = require('../utils/logger.js');
+const { logBot } = require('../utils/logger.js');
 
 module.exports = {
     name: "end",
-    enable: false,
+    enable: true,
 
+    /**
+     * @param {import("..").Main} main
+     */
     run (main) {
         logBot("&cBot has been turned off.");
         main.bot = null;
 
-        delete main.temp.bot.joined;
-        delete main.temp.bot.onServer;
+        main.vars.bot.joined = false;
+        main.vars.bot.logPlayers = false;
 
         // If restart command used
-        if (main.temp.bot.restart === true) {
-            delete main.temp.bot.restart;
+        if (main.vars.bot.restart === true) {
+            main.vars.bot.restart = false;
             logBot("&bTurning bot &aon&f..")
             startBot(main);
             return;
@@ -22,17 +25,14 @@ module.exports = {
 
         
         // If stop command used
-        if (main.temp.bot.stop === true) {
-            delete main.temp.bot.stop;
+        if (main.vars.bot.stop === true) {
+            main.vars.bot.stop = false;
             return;
         }
 
         // If auto rejoin is set
-        const {autoRejoin} =  main.temp.config;
-        if (!autoRejoin) return;
-        if (autoRejoin.enabled !== true) return;
-
-        const {timeout} = autoRejoin;
+        const {enabled, timeout} =  main.vars.autoRejoin;
+        if (enabled !== true) return;
 
         if (timeout > 0) {
             logBot(`&bBot will rejoin server after &3${timeout} &bsecond(s)!`);

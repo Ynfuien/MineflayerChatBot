@@ -131,9 +131,9 @@ module.exports = {
 
             // Check for port
             if (port) {
-                const correctPort = checkPort(port);
-                if (!correctPort.correct) {
-                    logError(`Server ${correctPort.message} Correct it and restart bot.`);
+                const checkResult = checkPort(port);
+                if (!checkResult.correct) {
+                    logError(`Server ${checkResult.message} Correct it and restart bot.`);
                     return false;
                 }
             }
@@ -189,212 +189,202 @@ module.exports = {
         })(config.login);
         if (result === false) return false;
 
-        // // Commands
-        // main.temp.config.commands = (function (commands) {
-        //     if (!commands) return false;
+        // Commands
+        main.vars.botCommands.enabled = (function (botCommands) {
+            if (!botCommands) return false;
 
-        //     const { enabled, prefix } = commands;
-        //     if (enabled !== true) return false;
+            const { enabled, prefix } = botCommands;
+            if (enabled !== true) return false;
 
-        //     if (!prefix) {
-        //         logError("Prefix for commands is incorrect! Commands won't work unless you correct it");
-        //         return false;
-        //     }
+            if (!prefix) {
+                logError("Prefix for commands is incorrect! BOt commands won't work unless you correct it");
+                return false;
+            }
 
-        //     return true;
-        // })(config.commands);
+            main.vars.botCommands.prefix = prefix;
+            return true;
+        })(config["bot-commands"]);
 
-        // // Chat
-        // main.temp.config.logs.enabled = (function (chat) {
-        //     if (!chat) return false;
+        // Chat
+        main.vars.chatLogs.enabled = (function (chat) {
+            if (!chat) return false;
 
-        //     const ignoredMessages = chat["ignored-messages"];
-        //     if (ignoredMessages) {
-        //         if (!Array.isArray(ignoredMessages)) {
-        //             logError("Ignored messages must be an array!");
-        //         }
-        //     }
+            const ignoredMessages = chat["ignored-messages"];
+            if (ignoredMessages && !Array.isArray(ignoredMessages)) {
+                logError("Ignored messages must be an array!");
+            }
 
-        //     // Logs
-        //     const { logs } = chat;
+            // Logs
+            const { logs } = chat;
 
-        //     if (!logs) return false;
-        //     if (logs.enabled !== true) return false;
+            if (!logs) return false;
+            if (logs.enabled !== true) return false;
 
-        //     // Logs limit type
-        //     let type = (function (type) {
-        //         if (!type) {
-        //             logError("Chat logs limit type isn't set! Will be used type 'infinity'");
-        //             return "infinity";
-        //         }
+            // Logs limit type
+            const limitType = (function (type) {
+                if (!type) {
+                    logError("Chat logs limit type isn't set! Will be used type 'infinity'");
+                    return "infinity";
+                }
 
-        //         if (typeof type !== "string") {
-        //             logError("Chat logs limit type must be a string! Will be used type 'infinity'");
-        //             return "infinity";
-        //         }
+                if (typeof type !== "string") {
+                    logError("Chat logs limit type must be a string! Will be used type 'infinity'");
+                    return "infinity";
+                }
 
-        //         let lowerCase = type.toLowerCase();
-        //         if (lowerCase !== type) {
-        //             type = lowerCase;
-        //         }
+                type = type.toLowerCase();
+                if (!["count", "time", "infinity"].includes(type)) {
+                    logError("Provided chat logs limit type is incorrect! Will be used type 'infinity'");
+                    return "infinity";
+                }
 
-        //         if (!["count", "time", "infinity"].includes(type)) {
-        //             logError("Provided chat logs limit type is incorrect! Will be used type 'infinity'");
-        //             return "infinity";
-        //         }
-
-        //         return type;
-        //     })(logs["limit-type"]);
+                return type;
+            })(logs["limit-type"]);
 
 
-        //     main.temp.config.logs.type = type;
-        //     if (type === "infinity") {
-        //         return true;
-        //     }
+            main.vars.chatLogs.limitType = limitType;
+            if (limitType === "infinity") return true;
 
-        //     // Logs limit
-        //     return (function (limit) {
-        //         if (limit === undefined) {
-        //             logError("Chat logs limit isn't set! Logs won't work.");
-        //             return false;
-        //         }
+            // Logs limit
+            return (function (limit) {
+                if (limit === undefined) {
+                    logError("Chat logs limit isn't set! Logs won't work.");
+                    return false;
+                }
 
-        //         if (isNaN(limit)) {
-        //             logError("Chat logs limit must be a number! Logs won't work");
-        //             return false;
-        //         }
+                if (isNaN(limit)) {
+                    logError("Chat logs limit must be a number! Logs won't work");
+                    return false;
+                }
 
-        //         if (limit < 5) {
-        //             logError("Chat logs limit must be at least 5! Logs will use that limit unless you change yours");
-        //             limit = 5;
-        //         }
+                if (limit < 5) {
+                    logError("Chat logs limit must be at least 5! Logs will use that limit unless you change yours");
+                    limit = 5;
+                }
 
-        //         main.temp.config.logs.limit = limit;
-        //         return true;
-        //     })(logs.limit);
-        // })(config.chat);
+                main.vars.chatLogs.limit = limit;
+                return true;
+            })(logs.limit);
+        })(config.chat);
 
-        // // On join
-        // main.temp.config.onJoin.commands = (function (onJoin) {
-        //     if (!onJoin) return [];
-        //     if (!onJoin.commands) return [];
+        // On join
+        main.vars.onJoin.commands = (function (onJoin) {
+            if (!onJoin) return [];
+            if (!onJoin.commands) return [];
 
-        //     const { commands } = onJoin;
-        //     if (!Array.isArray(commands)) {
-        //         logError("On join commands must be an array!");
-        //         return [];
-        //     }
+            const { commands } = onJoin;
+            if (!Array.isArray(commands)) {
+                logError("On join commands must be an array!");
+                return [];
+            }
 
-        //     let correctCommands = [];
+            const correctCommands = [];
 
-        //     const pattern = new RegExp("\\d+:.+", 'g');
-        //     for (const command of commands) {
-        //         if (!command.match(pattern)) {
-        //             logError(`Command '${command}' doesn't match pattern! Correct it to work`);
-        //             continue;
-        //         }
+            const pattern = new RegExp("\\d+:.+", 'g');
+            for (const command of commands) {
+                if (!command.match(pattern)) {
+                    logError(`Command '${command}' doesn't match pattern! Correct it to work`);
+                    continue;
+                }
+                
+                const split = command.split(':');
+                const timeout = parseInt(split.shift());
+                const message = split.join(':');
 
-        //         correctCommands.push(command);
-        //     }
+                correctCommands.push({timeout, message});
+            }
 
-        //     return correctCommands;
-        // })(config["on-join"]);
+            return correctCommands;
+        })(config["on-join"]);
 
-        // // Auto rejoin
-        // main.temp.config.autoRejoin.enabled = (function (autoRejoin) {
-        //     if (!autoRejoin) return false;
+        // Auto rejoin
+        main.vars.autoRejoin.enabled = (function (autoRejoin) {
+            if (!autoRejoin) return false;
 
-        //     const { enabled } = autoRejoin;
-        //     if (enabled !== true) return false;
+            const { enabled, timeout } = autoRejoin;
+            if (enabled !== true) return false;
 
-        //     let correctTimeout = (function (timeout) {
-        //         if (timeout === undefined) {
-        //             logError("Auto rejoin timeout isn't set! Will be used timeout '10'");
-        //             return;
-        //         }
+            const isCorrect = (function (timeout) {
+                if (timeout === undefined) {
+                    logError("Auto rejoin timeout isn't set! Will be used timeout '10'");
+                    return;
+                }
 
-        //         if (isNaN(timeout)) {
-        //             logError("Auto rejoin timeout must be number! Will be used timeout '10'");
-        //             return;
-        //         }
+                if (isNaN(timeout)) {
+                    logError("Auto rejoin timeout must be number! Will be used timeout '10'");
+                    return;
+                }
 
-        //         if (timeout < 0) {
-        //             logError("Auto rejoin timeout can't be lower than 0! Will be used timeout '10'");
-        //             return;
-        //         }
+                if (timeout < 0) {
+                    logError("Auto rejoin timeout can't be lower than 0! Will be used timeout '10'");
+                    return;
+                }
 
-        //         return true;
-        //     })(autoRejoin.timeout);
+                return true;
+            })(timeout);
 
-        //     if (correctTimeout === true) {
-        //         main.temp.config.autoRejoin.timeout = autoRejoin.timeout;
-        //     }
-        //     return true;
-        // })(config["auto-rejoin"]);
+            if (isCorrect === true) main.vars.autoRejoin.timeout = timeout;
+            return true;
+        })(config["auto-rejoin"]);
 
-        // // Online panel
-        // main.temp.config.onlinePanel.enabled = (function (onlinePanel) {
-        //     if (!onlinePanel) return false;
+        // Online panel
+        main.vars.onlinePanel.enabled = (function (onlinePanel) {
+            if (!onlinePanel) return false;
 
-        //     const { enabled, port } = onlinePanel;
-        //     if (enabled !== true) return false;
+            const { enabled, port } = onlinePanel;
+            if (enabled !== true) return false;
 
-        //     const correctPort = checkPort(port);
-        //     if (!correctPort.correct) {
-        //         logError(`Online panel ${correctPort.message} Panel won't work`);
-        //         return false;
-        //     }
+            const checkResult = checkPort(port);
+            if (!checkResult.correct) {
+                logError(`Online panel ${checkResult.message} Panel won't work`);
+                return false;
+            }
 
-        //     // Last messages
-        //     const result = (function (lastMessages) {
-        //         if (!lastMessages) {
-        //             logError("Last messages setting isn't provided, so messages won't be loaded while openin panel!");
-        //             return false;
-        //         }
+            // Last messages
+            const result = (function (lastMessages) {
+                if (!lastMessages) {
+                    logError("Last messages setting isn't provided. Messages won't be loaded while opening online panel!");
+                    return false;
+                }
 
-        //         const { limit } = lastMessages;
-        //         let { type } = lastMessages;
+                const { limit } = lastMessages;
+                let { type } = lastMessages;
 
-        //         if (!type) {
-        //             logError("Last messages type isn't set! Last messages won't work");
-        //             return false;
-        //         }
+                if (!type) {
+                    logError("Last messages type isn't set! Last messages won't work");
+                    return false;
+                }
 
-        //         type = type.toLowerCase();
+                type = type.toLowerCase();
+                if (!["count", "time", "all"].includes(type)) {
+                    logError("Last messages type is incorrect! Last messages won't work");
+                    return false;
+                }
 
-        //         if (!["count", "time", "all"].includes(type)) {
-        //             logError("Last messages type is incorrect! Last messages won't work");
-        //             return false;
-        //         }
-
-        //         if (type === "all") {
-        //             main.temp.config.onlinePanel.lastMessages.type = type;
-        //             return true;
-        //         }
+                if (type === "all") {
+                    main.vars.onlinePanel.messagesLimitType = type;
+                    return true;
+                }
 
 
-        //         if (limit === undefined) {
-        //             logError("Last messages limit isn't set! Last messages won't work");
-        //             return false;
-        //         }
+                if (limit === undefined) {
+                    logError("Last messages limit isn't set! Last messages won't work");
+                    return false;
+                }
 
-        //         if (isNaN(limit)) {
-        //             logError("Last messages limit is incorrect! Last messages won't work");
-        //             return false;
-        //         }
+                if (isNaN(limit)) {
+                    logError("Last messages limit is incorrect! Last messages won't work");
+                    return false;
+                }
 
-        //         main.temp.config.onlinePanel.lastMessages.type = type;
-        //         main.temp.config.onlinePanel.lastMessages.limit = limit;
-        //         return true;
-        //     })(onlinePanel['last-messages']);
+                main.vars.onlinePanel.messagesLimitType = type;
+                main.vars.onlinePanel.messagesLimit = limit;
+                return true;
+            })(onlinePanel['last-messages']);
 
-        //     if (result === false) {
-        //         main.temp.config.onlinePanel.lastMessages.type = "count";
-        //         main.temp.config.onlinePanel.lastMessages.limit = 0;
-        //     }
+            return true;
+        })(config["online-panel"]);
 
-        //     return true;
-        // })(config["online-panel"]);
 
         // Function for loggin errors
         function logError(message) {

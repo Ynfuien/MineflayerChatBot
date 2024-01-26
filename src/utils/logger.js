@@ -46,8 +46,8 @@ const self = module.exports = {
         logToDatabase(message, time, codeChar);
     },
 
-    logBot(message) {
-        self.log(`&f&l[BOT] &f${message}`);
+    logBot(message, codeChar = '&') {
+        self.log(`${codeChar}f${codeChar}l[BOT] ${codeChar}f${message}`, codeChar);
     },
 
     logChatMessage(message, prefix = '') {
@@ -87,24 +87,22 @@ function logToDatabase(message, date, codeChar = '§') {
     const {database} = main;
     if (!database) return;
 
-    return;
-    const {logs} = main.temp.config;
-    if (!logs.enabled) return;
+    const {chatLogs} = main.vars;
+    if (!chatLogs.enabled) return;
 
     
-    const {type, limit} = logs;
-
     if (codeChar !== '§') message = message.replace(new RegExp(codeChar, 'g'), '§');
-
     database.prepare("INSERT INTO messages(message, timestamp) VALUES(?, ?)").run(message, date.getTime());
     savedMessagesCount++;
 
+    
+    const {limitType, limit} = chatLogs;
 
     // Limit by infinity
-    if (type === "infinity") return;
+    if (limitType === "infinity") return;
 
     // Limit by count
-    if (type === "count") {
+    if (limitType === "count") {
         if (savedMessagesCount > limit) {
             const difference = savedMessagesCount - limit;
 
@@ -116,7 +114,7 @@ function logToDatabase(message, date, codeChar = '§') {
     }
 
     // Limit by time
-    if (type === "time") {
+    if (limitType === "time") {
         const limitTimestamp = date.getTime() - (limit * 60 * 1000);
         // if (lastMessageTimestamp < limitTimestamp) {
 

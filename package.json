@@ -19,6 +19,7 @@
     "minecraft-data": "^3.59.3",
     "mineflayer": "^4.18.0",
     "nodemon": "^2.0.15",
+    "prismarine-chat": "^1.9.1",
     "socket.io": "^4.7.4",
     "yawn-yaml": "^1.5.0"
   }

@@ -22,7 +22,7 @@ login:
   # auth: 'mojang'
 
 
-commands:
+bot-commands:
   # If you want to disable bot commands, set this to false
 
   # !!! Command 'config' with subcommands 'set' require system permission
@@ -76,12 +76,9 @@ on-join:
   # Timeout is counting in miliseconds after join event
 
   commands:
-    # - '0:-actionbar off'
-    # - '2000:-hotbar use'
-    # - '3000:-inv leftclick 22'
     # Some examples:
     # - '500:/login mYsUpErSeCrEtPaSsWoRd123'
-    # - '1000:Hello everyone!''
+    # - '1000:Hello everyone!'
     # - '5000:/home'
     # - '5500:/panel'
     # - '6000:-inv leftclick 5'

@@ -7,6 +7,9 @@ module.exports = {
     lowLevelApi: true,
     enable: false,
 
+    /**
+     * @param {import("..").Main} main
+     */
     run(main, packet) {
         // const ChatMessage = require('prismarine-chat')(main.bot.version);
 

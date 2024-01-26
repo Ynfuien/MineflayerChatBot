@@ -1,28 +1,25 @@
-const {logMotd, logBot} = require('../utils/logger.js');
-const { startBot, doesKeyExist } = require("../utils/YnfuTools.js");
+const {logBot} = require('../utils/logger.js');
 
 module.exports = {
     name: "kicked",
-    enable: false,
+    enable: true,
 
+    /**
+     * @param {import("..").Main} main
+     * @param {string} reason
+     */
     run (main, reason) {
-        reason = JSON.parse(reason);
+        const {ChatMessage} = main.prismarine;
+        const json = JSON.parse(reason);
 
-        logMotd(`§c§lBot has been kicked from server, reason: §f${reason}`);
+        const message = new ChatMessage(json);
+        logBot(`§c§lBot has been kicked from the server, reason: §f${message.toMotd()}`, '§');
 
-        if (!rejoin(main)) {
-            const {config} = main;
-            if (doesKeyExist(config, "commands.enabled") !== true) return;
-            const prefix = config.commands.prefix;
-            if (!prefix) return;
+        if (!main.vars.autoRejoin.enabled) {
+            const {enabled, prefix} = main.vars.botCommands;
+            if (!enabled) return;
+
             logBot(`&bIf you want to rejoin type &3${prefix}bot start`);
         }
     }
-}
-
-function rejoin(main) {
-    const {autoRejoin} = main.temp.config;
-    if (!autoRejoin) return;
-    if (autoRejoin.enabled !== true) return;
-    return true;
 }

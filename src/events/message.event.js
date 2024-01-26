@@ -1,14 +1,18 @@
-const {logMessage, logMotd} = require('../utils/logger.js');
-
+const {logChatMessage} = require('../utils/logger.js');
 
 module.exports = {
     name: "message",
-    enable: false,
+    enable: true,
 
+    /**
+     * @param {import("..").Main} main
+     * @param {import("prismarine-chat").ChatMessage} message
+     * @param {string} chatPosition
+     */
     run (main, message, chatPosition) {
-        const {chat} = main.config;
-
-        // console.log(message.toMotd());
+        const {chat} = main.config.values;
+        
+        
         if (message.unsigned) message = message.unsigned;
         if (chat && chat["ignored-messages"]) {
             const ignoredMessages = chat["ignored-messages"];
@@ -22,11 +26,12 @@ module.exports = {
         }
 
         if (chatPosition === "game_info") {
-            if (main.temp.bot.actionbar === false) return;
-            logMessage(message, "§#12ff98[ActionBar] §f");
+            if (main.vars.bot.ignoreActionBar === true) return;
+
+            logChatMessage(message, "§#12ff98[ActionBar] §f");
             return;
         }
 
-        logMessage(message);
+        logChatMessage(message);
     }
 }

@@ -3,6 +3,9 @@ module.exports = {
     lowLevelApi: true,
     enable: false,
 
+    /**
+     * @param {import("..").Main} main
+     */
     run (main, packet) {
         const {transactionId, matches} = packet;
         let {tabComplete} = main.commands;

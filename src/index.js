@@ -1,5 +1,3 @@
-const mineflayer = require('mineflayer');
-
 const database = require('better-sqlite3')('logs.db');
 database.prepare("CREATE TABLE IF NOT EXISTS messages (message TEXT DEFAULT \"\", timestamp INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
 
@@ -9,17 +7,49 @@ const configManager = require('./utils/configManager.js');
 const eventHandler = require('./handlers/event.handler.js');
 
 const { logBot, setup: setupLogger } = require('./utils/logger.js');
+const { startBot } = require('./utils/botManager.js');
 
 /**
  * @typedef {{
- *      bot: import('mineflayer').Bot,
+ *      bot: import('mineflayer').Bot | null,
  *      database: import('better-sqlite3').Database,
+ *      prismarine: {
+ *          ChatMessage: import('prismarine-chat').ChatMessage
+ *      }
  *      config: {
  *          values: import('./utils/configManager.js').Config,
  *          yawn: YAWN.default
  *      },
  *      vars: {
- *          
+ *          chatLogs: {
+ *              enabled: boolean,
+ *              limitType?: string,
+ *              limit?: number | string
+ *          },
+ *          onJoin: {
+ *              commands: {timeout: number, message: string}[]
+ *          },
+ *          autoRejoin: {
+ *              enabled: boolean,
+ *              timeout: number
+ *          },
+ *          botCommands: {
+ *              enabled: boolean,
+ *              prefix: string
+ *          },
+ *          onlinePanel: {
+ *              enabled: boolean,
+ *              port: number,
+ *              messagesLimitType: string,
+ *              messagesLimit: number | string
+ *          },
+ *          bot: {
+ *              joined: boolean,
+ *              logPlayers: boolean,
+ *              ignoreActionBar: boolean,
+ *              restart: boolean,
+ *              stop: boolean   
+ *          }
  *      }
  * }} Main
  */
@@ -28,12 +58,30 @@ const { logBot, setup: setupLogger } = require('./utils/logger.js');
 (async function() {
     /** @type {Main} */
     const main = {
+        bot: null,
         database,
+        prismarine: {},
         vars: {
-            
+            chatLogs: { enabled: false },
+            onJoin: { commands: [] },
+            autoRejoin: {
+                enabled: false,
+                timeout: 10
+            },
+            botCommands: { enabled: false },
+            onlinePanel: {
+                enabled: false,
+                messagesLimitType: "count",
+                messagesLimit: 0
+            },
+            bot: {
+                joined: false,
+                logPlayers: false,
+                ignoreActionBar: false
+            }
         }
     };
-
+    
     setupLogger(main);
 
     // Loading config from file
@@ -52,10 +100,7 @@ const { logBot, setup: setupLogger } = require('./utils/logger.js');
 
     
     logBot("&bCreating bot..");
-    const botOptions = {...main.config.values.server, ...main.config.values.login};
-    console.log(botOptions);
-    // main.bot = mineflayer.createBot(botOptions);
-    // eventHandler(main);
+    startBot(main);
 })();
 
 

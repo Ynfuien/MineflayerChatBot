@@ -7,3 +7,4 @@ debug.log
 
 local-start.bat
 src/events/cmessage.event.js
+src/events/spawn-tests.event.js
