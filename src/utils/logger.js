@@ -72,10 +72,11 @@ const self = module.exports = {
 
 function logToOnlinePanel(message, date, codeChar = '&') {
     if (!main) return;
-    if (!main.panel) return;
-    if (!main.panel.io) return;
+    if (!main.webPanel) return;
+    const {io} = main.webPanel;
+    if (!io) return;
 
-    main.panel.io.emit("chat-message", {
+    io.emit("chat-message", {
         type: "message",
         timestamp: date ? date.getTime() : Date.now(),
         message: codeChar != '§' ? message.replace(new RegExp(codeChar, 'g'), '§') : message

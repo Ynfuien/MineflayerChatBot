@@ -19,6 +19,8 @@ module.exports = {
         const app = express();
         const server = http.createServer(app);
         const io = new Server(server);
+        
+        main.webPanel = {io, app, server};
 
         app.use(express.static(__dirname + '/public/'));
 
@@ -28,25 +30,20 @@ module.exports = {
         
 
         server.on("error", (error) => {
-            logBot(`An error occured in online panel server. Error message: ${error}`);
+            logBot(`&cAn error occured in online panel server. Error message: ${error}`);
         });
 
         server.on("close", () => {
             logBot("&cOnline panel server has been closed!");
         });
 
-        main.panel = {
-            io: io,
-            app: app,
-            server: server
-        };
         
         server.listen(port, () => {
             logBot(`&eOnline panel is running on port &6${port}&e!`);
         });
 
-        io.on("connection", (socket) =>{
-            socket.on("send-command", (data) => {
+        io.on("connection", (socket) => {
+            socket.on("execute-command", (data) => {
                 const {command} = data;
                 executeCommand(command.trim());
             });
@@ -56,7 +53,8 @@ module.exports = {
                 const {command, timestamp} = data;
                 
                 lastCompletionTimestamp = timestamp;
-                const completions = await getTabCompletions(main, command, socket, timestamp);
+                const completions = await getTabCompletions(main, command);
+                // console.log(completions);
 
                 if (lastCompletionTimestamp > timestamp) return;
                 socket.emit("tab-completions", completions);
@@ -70,13 +68,13 @@ module.exports = {
 
                 const {messagesLimitType, messagesLimit} = main.vars.onlinePanel;
 
-                let query;
+                let query = "SELECT * FROM messages ";
                 if (messagesLimitType === "count") {
-                    query = `SELECT * FROM messages ORDER BY timestamp DESC LIMIT ${messagesLimit}`;
+                    query += ` ORDER BY timestamp DESC LIMIT ${messagesLimit}`;
                 } else if (messagesLimitType === "time") {
-                    query = `SELECT * FROM messages WHERE timestamp>${Date.now() - messagesLimit * 60 * 1000}`;
+                    query += ` WHERE timestamp>${Date.now() - messagesLimit * 60 * 1000} ORDER BY timestamp ASC`;
                 } else if (messagesLimitType === "all") {
-                    query = "SELECT * FROM messages";
+                    query += " ORDER BY timestamp ASC";
                 }
 
                 const messages = database.prepare(query).all();

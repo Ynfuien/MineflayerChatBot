@@ -1,7 +1,7 @@
 const {log, logWithCustomChar} = require('../utils/logger');
 
 const before = [];
-
+let timeout = 0;
 module.exports = {
     name: "playerlist_header",
     lowLevelApi: true,
@@ -11,6 +11,11 @@ module.exports = {
      * @param {import("..").Main} main
      */
     run(main, packet) {
+        const now = new Date().getTime();
+        if (now - timeout < 10000) return;
+        timeout = now;
+
+        console.log(packet);
         // const ChatMessage = require('prismarine-chat')(main.bot.version);
 
         // if (!packet.header) {

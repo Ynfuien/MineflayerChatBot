@@ -1,133 +1,122 @@
-const { writeBotTabCompletionPacket } = require('../utils/YnfuTools.js');
-const { getBotCommand, isBotCommand } = require('./command.handler.js');
-
-let currentTabCompletionTransactionId = 0;
-let lastCompletionTimestamp = 0;
+const { onceWithCleanup } = require('mineflayer/lib/promise_utils.js');
+const { isBotCommand, getBotCommand } = require('./command.handler.js');
 
 module.exports = {
     /**
      * @param {import("..").Main} main
-     * @param {string} args
-     * @param {any} socket
+     * @param {string} text
      * @param {number} timestamp
+     * @returns {{type: string, start?: number, length?: number, list: string[]}}
      */
-    async getTabCompletions(main, command, socket, timestamp) {
-        const {bot} = main;
-        const {prefix} = main.vars.botCommands;
-
-        lastCompletionTimestamp = timestamp;
-        if (typeof command !== "string") return {list: [], type: "usernames"};
-
-        if (bot) {
-            
-            // Not bot command
-            if (!isBotCommand(command)) {
-                if (command.startsWith(`\\${prefix}`)) command = command.substring(1);
-
-                // Minecraft command
-                if (command.startsWith('/')) {
-                    currentTabCompletionTransactionId++;
-                    if (currentTabCompletionTransactionId > 30) {
-                        main.commands.tabComplete = {};
-                        currentTabCompletionTransactionId = 1;
-                    }
-                    const transId = currentTabCompletionTransactionId;
-
-                    writeBotTabCompletionPacket(bot, command.substr(1), transId);
-
-                    const completions = await new Promise(resolve => {
-                        let respond = false;
-
-                        main.commands.tabComplete[transId] = (packet) => {
-                            if (lastCompletionTimestamp > Date.now()) return;
-                            packet.start = packet.start + 1;
-                            const {start, length, matches} = packet;
-
-                            let completion = {start, length,
-                                list: matches,
-                                type: "minecraft-command"
-                            };
-                            
-                            if (!respond) {
-                                respond = true;
-                                resolve(completion);
-                                return;
-                            }
-    
-                            socket.emit("tab-completions", completion);
-                        };
-                        
-                        setTimeout(() => {
-                            if (respond) return;
-
-                            respond = true;
-                            resolve({list: [], type: "minecraft-command"});
-                        }, 100);
-                    });
-
-                    return completions;
-                }
-
-                // Players usernames
-                const split = command.split(' ');
-                let startIndex = split.slice(0, -1).join(' ').length + (split.length > 1 ? 1 : 0);
-                
-                const lastWord = split[split.length - 1].toLowerCase();
-
-                const usernames = Object.keys(bot.players).filter(
-                    username => username.toLowerCase().startsWith(lastWord)
-                    );
-                
-                return {
-                    list: usernames,
-                    type: "usernames",
-                    start: startIndex,
-                    length: lastWord.length
-                };
-            }
-        }
+    async getTabCompletions(main, text) {
+        const { bot } = main;
+        const { prefix } = main.vars.botCommands;
 
         // Bot command
-        if (!command.startsWith(prefix)) return {list: [], type: "usernames"};
+        if (isBotCommand(text)) return await getBotCommandCompletions(main, text);
 
-        const {list} = main.commands;
+        if (!bot) return {type: "usernames", list: []};
 
-        let args = command.split(' ');
-        const start = args.slice(0, -1).join(' ').length + prefix.length;
-        const length = args.length > 1 ? args[args.length - 1].length : args[0].length - prefix.length;
-        const commandName = args.shift().substr(prefix.length);
+        // Minecraft command
+        if (text.startsWith(`\\${prefix}`)) text = text.substring(1);
+        if (text.startsWith('/')) return await tabComplete(main, text);
 
-        let completions = (function(){
-            let completions = [];
+        // Players usernames
+        const split = text.split(' ');
+        const lastWord = split.pop();
+        const list = Object.keys(bot.players).filter(username => username.toLowerCase().startsWith(lastWord));
 
-            if (args.length === 0) {
-                for (const cmdName in list) {
-                    if (cmdName.startsWith(commandName)) completions.push(cmdName);
-                    
-                    const cmd = list[cmdName];
-                    if (!cmd.aliases) continue;
-                    if (!Array.isArray(cmd.aliases)) continue;
-                    cmd.aliases.forEach(alias => {
-                        if (alias.startsWith(commandName)) completions.push(alias);
-                    });
-                }
-                return completions;
+        return {
+            type: "usernames",
+            start: split.join(' ').length + (split.length === 0 ? 0 : 1),
+            length: lastWord.length,
+            list
+        };
+    }
+}
+
+/**
+ * @param {import("..").Main} main
+ * @param {string} text
+ * @returns {{type: string, start: number, length: number, list: string[], prefix: string}}
+ */
+async function getBotCommandCompletions(main, text) {
+    const { list } = main.commands;
+    const { prefix } = main.vars.botCommands;
+
+    let args = text.split(' ');
+    const start = args.slice(0, -1).join(' ').length + prefix.length;
+    const length = args.length > 1 ? args[args.length - 1].length : args[0].length - prefix.length;
+    const commandName = args.shift().substring(prefix.length);
+
+
+    let completionList = await (async function () {
+        const completions = [];
+
+        // Bot command list
+        if (args.length === 0) {
+            for (const cmdName in list) {
+                if (cmdName.startsWith(commandName)) completions.push(cmdName);
+
+                const command = list[cmdName];
+                if (!command.aliases) continue;
+                if (!Array.isArray(command.aliases)) continue;
+
+                command.aliases.forEach(alias => {
+                    if (alias.startsWith(cmdName)) completions.push(alias);
+                });
             }
 
-            const cmd = getBotCommand(commandName);
-            if (!cmd.command) {
-                return completions;
-            }
+            return completions;
+        }
 
-            if (typeof cmd.command.tabCompletion !== "function") {
-                return completions;
-            }
-            
-            return cmd.command.tabCompletion(main, args);
-        })();
+        // Subcommands
+        const command = getBotCommand(commandName);
+        if (!command) return completions;
+        if (typeof command.tabCompletion !== "function") return completions;
 
-        completions.sort();
-        
-        return {list: completions, type: "bot-command", prefix: prefix, start, length};
+        return await command.tabCompletion(main, args);
+    })();
+
+    if (!completionList) completionList = [];
+    completionList.sort();
+
+    return {
+        type: "bot-command",
+        start, length,
+        list: completionList,
+        prefix: prefix,
+    };
+}
+
+/**
+ * @param {import('..').Main} main
+ * @param {string} text
+ * @param {number} timeout
+ * @returns {{type: string, start?: number, length?: number, list: string[]}}
+ */
+async function tabComplete(main, text, timeout = "auto") {
+    const { bot } = main;
+    const block = bot.blockAtCursor();
+
+    bot._client.write('tab_complete', {
+        text,
+        assumeCommand: false,
+        lookedAtBlock: block ? block.position : null
+    });
+
+    if (timeout === "auto") timeout = main.bot.player.ping + 10;
+
+    try {
+        const [packet] = await onceWithCleanup(bot._client, 'tab_complete', { timeout });
+
+        return {
+            type: "minecraft-command",
+            start: packet.start,
+            length: packet.length,
+            list: packet.matches.map(entry => entry.match)
+        };
+    } catch {
+        return {type: "minecraft-command", list: []};
     }
 }

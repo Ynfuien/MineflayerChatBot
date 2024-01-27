@@ -1,7 +1,7 @@
 const database = require('better-sqlite3')('logs.db');
 database.prepare("CREATE TABLE IF NOT EXISTS messages (message TEXT DEFAULT \"\", timestamp INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
 
-const webPanel = require('./webpanel/panel.js');
+const webPanel = require('./webpanel/webPanel.js');
 const configManager = require('./utils/configManager.js');
 
 const eventHandler = require('./handlers/event.handler.js');
@@ -14,6 +14,11 @@ const { startBot } = require('./utils/botManager.js');
  * @typedef {{
  *      bot: import('mineflayer').Bot | null,
  *      database: import('better-sqlite3').Database,
+ *      webPanel: {
+ *          io: import('socket.io').Server,
+ *          app: import('express').Express,
+ *          server: import('http').Server
+ *      },
  *      commands: {
  *          list: Object.<string, import('./handlers/command.handler.js').BotCommand>,
  *          tabComplete: Object
@@ -65,6 +70,7 @@ const { startBot } = require('./utils/botManager.js');
     const main = {
         bot: null,
         database,
+        webPanel: {},
         commands: {
             list: {},
             tabComplete: {}
@@ -90,6 +96,15 @@ const { startBot } = require('./utils/botManager.js');
             }
         }
     };
+
+    // const awaitTimeout = delay => );
+    // const prom = async () => {await awaitTimeout(1000); return 69};
+
+    // const res = Promise.race([prom(), awaitTimeout(500)]);
+    // console.log(res);
+    // console.log(await res);
+
+    // return;
     
     setupLogger(main);
 
@@ -128,64 +143,3 @@ const { startBot } = require('./utils/botManager.js');
         loadCommands(main);
     }, timeout);
 })();
-
-
-
-
-
-
-// const {loadCommands} = require('./handlers/command.handler.js');
-// const express = require('./express.js');
-
-// const { logBot, setMain, onStartup } = require('./utils/logger.js');
-// const {startBot} = require('./utils/botManager.js');
-// const cm = require('./utils/configManager.js');
-
-
-// (async function(){
-//     // Main setup
-//     const main = {
-//         commands: {
-//             list: {},
-//             tabComplete: {}
-//         },
-//         config: null,
-//         botOptions: null,
-//         temp: {
-//             bot: {},
-//             config: {
-//                 commands: false,
-//                 logs: {
-//                     enabled: false,
-//                     type: "infinity",
-//                     limit: null
-//                 },
-//                 onJoin: {
-//                     commands: []
-//                 },
-//                 autoRejoin: {
-//                     enabled: false,
-//                     timeout: 10
-//                 },
-//                 onlinePanel: {
-//                     enabled: false,
-//                     lastMessages: {
-//                         type: "count",
-//                         limit: 0
-//                     }
-//                 }
-//             }
-//         },
-//         bot: null,
-//         db: db
-//     };
-
-
-    
-//     setMain(main);
-
-//     cm.loadBotOptions(main);
-//     onStartup();
-
-    
-// })();

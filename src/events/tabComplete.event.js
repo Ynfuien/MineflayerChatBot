@@ -7,6 +7,10 @@ module.exports = {
      * @param {import("..").Main} main
      */
     run (main, packet) {
+        // console.log("Ynfu:");
+        console.log(packet);
+        return;
+        console.log(new Date().getTime());
         const {transactionId, matches} = packet;
         let {tabComplete} = main.commands;
 

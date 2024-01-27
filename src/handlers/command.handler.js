@@ -15,7 +15,8 @@ const rl = readline.createInterface(process.stdin);
  *      aliases?: string[],
  *      usage?: string,
  *      description?: string,
- *      run: Function
+ *      run: Function,
+ *      tabCompletion: Function
  * }} BotCommand
  */
 
