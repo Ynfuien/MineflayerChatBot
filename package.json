@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ynfuien",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "dependencies": {
     "ascii-table": "^0.0.9",
     "better-sqlite3": "^9.4.1",
