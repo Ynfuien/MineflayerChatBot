@@ -54,4 +54,4 @@ Online panel by default should be at http://localhost:3000
 
 
 # License
-This project uses [GNU GPLv3](https://github.com/Ynfuien/YnfuBot/blob/main/LICENSE) license.
+This project uses [GNU GPLv3](https://github.com/Ynfuien/MineflayerChatBot/blob/main/LICENSE) license.
