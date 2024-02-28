@@ -4,7 +4,6 @@ database.prepare("CREATE TABLE IF NOT EXISTS messages (message TEXT DEFAULT \"\"
 const webPanel = require('./webpanel/webPanel.js');
 const configManager = require('./utils/configManager.js');
 
-const eventHandler = require('./handlers/event.handler.js');
 const {loadCommands} = require('./handlers/command.handler.js');
 
 const { logBot, setup: setupLogger } = require('./utils/logger.js');
@@ -21,7 +20,14 @@ const { startBot } = require('./utils/botManager.js');
  *      },
  *      commands: {
  *          list: Object.<string, import('./handlers/command.handler.js').BotCommand>,
- *          tabComplete: Object
+ *          tabComplete: {
+ *              lastPacket: {
+ *                  start: number,
+ *                  length: number,
+ *                  transactionId: number,
+ *                  matches: {match: string, tooltip: string}[]
+ *              } | null
+ *          }
  *      },
  *      prismarine: {
  *          ChatMessage: import('prismarine-chat').ChatMessage
@@ -51,7 +57,11 @@ const { startBot } = require('./utils/botManager.js');
  *              enabled: boolean,
  *              port: number,
  *              messagesLimitType: string,
- *              messagesLimit: number | string
+ *              messagesLimit: number | string,
+ *              tabList: {
+ *                  enabled: boolean,
+ *                  playersInterval?: number
+ *              }
  *          },
  *          bot: {
  *              joined: boolean,
@@ -87,7 +97,12 @@ const { startBot } = require('./utils/botManager.js');
             onlinePanel: {
                 enabled: false,
                 messagesLimitType: "count",
-                messagesLimit: 0
+                messagesLimit: 0,
+                tabList: {
+                    enabled: false,
+                    interval: 50,
+                    playersInterval: 500
+                }
             },
             bot: {
                 joined: false,
@@ -97,14 +112,6 @@ const { startBot } = require('./utils/botManager.js');
         }
     };
 
-    // const awaitTimeout = delay => );
-    // const prom = async () => {await awaitTimeout(1000); return 69};
-
-    // const res = Promise.race([prom(), awaitTimeout(500)]);
-    // console.log(res);
-    // console.log(await res);
-
-    // return;
     
     setupLogger(main);
 

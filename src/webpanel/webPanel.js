@@ -8,12 +8,16 @@ const { logBot } = require('../utils/logger.js');
 const { executeCommand } = require('../handlers/command.handler.js');
 const { getTabCompletions } = require('../handlers/tabcomplete.handler.js');
 
+/** @type {import('../index.js').Main} */
+let main;
 
-module.exports = {
+const self = module.exports = {
     /**
      * @param {import('../index.js').Main} main 
      */
-    setup: (main) => {
+    setup: (_main) => {
+        main = _main;
+        
         const {port} = main.config.values['online-panel'];
 
         const app = express();
@@ -40,9 +44,13 @@ module.exports = {
         
         server.listen(port, () => {
             logBot(`&eOnline panel is running on port &6${port}&e!`);
+
+            self.playerListUpdate(main, true);
         });
 
         io.on("connection", (socket) => {
+            self.playerListUpdate(main);
+
             socket.on("execute-command", (data) => {
                 const {command} = data;
                 executeCommand(command.trim());
@@ -54,7 +62,6 @@ module.exports = {
                 
                 lastCompletionTimestamp = timestamp;
                 const completions = await getTabCompletions(main, command);
-                // console.log(completions);
 
                 if (lastCompletionTimestamp > timestamp) return;
                 socket.emit("tab-completions", completions);
@@ -83,5 +90,129 @@ module.exports = {
                 socket.emit("logs-data", {messages});
             });
         });
+    },
+
+    /**
+     * @param {import('prismarine-chat').ChatMessage} header 
+     * @param {import('prismarine-chat').ChatMessage} footer 
+     */
+    tabListUpdate(header, footer) {
+        const { bot } = main;
+        if (!bot) return;
+        
+        const { io } = main.webPanel;
+
+        io.emit("tab-list", {
+            header: header ? header.toMotd() : "",
+            footer: footer ? footer.toMotd() : "",
+            timestamp: Date.now()
+        });
+    },
+
+    /**
+     * @param {import('../index.js').Main} main 
+     */
+    async playerListUpdate(main, interval = false) {
+        const { tabList } = main.vars.onlinePanel;
+        if (interval) setTimeout(() => { self.playerListUpdate(main, true) }, tabList.playersInterval);
+        
+        if (!tabList.enabled) return;
+
+        const { bot } = main;
+        if (!bot) return;
+        
+        const { io } = main.webPanel;
+
+        io.emit("player-list", {
+            list: getSortedPlayerList(bot),
+            timestamp: Date.now()
+        });
     }
+}
+
+
+/**
+ * @param {import('mineflayer').Bot} bot
+ */
+function getSortedPlayerList(bot) {
+    const {players} = bot;
+    const listScoreboard = bot.scoreboard?.list;
+    
+    const teams = getPlayerTeams(bot);
+    const sortedTeams = Object.keys(teams.custom).sort();
+
+    const list = [];
+    const spectators = [];
+
+    addPlayers(teams.none);
+
+    for (const teamName of sortedTeams) {
+        const teamPlayers = teams.custom[teamName];
+
+        addPlayers(teamPlayers);
+    }
+
+    
+    function addPlayers(playerList) {
+        for (const username of playerList) {
+            const player = players[username];
+            const {displayName, ping, gamemode} = player;
+
+            let scoreboardValue = null;
+            if (listScoreboard) {
+                const playerValues = listScoreboard.itemsMap[username];
+                if (playerValues) scoreboardValue = playerValues.value;
+            }
+
+            const playerObject = {
+                username,
+                displayName: displayName.toMotd(),
+                ping,
+                gamemode,
+                scoreboardValue
+            };
+
+            // Spectator
+            if (gamemode === 3) {
+                spectators.push(playerObject);
+                continue;
+            }
+
+            list.push(playerObject);
+        }
+    }
+
+    return list.concat(spectators);
+}
+
+/**
+ * @param {import('mineflayer').Bot} bot
+ * @returns {{custom: Object.<string, string[]>, none: string[]}}
+ */
+function getPlayerTeams(bot) {
+    const {teamMap, players} = bot;
+    
+    const teams = {};
+    const none = [];
+
+    for (const username in players) {
+        const team = teamMap[username];
+        
+        if (!team) {
+            none.push(username);
+            continue;
+        }
+
+        const teamName = team.team;
+        if (!(teamName in teams)) teams[teamName] = [];
+
+        teams[teamName].push(username);
+    }
+
+    for (const teamName in teams) {
+        teams[teamName].sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
+    }
+    none.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
+
+    return {custom: teams, none};
 }

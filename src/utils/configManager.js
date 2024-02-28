@@ -39,10 +39,15 @@ const { doesKeyExist } = require('./objectUtils.js');
  *      },
  *      'online-panel': {
  *          enabled: boolean,
- *          port: number
+ *          port: number,
  *          'last-messages': {
  *              type: string,
  *              limit: number | string
+ *          },
+ *          'tab-list': {
+ *              enabled: boolean,
+ *              interval: number,
+ *              'players-interval': number
  *          }
  *      }
  * }} Config
@@ -341,10 +346,10 @@ module.exports = {
             }
 
             // Last messages
-            const result = (function (lastMessages) {
+            (function (lastMessages) {
                 if (!lastMessages) {
                     logError("Last messages setting isn't provided. Messages won't be loaded while opening online panel!");
-                    return false;
+                    return;
                 }
 
                 const { limit } = lastMessages;
@@ -352,35 +357,72 @@ module.exports = {
 
                 if (!type) {
                     logError("Last messages type isn't set! Last messages won't work");
-                    return false;
+                    return;
                 }
 
                 type = type.toLowerCase();
                 if (!["count", "time", "all"].includes(type)) {
                     logError("Last messages type is incorrect! Last messages won't work");
-                    return false;
+                    return;
                 }
 
                 if (type === "all") {
                     main.vars.onlinePanel.messagesLimitType = type;
-                    return true;
+                    return;
                 }
 
 
                 if (limit === undefined) {
                     logError("Last messages limit isn't set! Last messages won't work");
-                    return false;
+                    return;
                 }
 
                 if (isNaN(limit)) {
                     logError("Last messages limit is incorrect! Last messages won't work");
-                    return false;
+                    return;
                 }
 
                 main.vars.onlinePanel.messagesLimitType = type;
                 main.vars.onlinePanel.messagesLimit = limit;
                 return true;
             })(onlinePanel['last-messages']);
+
+
+            // Tab list
+            main.vars.onlinePanel.tabList.enabled = (function(tabList) {
+                if (!tabList) return false;
+
+                const {enabled} = tabList;
+                if (enabled !== true) return false;
+
+                // (function() {
+                //     if (interval === undefined) {
+                //         logError("Tab list interval isn't set! Will be used '50'");
+                //         return;
+                //     }
+    
+                //     if (isNaN(interval)) {
+                //         logError("Tab list interval is incorrect! Will be used '50'");
+                //         return;
+                //     }
+                // })();
+
+                // main.vars.onlinePanel.tabList.interval = interval;
+
+                const playersInterval = tabList['players-interval'];
+                if (playersInterval === undefined) {
+                    logError("Tab list players interval isn't set! Will be used '500'");
+                    return true;
+                }
+
+                if (isNaN(playersInterval)) {
+                    logError("Tab list players interval is incorrect! Will be used '500'");
+                    return true;
+                }
+
+                main.vars.onlinePanel.tabList.playersInterval = playersInterval;
+                return true;
+            })(onlinePanel['tab-list']);
 
             return true;
         })(config["online-panel"]);

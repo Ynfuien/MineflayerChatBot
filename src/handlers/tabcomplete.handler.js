@@ -1,8 +1,9 @@
-const { onceWithCleanup } = require('mineflayer/lib/promise_utils.js');
 const { isBotCommand, getBotCommand } = require('./command.handler.js');
 
 module.exports = {
     /**
+     * Gets completions for the current input (in the online panel),
+     * usernames, minecraft or bot commands, it's all in here.
      * @param {import("..").Main} main
      * @param {string} text
      * @param {number} timestamp
@@ -25,7 +26,7 @@ module.exports = {
         const split = text.split(' ');
         const lastWord = split.pop();
         const list = Object.keys(bot.players).filter(username => username.toLowerCase().startsWith(lastWord));
-
+        
         return {
             type: "usernames",
             start: split.join(' ').length + (split.length === 0 ? 0 : 1),
@@ -90,6 +91,7 @@ async function getBotCommandCompletions(main, text) {
 }
 
 /**
+ * Sends tab complete packet, waits for it, and returns it in a needed form.
  * @param {import('..').Main} main
  * @param {string} text
  * @param {number} timeout
@@ -99,24 +101,47 @@ async function tabComplete(main, text, timeout = "auto") {
     const { bot } = main;
     const block = bot.blockAtCursor();
 
+    // Sending packet
     bot._client.write('tab_complete', {
         text,
         assumeCommand: false,
-        lookedAtBlock: block ? block.position : null
+        lookedAtBlock: block ? block.position : undefined
     });
 
+    // Setting a timeout
     if (timeout === "auto") timeout = main.bot.player.ping + 10;
 
-    try {
-        const [packet] = await onceWithCleanup(bot._client, 'tab_complete', { timeout });
+    // Timeout promise
+    let interval = null;
+    const timeoutPromise = new Promise((resolve) => setTimeout(() => {
+        resolve(null);
+        clearInterval(interval);
+    }, timeout));
 
+    // Wait for a packet promise
+    // (An actual event listener is in tabComplete.event.js)
+    const eventPromise = new Promise((resolve) => {
+        interval = setInterval(() => {
+            const { lastPacket } = main.commands.tabComplete;
+            if (lastPacket == null) return;
+
+            main.commands.tabComplete.lastPacket = null;
+            resolve(lastPacket);
+            clearInterval(interval);
+        });
+    });
+
+    // Results
+    const result = await Promise.race([eventPromise, timeoutPromise]);
+
+    if (result) {
         return {
             type: "minecraft-command",
-            start: packet.start,
-            length: packet.length,
-            list: packet.matches.map(entry => entry.match)
+            start: result.start,
+            length: result.length,
+            list: result.matches.map(entry => entry.match)
         };
-    } catch {
-        return {type: "minecraft-command", list: []};
     }
+
+    return {type: "minecraft-command", list: []};
 }

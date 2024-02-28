@@ -1,0 +1,167 @@
+@import url('scroll-button.css');
+@import url('tab-completion.css');
+
+section#chat {
+    overflow: auto;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    row-gap: 3.25rem; /* 52px */
+    justify-content: flex-end;
+}
+
+/** Output **/
+section#chat > section.output {
+    --line-height: 1lh * 0.75;
+    --padding-top: 0.125rem;
+
+    min-width: 20rem;
+    width: 40rem;
+    max-width: 100%;
+
+    min-height: calc(2 * var(--line-height) + var(--padding-top));
+    height: calc(20 * var(--line-height) + var(--padding-top));
+    max-height: -webkit-fill-available;
+
+    padding-top: var(--padding-top);
+    padding-left: 0.5rem;
+
+    background-color: rgba(0, 0, 0, 0.499);
+    border-right: 0.25rem solid transparent;
+
+    overflow: auto;
+
+    font-size: 1.25rem;
+
+    display: flex;
+    flex-direction: column;
+
+    scrollbar-color: hsl(240, 44%, 65%, 0.8);
+    scrollbar-width: thin;
+}
+
+/* Scrollbar styles */
+section#chat > section.output::-webkit-scrollbar {
+    width: 0.25rem;
+    height: 0.3rem;
+}
+section#chat > section.output::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+section#chat > section.output::-webkit-scrollbar-thumb {
+    border-left: 0.125rem solid hsl(240, 39%, 35%, 0.8);
+    border-right: 0.125rem solid hsl(240, 44%, 65%, 0.8);
+}
+
+section#chat > section.output > pre {
+    line-height: 0.9em;
+    text-indent: -0.5rem;
+    padding-left: 0.5rem;
+}
+
+section#chat > section.output > pre:first-child {
+    margin-top: auto;
+}
+
+/** Input **/
+section#chat > section.input {
+    position: relative;
+
+    margin: 0 0.25rem 0.1875rem; /* 0 4px 3px */
+    padding: 0 0.25rem;
+    
+    background-color: rgba(0, 0, 0, 0.5);
+
+    font-family: inherit;
+    color: #dddddd;
+    font-size: 1.25rem;
+    line-height: 1em;
+    /* 2px 2px 0px */
+    text-shadow: 0.125rem 0.125rem 0 color-mix(in srgb, currentColor 25%, black);
+}
+
+section#chat > section.input > div {
+    height: 1.5rem;
+    
+    white-space: nowrap;
+}
+
+section#chat > section.input > .input {
+    z-index: 1;
+
+    position: relative;
+    overflow-x: hidden;
+    caret-color: transparent;
+
+    display: flex;
+    column-gap: 0.125rem;
+}
+
+section#chat > section.input > .input:focus {
+    outline: none;
+}
+
+/** Caret(s) **/
+/* Variables are set with JS on the .input element */
+section#chat > section.input > .input:focus::before {
+    content: '';
+    display: var(--vertical-caret-display, none);
+
+    user-select: none;
+    pointer-events: none;
+
+    position: absolute;
+    bottom: 0;
+    left: var(--vertical-caret-position, 0);
+
+    height: calc(1em + 0.125rem); /* 1em + 2px */
+
+    border-right: 0.125rem solid #d0d0d0;
+
+    animation: caret-blink 650ms infinite steps(2, start);
+}
+
+section#chat > section.input > .input:focus::after {
+    content: '_';
+    display: var(--horizontal-caret-display, block);
+
+    user-select: none;
+
+    animation: caret-blink 650ms infinite steps(2, start);
+}
+
+@keyframes caret-blink {
+    to {
+        visibility: hidden;
+    }
+}
+
+
+/* Scroll button */
+section.input > button.scroll {
+    position: absolute;
+
+    right: 0;
+    bottom: calc(100% + 0.25rem); /* 100% + 4px */
+
+    width: 1.75rem;
+    height: 1.75rem;
+
+    background-color: rgba(0, 0, 0, 0.5);
+
+    font-size: 1.1rem;
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+section.input > button.scroll:hover {
+    cursor: pointer;
+    
+    background-color: rgba(255, 255, 255, 0.4);
+}

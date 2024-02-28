@@ -1,0 +1,92 @@
+section#tab-list {
+    position: absolute;
+    top: 1.125rem;
+    left: 50%;
+    transform: translateX(-50%);
+
+    z-index: 2;
+    padding: 0.125rem; /* 2px */
+
+    max-width: calc(100% - 4rem);
+
+    background-color: rgba(0, 0, 0, 0.5);
+
+    font-family: Mojangles;
+    font-size: 1.25rem;
+    line-height: 1em;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/** Header and footer **/
+section#tab-list > header, footer {
+    text-align: center;
+}
+
+
+/** Player list **/
+section#tab-list > ol {
+    --max-lenght: 20;
+
+    width: max-content;
+    max-width: 100%;
+
+    list-style-type: none;
+
+    max-height: calc((0.8em * var(--max-lenght)) + (0.125rem * (var(--max-lenght) - 1)));
+
+    display: grid;
+    grid-template-rows: repeat(auto-fit, 0.8em);
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    row-gap: 0.125rem; /* 2px */
+    column-gap: 0.625rem; /* 10px */
+}
+
+section#tab-list > ol > li {
+    /* --col variable is set with JS */
+    grid-column: var(--col);
+
+    height: 0.8em;
+
+    line-height: 0.6em;
+    white-space: nowrap;
+
+    background-color: rgba(255, 255, 255, 0.1);
+
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Display name */
+section#tab-list > ol > li > pre:first-child {
+    white-space: inherit;
+    margin-right: auto;
+}
+
+
+section#tab-list > ol > li.spectator > pre {
+    font-style: italic !important;
+    opacity: 0.6;
+}
+
+/* Scoreboard value */
+section#tab-list > ol > li > pre:nth-child(2) {
+    margin-left: 0.625rem; /* 10px */
+}
+
+/* Ping */
+section#tab-list > ol > li > img {
+    height: 100%;
+
+    margin-left: 0.25rem;
+
+    image-rendering: pixelated;
+    user-select: none;
+
+    padding-right: 0.125rem; /* 2px */
+}

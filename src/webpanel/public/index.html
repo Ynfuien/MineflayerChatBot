@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YnfuBot Panel</title>
-    <link rel="stylesheet" href="style.css" type="text/css">
+
+    <link rel="stylesheet" href="assets/styles/main.css" type="text/css">
 
     <script src="socket.io/socket.io.js"></script>
     <script type="module" defer src="assets/scripts/index.js"></script>
@@ -15,27 +15,33 @@
 <body>
     <main class="main">
         <section id="chat">
-            <section class="output"></section>
-            <section class="input"> 
-                <div class="input" contenteditable="plaintext-only" autofocus></div>
-                <div class="tab-completion">
-                    <span class="invisible"></span><section></section><span class="visible"></span>
-                </div>
+            <!-- Output and a placeholder text -->
+            <section class="output">
+                <pre class="mc-text" style="margin-bottom: 0.125rem;"><span style="color: rgb(255, 255, 255); font-weight: bold;">[BOT] </span><span style="color: rgb(255, 85, 85);">Loading...</span></pre>
             </section>
 
-            <span id="scrollDown" style="z-index: -1;"></span>
-        </section>
-        <section id="tab">
-            
-        </section>
-        <!-- <section id="inventory">
-            <iframe src="http://localhost:3001" title="description" width="500px" height="500px"></iframe>
-        </section> -->
+            <section class="input"> 
+                <!-- Scroll down button -->
+                <button class="scroll" title="Scroll down the chat" tabindex="2">
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M246.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L224 402.7 361.4 265.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-160 160zm160-352l-160 160c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L224 210.7 361.4 73.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3z"/></svg>
+                </button>
 
-        <!-- <section style="position:fixed; left:200px; top:200px; width: 300px; height: 300px; background-color:red;">
-            <div style="width: 100px; height: 100px; background-color:blue; scrollbar-width: none; overflow-x:hidden; overflow-y:hidden; white-space: nowrap;" contenteditable="plaintext-only"></div>
-            <textarea style="overflow-y:hidden;overflow-x: auto;"></textarea>
-        </section> -->
+                <!-- Actual input -->
+                <div class="input" contenteditable="true" contenteditable="plaintext-only" autofocus tabindex="1"></div>
+
+                <!-- Tab completions -->
+                <div class="tab-completion">
+                    <ol class="list"></ol>
+                    <span class="placeholder"></span>
+                </div>
+            </section>
+        </section>
+
+        <section id="tab-list">
+            <header></header>
+            <ol></ol>
+            <footer></footer>
+        </section>
     </main>
 </body>
 
