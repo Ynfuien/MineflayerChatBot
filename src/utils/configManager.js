@@ -40,6 +40,10 @@ const { doesKeyExist } = require('./objectUtils.js');
  *      'online-panel': {
  *          enabled: boolean,
  *          port: number,
+ *          'chat-patterns': {
+ *              minecraft: string,
+ *              bot: string
+ *          },
  *          'last-messages': {
  *              type: string,
  *              limit: number | string

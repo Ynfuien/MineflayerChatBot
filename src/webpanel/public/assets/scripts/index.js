@@ -35,6 +35,12 @@ import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
  * 
  * @typedef {{
  *      socket: SocketIO,
+ *      config: {
+ *          chatPatterns: {
+ *              minecraft: string,
+ *              bot: string
+ *          }
+ *      }
  *      chat: {
  *          element: HTMLDivElement,
  *          input: {
@@ -66,6 +72,12 @@ import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
     
     /** @type {Main} */
     const main = {
+        config: {
+            chatPatterns: {
+                minecraft: "{message}",
+                bot: "&f&l[BOT] &r{message}"
+            }
+        },
         chat: {
             element: chat,
             input: {

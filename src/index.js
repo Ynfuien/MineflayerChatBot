@@ -1,5 +1,8 @@
 const database = require('better-sqlite3')('logs.db');
-database.prepare("CREATE TABLE IF NOT EXISTS messages (message TEXT DEFAULT \"\", timestamp INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+// Message types:
+// 0 - bot
+// 1 - minecraft
+database.prepare("CREATE TABLE IF NOT EXISTS messages (message TEXT DEFAULT \"\", timestamp INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, type INTEGER DEFAULT 0)").run();
 
 const webPanel = require('./webpanel/webPanel.js');
 const configManager = require('./utils/configManager.js');

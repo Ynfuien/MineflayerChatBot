@@ -25,12 +25,17 @@ function setup(_main) {
     main.socket = socket;
 
 
+    // Config    
+    socket.on("config", (data) => {
+        main.config = data;
+    });
+
     // Get last logs
     let gotTheLogs = false;
     console.log("Getting last logs...");
     socket.emit("get-last-logs");
 
-    socket.on("logs-data", data => {
+    socket.on("logs-data", (data) => {
         const {messages} = data;
 
         console.log("Displaying last logs...");
@@ -52,21 +57,21 @@ function setup(_main) {
 
     
     // Message event
-    socket.on("chat-message", data => {
+    socket.on("chat-message", (data) => {
         if (!gotTheLogs) return;
 
         showMessage(main, data);
     });
 
     // Tab completions
-    socket.on("tab-completions", data => {
+    socket.on("tab-completions", (data) => {
         main.chat.tabCompletion.data = data;
 
         showCompletions();
     });
 
     // Tab list
-    socket.on("tab-list", data => {
+    socket.on("tab-list", (data) => {
         main.tabList.data.header = data.header;
         main.tabList.data.footer = data.footer;
 
@@ -74,7 +79,7 @@ function setup(_main) {
     });
 
     // Player list
-    socket.on("player-list", data => {
+    socket.on("player-list", (data) => {
         main.tabList.data.players = data.list;
 
         updateTabList(main);

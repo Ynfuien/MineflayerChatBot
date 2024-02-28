@@ -51,6 +51,10 @@ const self = module.exports = {
         io.on("connection", (socket) => {
             self.playerListUpdate(main);
 
+            socket.emit("config", {
+                chatPatterns: main.config.values['online-panel']['chat-patterns']
+            });
+
             socket.on("execute-command", (data) => {
                 const {command} = data;
                 executeCommand(command.trim());

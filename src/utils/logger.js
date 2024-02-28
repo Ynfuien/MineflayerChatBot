@@ -38,20 +38,20 @@ let main;
 
 
 const self = module.exports = {
-    log(message, codeChar = '&') {
+    log(message, codeChar = '&', type = "bot") {
         const time = new Date();
 
-        logToConsole(message, time, codeChar);
-        logToOnlinePanel(message, time, codeChar);
-        logToDatabase(message, time, codeChar);
+        logToConsole(message, time, codeChar, type);
+        logToOnlinePanel(message, time, codeChar, type);
+        logToDatabase(message, time, codeChar, type);
     },
 
     logBot(message, codeChar = '&') {
-        self.log(`${codeChar}f${codeChar}l[BOT] ${codeChar}f${message}`, codeChar);
+        self.log(`${codeChar}f${message}`, codeChar);
     },
 
     logChatMessage(message, prefix = '') {
-        self.log(prefix + message.toMotd(), '§');
+        self.log(prefix + message.toMotd(), '§', "minecraft");
     },
 
 
@@ -70,20 +70,20 @@ const self = module.exports = {
     }
 }
 
-function logToOnlinePanel(message, date, codeChar = '&') {
+function logToOnlinePanel(message, date, codeChar = '&', type) {
     if (!main) return;
     if (!main.webPanel) return;
     const {io} = main.webPanel;
     if (!io) return;
 
     io.emit("chat-message", {
-        type: "message",
+        type,
         timestamp: date ? date.getTime() : Date.now(),
         message: codeChar != '§' ? message.replace(new RegExp(codeChar, 'g'), '§') : message
     });
 }
 
-function logToDatabase(message, date, codeChar = '§') {
+function logToDatabase(message, date, codeChar = '§', type) {
     if (!main) return;
     const {database} = main;
     if (!database) return;
@@ -93,7 +93,7 @@ function logToDatabase(message, date, codeChar = '§') {
 
     
     if (codeChar !== '§') message = message.replace(new RegExp(codeChar, 'g'), '§');
-    database.prepare("INSERT INTO messages(message, timestamp) VALUES(?, ?)").run(message, date.getTime());
+    database.prepare("INSERT INTO messages(message, timestamp, type) VALUES(?, ?, ?)").run(message, date.getTime(), type === "minecraft" ? 1 : 0);
     savedMessagesCount++;
 
     
@@ -117,14 +117,12 @@ function logToDatabase(message, date, codeChar = '§') {
     // Limit by time
     if (limitType === "time") {
         const limitTimestamp = date.getTime() - (limit * 60 * 1000);
-        // if (lastMessageTimestamp < limitTimestamp) {
 
         const result = database.prepare("DELETE FROM messages WHERE timestamp<?").run(limitTimestamp);
         savedMessagesCount -= result.changes;
 
         const timestamp = database.prepare("SELECT timestamp FROM messages ORDER BY timestamp LIMIT 1").pluck().get();
         lastMessageTimestamp = timestamp;
-        // }
         return;
     }
 }
@@ -135,7 +133,9 @@ function logToDatabase(message, date, codeChar = '§') {
  * @param {Date} time 
  * @param {string} codeChar 
  */
-function logToConsole(message, time, codeChar = '§') {
+function logToConsole(message, time, codeChar = '§', type) {
+    if (type === "bot") message = `${codeChar}f${codeChar}l[BOT] ${message}`;
+
     let chars = message.split('');
 
     let toLog = "";
