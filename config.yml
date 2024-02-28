@@ -7,7 +7,7 @@ server:
 
   # Minecraft server version will be selected automatically but if you want specific
   # set this to it e.g. 1.15.2, 1.16.2, 1.17
-  # version: 1.20.2
+  version: 1.20.2
 
 
 login:
