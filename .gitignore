@@ -6,7 +6,11 @@ package-lock.json
 debug.log
 
 local-start.bat
+
 src/events/cmessage.event.js
 src/events/spawn-tests.event.js
 src/events/playerUpdated.event.js
+
 src/commands/test.command.js
+
+config.dev.yml

@@ -1,22 +1,18 @@
 server:
   # Server ip
   host: localhost
-  # host: gc2.pl
 
   # Default Minecraft servers port is 25565. Set this only if server has different port
   port: 25565
-  # port: 50689
 
   # Minecraft server version will be selected automatically but if you want specific
   # set this to it e.g. 1.15.2, 1.16.2, 1.17
-  version: 1.20.1
+  # version: 1.20.2
 
 
 login:
   # Set this to your email for Minecraft account or to username for online-mode servers
-  # username: WZIUUUUUUUUUUM
-  # username: iawhdidiwada
-  username: nik1002
+  username: MySuperUsername
 
   # Set this only if you use Minecraft account
   # password: ''
