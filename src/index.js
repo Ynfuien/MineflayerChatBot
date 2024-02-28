@@ -79,6 +79,7 @@ const { startBot } = require('./utils/botManager.js');
     /** @type {Main} */
     const main = {
         bot: null,
+        dev: true,
         database,
         webPanel: {},
         commands: {
@@ -117,7 +118,7 @@ const { startBot } = require('./utils/botManager.js');
 
     // Loading config from file
     logBot(`&bLoading config..`);
-    const configResult = configManager.loadConfig(`${__dirname}/../config.yml`);
+    const configResult = configManager.loadConfig(`${__dirname}/../config${main.dev ? ".dev" : ""}.yml`);
     if (!configResult.success) {
         logBot(`&cAn error occured while loading config file! Fix it and start the bot again.\n${configResult.error}`);
         process.exit(1);
