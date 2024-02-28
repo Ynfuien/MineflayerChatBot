@@ -1,30 +1,29 @@
-# Mineflayer Chat Bot
-This is Minecraft bot written in Javascript with [NodeJs](https://nodejs.org) using [mineflayer](https://www.npmjs.com/package/mineflayer). It was created mainly to save chat logs to be able to read them later and to help server owners in testing various functions without having to start another launcher.
+# MCB - Mineflayer Chat Bot
+*This project is **WIP**, in the process of rewriting most of the code*
 
-**On public servers you use the bot at your own risk!**
+Minecraft bot written in Javascript using [NodeJs](https://nodejs.org) and [Mineflayer](https://www.npmjs.com/package/mineflayer). It was created mainly to help with server and plugin development, since it often requires another player in the game. It's mostly of use when dealing with the chat stuff (who would have thought), and other things requiring a non moving puppet. Also, well, it could be great just as an AFK bot.
+
+**! Using bot on public servers will probably get you banned. You have been warned !**
 
 
 # Description
 ### Features:
-- Connecting to any server with any port
-- Connecting using Mojang or Microsoft account or in offline mode
-- Support (In theory) 1.8-1.17 - Tested on 1.17.1 and 1.16.5
+- Connecting to Minecraft servers (I know, WOW)
+- Support (in theory) 1.8-1.20.4 - Tested on **1.20.2**
 - Bot commands
   - Stopping, starting and restarting bot
-  - Config reload and display, setting and getting config's settigns
   - Right/left clicking inventory slots
 - Ignoring chat messages by RegEx patterns
 - Chat logs in SQLite3 database
-- On join commands to execute
+- Ability to execute commands on join
 - Auto rejoin function with custom timeout
 - Online panel with
-  - chat
-  - sending commands
+  - chat logs
+  - command execution
   - tab completion
-  - up/down arrows function for before used commands
-- Almost all configurable (If not all, code is open source, so play with it!)
+  - tab list
 
-### In project are used packages:
+### Used packages in the project:
 - [ascii-table](https://www.npmjs.com/package/ascii-table)
 - [better-sqlite3](https://www.npmjs.com/package/better-sqlite3)
 - [chalk](https://www.npmjs.com/package/chalk)
@@ -32,145 +31,27 @@ This is Minecraft bot written in Javascript with [NodeJs](https://nodejs.org) us
 - [js-yaml](https://www.npmjs.com/package/js-yaml)
 - [mineflayer](https://www.npmjs.com/package/mineflayer)
 - [nodemon](https://www.npmjs.com/package/nodemon)
+- [prismarine-chat](https://www.npmjs.com/package/prismarine-chat)
 - [socket.io](https://www.npmjs.com/package/socket.io)
 - [yawn-yaml](https://www.npmjs.com/package/yawn-yaml)
 
-### How to install (Windows)
-1. Download and install [NodeJs](https://nodejs.org) if don't have it
+### How to install
+1. Download and install [NodeJs](https://nodejs.org), if don't have it
 2. Download source code
-3. Unpack archive to some folder
-4. Run `first-start.bat` file and after successfully packages instalation close console
+3. Unpack the archive
+4. Run `npm install` in the console in project folder
 5. Edit `config.yml` for your preferences
-6. Run `start.bat` and enjoy your bot!
+6. Run `start.bat` and enjoy
 
-### How to install (Linux)
-So, since you are using linux I assume you know how to use NodeJs and you will handle it without problems, and even if you haven't used NodeJs before then you know how to use [Google](https://google.com) :p
+Online panel by default should be at http://localhost:3000
 
-## Todo:
-- Tab list in online panel
-- Config options for turning on/off logging some events (player join, leave, spawn etc)
 
 # Media
-## Console
-#### (In windows I recommend using [Windows Terminal](https://github.com/microsoft/terminal))
+*Old*
+#### (On windows I recommend using [Windows Terminal](https://github.com/microsoft/terminal))
 ![Screenshot](https://i.imgur.com/l6YLHuB.gif)
-## Online panel
 ![Screenshot](https://i.imgur.com/Fx8WeTX.gif)
 
-# Default config
-```yaml
-server:
-  # Server ip
-  host: 'localhost'
 
-  # Default Minecraft servers port is 25565. Set this only if server has different port
-  # port: 25565
-
-  # Minecraft server version will be selected automatically but if you want specific
-  # set this to it e.g. 1.15.2, 1.16.2, 1.17
-  # version: '1.16.5'
-
-
-login:
-  # Set this to your email for Minecraft account or to username for online-mode servers
-  username: ''
-
-  # Set this only if you use Minecraft account
-  # password: ''
-
-  # Only set this if you are using Microsoft account and then set this to 'microsoft'
-  # auth: 'mojang'
-
-
-commands:
-  # If you want to disable bot commands, set this to false
-
-  # !!! Command 'config' with subcommands 'set' require system permission
-  # to write to this file !!!
-  enabled: true
-
-  # Prefix for bot commands. Must be set, otherwise bot commands won't work.
-  # If you will want to send message on server that starts with this prefix,
-  # just add \ before.
-  prefix: '-'
-
-
-chat:
-  # Messages to ignore. Filter use RegExp match. Useful when e.g message on
-  # action bar is spaming (Cause action bar is also included to messages)
-  ignored-messages:
-    # This is for default ActionHealth plugin setting, but better way in that case is to
-    # disable it using command /actionhealth toggle. And keep in maind that this RexExp
-    # patter might match another message, for example written by player on chat and
-    # then it won't be displayed in console, online panel etc.
-    # - '^[\w\d_]{3,16}: [❤]{5,}$'
-
-  logs:
-    # If logs should be enabled. This function saves every message to file and when you open online
-    # panel, displays every mesasge from file on site.
-    # !!! This require system permission for write to file logs.log !!!
-    enabled: true
-
-    # Type of saved messages limit.
-    # count - while adding new message to file, every old message that is over the limit count
-    # will be deleted
-    # time - while adding new message, every old message that is older than limit, will be deleted
-    # infinity - stored messages won't be deleted. Be aware with this setting cause with a lot
-    # of saved data log file can be large
-    limit-type: 'time'
-
-    # Limit for saved messages. According to the selected type:
-    # count - limit in messages count
-    # time - limit in minutes
-    # infinity - limit doesn't matter
-    limit: 2880 # 2880 minutes - 2 days
-
-
-on-join:
-  # Messages/commands to send on join. It's like in console or online panel, if you start message with
-  # bot command prefix, then bot command will be executed. If you start message with slash (/),
-  # Minecraft command will be executed and if you write just message, this message will be send on chat.
-
-  # Pattern:
-  # <timeout>:<message>
-  # Timeout is counting in miliseconds after join event
-
-  commands:
-    # Some examples:
-    # - '500:/login mYsUpErSeCrEtPaSsWoRd123'
-    # - '1000:Hello everyone!''
-    # - '5000:/home'
-    # - '5500:/panel'
-    # - '6000:-inv leftclick 5'
-
-
-auto-rejoin:
-  # Whether bot should rejoin to server when it gets kicked out
-  enabled: false
-
-  # Time in seconds before bot again join server
-  timeout: 15
-
-
-online-panel:
-  # If you want to disable online panel, set this to false
-  enabled: true
-
-
-  # Port for online panel, default is 3000
-  port: 3000
-
-  # Messages to load from logs file to show in online panel when you open it
-  last-messages:
-    # Type for limit:
-    # count - max messages count
-    # time - max messages age in minutes
-    # all - will load all messages from logs file
-
-    # The more messages to load, the longer the panel will take to load, so
-    # don't set limit to high!
-    type: 'count'
-
-    # Set it to whatever if type is 'infinity'. 1440 minutes is 24h
-    limit: 2000
-```
+# License
+This project uses [GNU GPLv3](https://github.com/Ynfuien/YnfuBot/blob/main/LICENSE) license.
