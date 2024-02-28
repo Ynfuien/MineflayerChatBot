@@ -1,4 +1,4 @@
-# YnfuBot - Minecraft bot
+# Mineflayer Chat Bot
 This is Minecraft bot written in Javascript with [NodeJs](https://nodejs.org) using [mineflayer](https://www.npmjs.com/package/mineflayer). It was created mainly to save chat logs to be able to read them later and to help server owners in testing various functions without having to start another launcher.
 
 **On public servers you use the bot at your own risk!**

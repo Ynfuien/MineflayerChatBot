@@ -1,4 +1,4 @@
 @echo off
-title YnfuBot
+title Mineflayer Chat Bot
 npm run dev:watch
 pause
