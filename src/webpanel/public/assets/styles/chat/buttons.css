@@ -1,0 +1,25 @@
+/* Scroll button */
+section.input > button.scroll {
+    position: absolute;
+
+    right: 0;
+    bottom: calc(100% + 0.25rem); /* 100% + 4px */
+
+    width: 1.75rem;
+    height: 1.75rem;
+
+    background-color: rgba(0, 0, 0, 0.5);
+
+    font-size: 1.1rem;
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+section.input > button.scroll:hover {
+    cursor: pointer;
+    
+    background-color: rgba(255, 255, 255, 0.4);
+}

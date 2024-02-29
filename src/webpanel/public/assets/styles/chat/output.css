@@ -1,0 +1,51 @@
+/** Output **/
+section#chat > section.output {
+    --line-height: 1lh * 0.75;
+    --padding-top: 0.125rem;
+
+    min-width: 20rem;
+    width: 40rem;
+    max-width: 100%;
+
+    min-height: calc(2 * var(--line-height) + var(--padding-top));
+    height: calc(20 * var(--line-height) + var(--padding-top));
+    max-height: 100%;
+
+    padding-left: 0.5rem;
+
+    background-color: rgba(0, 0, 0, 0.499);
+    border-right: 0.25rem solid transparent;
+
+    overflow: auto;
+
+    font-size: 1.25rem;
+
+    display: flex;
+    flex-direction: column;
+
+    scrollbar-color: hsl(240, 44%, 65%, 0.8);
+    scrollbar-width: thin;
+}
+
+/* Scrollbar styles */
+section#chat > section.output::-webkit-scrollbar {
+    width: 0.25rem;
+    height: 0.3rem;
+}
+section#chat > section.output::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+section#chat > section.output::-webkit-scrollbar-thumb {
+    border-left: 0.125rem solid hsl(240, 39%, 35%, 0.8);
+    border-right: 0.125rem solid hsl(240, 44%, 65%, 0.8);
+}
+
+section#chat > section.output > pre {
+    line-height: 0.9em;
+    text-indent: -0.5rem;
+    padding-left: 0.5rem;
+}
+
+section#chat > section.output > pre:first-child {
+    margin-top: auto;
+}

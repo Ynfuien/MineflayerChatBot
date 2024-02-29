@@ -1,0 +1,72 @@
+/** Input **/
+section#chat > section.input {
+    position: relative;
+
+    margin: 0 0.25rem 0.1875rem; /* 0 4px 3px */
+    padding: 0 0.25rem;
+    
+    background-color: rgba(0, 0, 0, 0.5);
+
+    font-family: inherit;
+    color: #dddddd;
+    font-size: 1.25rem;
+    line-height: 1em;
+    /* 2px 2px 0px */
+    text-shadow: 0.125rem 0.125rem 0 color-mix(in srgb, currentColor 25%, black);
+}
+
+section#chat > section.input > div {
+    height: 1.5rem;
+    
+    white-space: nowrap;
+}
+
+section#chat > section.input > .input {
+    z-index: 1;
+
+    position: relative;
+    overflow-x: hidden;
+    caret-color: transparent;
+
+    display: flex;
+    column-gap: 0.125rem;
+}
+
+section#chat > section.input > .input:focus {
+    outline: none;
+}
+
+/** Caret(s) **/
+/* Variables are set with JS on the .input element */
+section#chat > section.input > .input:focus::before {
+    content: '';
+    display: var(--vertical-caret-display, none);
+
+    user-select: none;
+    pointer-events: none;
+
+    position: absolute;
+    bottom: 0;
+    left: var(--vertical-caret-position, 0);
+
+    height: calc(1em + 0.125rem); /* 1em + 2px */
+
+    border-right: 0.125rem solid #d0d0d0;
+
+    animation: caret-blink 650ms infinite steps(2, start);
+}
+
+section#chat > section.input > .input:focus::after {
+    content: '_';
+    display: var(--horizontal-caret-display, block);
+
+    user-select: none;
+
+    animation: caret-blink 650ms infinite steps(2, start);
+}
+
+@keyframes caret-blink {
+    to {
+        visibility: hidden;
+    }
+}
