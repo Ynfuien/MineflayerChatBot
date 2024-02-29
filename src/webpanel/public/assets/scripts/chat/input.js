@@ -1,6 +1,7 @@
 import { isScrollOnTheBottom, scrollToBottom } from "./output.js";
 import { sendCommand } from "../webSocket.js";
 import { getTextWidth, getElementFont } from "../utils/text-width-measurer.js";
+import { toggleVisibility as toggleTabListVisibility } from "../tabList/tabList.js";
 
 export { setup };
 
@@ -25,6 +26,11 @@ function setup(main) {
         outputElement.style.scrollBehavior = "smooth";
         scrollToBottom(outputElement);
         outputElement.style.scrollBehavior = "";
+    });
+
+    //// Tab list button
+    input.tabListButton.addEventListener("click", () => {
+        toggleTabListVisibility(main);
     });
     
 

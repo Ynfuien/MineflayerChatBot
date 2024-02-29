@@ -47,6 +47,7 @@ import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
  *          input: {
  *              element: HTMLDivElement,
  *              scrollButton: HTMLButtonElement,
+ *              tabListButton: HTMLButtonElement,
  *              lengthLimit: number
  *          },
  *          output: {
@@ -62,6 +63,7 @@ import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
  *              players: Main.tabList.data.player[]
  *          },
  *          elements: {
+ *              main: HTMLDivElement,
  *              header: HTMLDivElement,
  *              footer: HTMLDivElement,
  *              list: HTMLOListElement
@@ -86,7 +88,8 @@ import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
             element: chat,
             input: {
                 element: chat.querySelector("section.input > .input"),
-                scrollButton: chat.querySelector("section.input > button.scroll"),
+                scrollButton: chat.querySelector("section.input button.scroll"),
+                tabListButton: chat.querySelector("section.input button.tab-list"),
                 lengthLimit: 256
             },
             output: {
@@ -119,6 +122,7 @@ import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
                 players: []
             },
             elements: {
+                main: tabList,
                 header: tabList.querySelector("header"),
                 footer: tabList.querySelector("footer"),
                 list: tabList.querySelector("ol")

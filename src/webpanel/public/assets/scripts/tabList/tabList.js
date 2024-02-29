@@ -1,6 +1,6 @@
 import { parseMessage } from "../utils/motd-parser.js";
 
-export { updateTabList };
+export { updateTabList, toggleVisibility };
 
 let lastHeader = "";
 let lastFooter = "";
@@ -10,11 +10,25 @@ let lastPlayers = [];
 /**
  * @param {import("../index.js").Main} main 
  */
+function toggleVisibility(main) {
+    const { main: tabList } = main.tabList.elements;
+
+    tabList.classList.toggle("hidden");
+    if (tabList.classList.contains("hidden")) return;
+
+    updateTabList(main);
+}
+
+/**
+ * @param {import("../index.js").Main} main 
+ */
 function updateTabList(main) {
     const tabList = main.tabList;
 
     const { data, elements } = tabList;
     const { list } = elements;
+
+    if (elements.main.classList.contains("hidden")) return;
 
     // Header
     if (lastHeader !== data.header) {

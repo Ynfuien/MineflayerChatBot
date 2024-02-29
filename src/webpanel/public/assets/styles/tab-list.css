@@ -21,6 +21,10 @@ section#tab-list {
     align-items: center;
 }
 
+section#tab-list.hidden {
+    display: none;
+}
+
 
 /** Header and footer **/
 section#tab-list > header, footer {

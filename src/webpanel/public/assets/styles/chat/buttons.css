@@ -1,12 +1,17 @@
-/* Scroll button */
-section.input > button.scroll {
+/* Buttons */
+section.input > .buttons {
     position: absolute;
 
     right: 0;
     bottom: calc(100% + 0.25rem); /* 100% + 4px */
 
-    width: 1.75rem;
-    height: 1.75rem;
+    display: flex;
+    column-gap: 0.125rem; /* 2px */
+}
+
+section.input > .buttons > button {
+    width: 1.75rem; /* 28px */
+    height: 1.75rem; /* 28px */
 
     background-color: rgba(0, 0, 0, 0.5);
 
@@ -18,8 +23,14 @@ section.input > button.scroll {
     align-items: center;
 }
 
-section.input > button.scroll:hover {
+section.input > .buttons > button:hover {
     cursor: pointer;
     
     background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Tab list button */
+section.input button.tab-list {
+    /* It was too bright */
+    color: color-mix(in srgb, currentColor 98%, black);
 }
