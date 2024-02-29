@@ -24,9 +24,8 @@ section#chat > section.output {
 
     min-height: calc(2 * var(--line-height) + var(--padding-top));
     height: calc(20 * var(--line-height) + var(--padding-top));
-    max-height: -webkit-fill-available;
+    max-height: 100%;
 
-    padding-top: var(--padding-top);
     padding-left: 0.5rem;
 
     background-color: rgba(0, 0, 0, 0.499);

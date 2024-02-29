@@ -1,5 +1,6 @@
 import { setup as setupWebSocket } from "./webSocket.js";
 import { setup as setupChatInputs } from "./chat/input.js";
+import { setup as setupChatOutput } from "./chat/output.js";
 import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
 
 /**
@@ -48,7 +49,10 @@ import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
  *              scrollButton: HTMLButtonElement,
  *              lengthLimit: number
  *          },
- *          output: HTMLDivElement,
+ *          output: {
+ *              element: HTMLDivElement,
+ *              scrollStepSize: number
+ *          },
  *          tabCompletion: Main.chat.tabCompletion
  *      },
  *      tabList: {
@@ -85,7 +89,10 @@ import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
                 scrollButton: chat.querySelector("section.input > button.scroll"),
                 lengthLimit: 256
             },
-            output: chat.querySelector(".output"),
+            output: {
+                element: chat.querySelector(".output"),
+                scrollStepSize: 7
+            },
             scrollDownButton: chat.querySelector("#scrollDown"),
             tabCompletion: {
                 element: chat.querySelector("section.input > .tab-completion"),
@@ -122,6 +129,7 @@ import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
 
     setupWebSocket(main);
     setupChatInputs(main);
+    setupChatOutput(main);
     setupTabCompletion(main);
 })();
 

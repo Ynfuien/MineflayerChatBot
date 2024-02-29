@@ -41,7 +41,7 @@ function setup(_main) {
         console.log("Displaying last logs...");
         const before = Date.now();
 
-        const { output } = main.chat;
+        const { element: output } = main.chat.output;
         output.textContent = '';
         for (const data of messages) showMessage(main, data, false);
 

@@ -1,6 +1,66 @@
 import { parseMessage } from "../utils/motd-parser.js";
 
-export { showMessage, isScrollOnTheBottom, scrollToBottom };
+export { setup, showMessage, isScrollOnTheBottom, scrollToBottom };
+
+
+/**
+ * 
+ * @param {import("../index.js").Main} main 
+ */
+function setup(main) {
+    const { output } = main.chat;
+    const { element: outputElement, scrollStepSize } = output;
+
+    // Minecraft like scrolling
+    const outputSyles = getComputedStyle(outputElement);
+
+    const defaultWidth = parseInt(outputSyles.width.replace(/px/g, ""));
+    const defaultHeight = parseInt(outputSyles.height.replace(/px/g, ""));
+
+    const lineHeight = parseInt(getComputedStyle(outputElement.querySelector("pre")).lineHeight.replace(/px/g, ""));
+    const paddingTop = defaultHeight % lineHeight;
+
+    outputElement.addEventListener("wheel", (event) => {
+        event.preventDefault();
+
+        const padding = paddingTop / 2;
+
+        const down = event.deltaY > 0;
+        let result = outputElement.scrollTop + (scrollStepSize * (down ? 1 : -1) * lineHeight);
+        result = Math.round(result / lineHeight) * lineHeight + padding;
+        if (result < padding) result = padding;
+
+        outputElement.scrollTo(outputElement.scrollLeft, result);
+    });
+    
+
+    // Using interactjs for resizible output
+    interact(outputElement)
+        .resizable({
+            margin: 5,
+            edges: {
+                top: true,
+                right: true,
+                left: false,
+                bottom: false,
+            },
+            listeners: {
+                move: function (event) {
+                    const scroll = isScrollOnTheBottom(outputElement);
+
+                    let { height, width } = event.rect;
+                    if (defaultWidth - (lineHeight * 2) < width && defaultWidth + (lineHeight * 2) > width) width = defaultWidth;
+
+                    height = (Math.round(height / lineHeight) * lineHeight) + paddingTop;
+                    
+                    outputElement.style.height = `${height}px`;
+                    outputElement.style.width = `${width}px`;
+
+                    if (scroll) scrollToBottom(outputElement);
+                }
+            }
+        });
+}
 
 /**
  * @typedef {{
@@ -16,7 +76,7 @@ export { showMessage, isScrollOnTheBottom, scrollToBottom };
  */
 function showMessage(main, data, scroll = true) {
     const { chatPatterns } = main.config;
-    const { output } = main.chat;
+    const { element: output } = main.chat.output;
 
     let { type } = data;
     if (type === 0) type = "bot";
@@ -83,7 +143,10 @@ function formatDate(pattern, timestamp) {
  * @returns {boolean}
  */
 function isScrollOnTheBottom(output) {
-    return output.scrollHeight - output.scrollTop === output.offsetHeight;
+    // const {scrollHeight, scrollTop, offsetHeight} = output;
+    // console.log({scrollHeight, scrollTop: Math.floor(output.scrollTop), offsetHeight, result: output.scrollHeight - output.scrollTop - output.offsetHeight})
+    // return output.scrollHeight - Math.floor(output.scrollTop) === output.offsetHeight;
+    return Math.abs(output.scrollHeight - output.scrollTop - output.offsetHeight) < 3;
 }
 
 /**

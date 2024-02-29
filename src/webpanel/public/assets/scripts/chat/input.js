@@ -11,19 +11,20 @@ export { setup };
 function setup(main) {
     const {input, output} = main.chat;
     const inputElement = input.element;
+    const outputElement = output.element;
     
     //// Scroll down button
     let scrollTimeout = 0;
     input.scrollButton.addEventListener("click", () => {
-        if (isScrollOnTheBottom(output)) return;
+        if (isScrollOnTheBottom(outputElement)) return;
 
         const now = new Date().getTime();
         if (now - scrollTimeout < 800) return;
         scrollTimeout = now;
 
-        output.style.scrollBehavior = "smooth";
-        scrollToBottom(output);
-        output.style.scrollBehavior = "";
+        outputElement.style.scrollBehavior = "smooth";
+        scrollToBottom(outputElement);
+        outputElement.style.scrollBehavior = "";
     });
     
 
