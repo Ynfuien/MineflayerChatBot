@@ -23,7 +23,18 @@ Minecraft bot written in Javascript using [NodeJs](https://nodejs.org) and [Mine
   - tab completion
   - tab list
 
-### Used packages in the project:
+### How to install
+1. Download and install [NodeJs](https://nodejs.org), if don't have it
+2. Download source code
+3. Unpack the archive
+4. Run `npm install` in the console in project folder
+5. Edit `config.yml` for your preferences
+6. Run `start.bat` and enjoy
+
+Online panel by default should be at http://localhost:3000
+
+
+### Used projects/assets:
 - [ascii-table](https://www.npmjs.com/package/ascii-table)
 - [better-sqlite3](https://www.npmjs.com/package/better-sqlite3)
 - [chalk](https://www.npmjs.com/package/chalk)
@@ -34,16 +45,9 @@ Minecraft bot written in Javascript using [NodeJs](https://nodejs.org) and [Mine
 - [prismarine-chat](https://www.npmjs.com/package/prismarine-chat)
 - [socket.io](https://www.npmjs.com/package/socket.io)
 - [yawn-yaml](https://www.npmjs.com/package/yawn-yaml)
-
-### How to install
-1. Download and install [NodeJs](https://nodejs.org), if don't have it
-2. Download source code
-3. Unpack the archive
-4. Run `npm install` in the console in project folder
-5. Edit `config.yml` for your preferences
-6. Run `start.bat` and enjoy
-
-Online panel by default should be at http://localhost:3000
+- [interact.js](https://interactjs.io)
+- [minecraft-font-extractor](https://github.com/Ynfuien/minecraft-font-extractor)
+- [GNU Unifont](https://unifoundry.com/unifont/index.html)
 
 
 # Media
