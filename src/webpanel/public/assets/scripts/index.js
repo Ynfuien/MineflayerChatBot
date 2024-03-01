@@ -54,6 +54,7 @@ import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
  *              element: HTMLDivElement,
  *              scrollStepSize: number
  *          },
+ *          actionBar: HTMLDivElement,
  *          tabCompletion: Main.chat.tabCompletion
  *      },
  *      tabList: {
@@ -96,7 +97,7 @@ import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
                 element: chat.querySelector(".output"),
                 scrollStepSize: 7
             },
-            scrollDownButton: chat.querySelector("#scrollDown"),
+            actionBar: chat.querySelector(".action-bar"),
             tabCompletion: {
                 element: chat.querySelector("section.input > .tab-completion"),
                 list: chat.querySelector("section.input > .tab-completion > .list"),

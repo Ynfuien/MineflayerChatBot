@@ -97,6 +97,21 @@ const self = module.exports = {
     },
 
     /**
+     * @param {import('prismarine-chat').ChatMessage} message 
+     */
+    sendActionBar(message) {
+        const { bot } = main;
+        if (!bot) return;
+        
+        const { io } = main.webPanel;
+
+        io.emit("action-bar", {
+            message: message.toMotd(),
+            timestamp: Date.now()
+        });
+    },
+
+    /**
      * @param {import('prismarine-chat').ChatMessage} header 
      * @param {import('prismarine-chat').ChatMessage} footer 
      */

@@ -22,7 +22,7 @@ section#chat > section.input > div {
 }
 
 section#chat > section.input > .input {
-    z-index: 1;
+    z-index: 3;
 
     position: relative;
     overflow-x: hidden;

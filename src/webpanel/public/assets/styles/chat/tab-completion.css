@@ -2,6 +2,8 @@
 section#chat > section.input > .tab-completion {
     --max-visible-size: 10;
 
+    z-index: 2;
+
     user-select: none;
 
     position: absolute;

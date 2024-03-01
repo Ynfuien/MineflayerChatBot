@@ -1,0 +1,29 @@
+section.action-bar {
+    position: absolute;
+    bottom: calc(8rem - 0.1875rem);
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    font-size: 1.25rem;
+
+    opacity: 1;
+}
+
+section.action-bar.hidden {
+    opacity: 0;
+
+    animation: action-bar-fade 3s linear;
+}
+
+@keyframes action-bar-fade {
+    0% {
+        opacity: 1;
+    }
+    65% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

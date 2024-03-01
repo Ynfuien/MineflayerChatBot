@@ -3,6 +3,8 @@ section#chat > section.output {
     --line-height: 1lh * 0.75;
     --padding-top: 0.125rem;
 
+    z-index: 1;
+
     min-width: 20rem;
     width: 40rem;
     max-width: 100%;

@@ -1,4 +1,5 @@
-const {logChatMessage} = require('../utils/logger.js');
+const { logChatMessage } = require('../utils/logger.js');
+const { sendActionBar } = require('../webpanel/webPanel.js');
 
 module.exports = {
     name: "message",
@@ -28,7 +29,7 @@ module.exports = {
         if (chatPosition === "game_info") {
             if (main.vars.bot.ignoreActionBar === true) return;
 
-            logChatMessage(message, "§#12ff98[ActionBar] §f");
+            sendActionBar(message);
             return;
         }
 

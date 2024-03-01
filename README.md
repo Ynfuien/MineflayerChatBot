@@ -22,6 +22,7 @@ Minecraft bot written in Javascript using [NodeJs](https://nodejs.org) and [Mine
   - command execution
   - tab completion
   - tab list
+  - action bar
 
 ### How to install
 1. Download and install [NodeJs](https://nodejs.org), if don't have it

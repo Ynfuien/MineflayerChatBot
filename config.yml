@@ -5,13 +5,13 @@ server:
   # Default Minecraft servers port is 25565. Set this only if server has different port
   port: 25565
 
-  # Minecraft server version will be selected automatically but if you want specific
-  # set this to it e.g. 1.15.2, 1.16.2, 1.17
+  # Minecraft server version should be selected automatically but if you want specific
+  # set this on your own
   version: 1.20.2
 
 
 login:
-  # Set this to your email for Minecraft account or to username for online-mode servers
+  # Set this to your email for Minecraft account or to username for offline-mode servers
   username: MySuperUsername
 
   # Set this only if you use Minecraft account
@@ -35,14 +35,8 @@ bot-commands:
 
 
 chat:
-  # Messages to ignore. Filter use RegExp match. Useful when e.g message on
-  # action bar is spaming (Cause action bar is also included to messages)
-  ignored-messages:
-    # This is for default ActionHealth plugin setting, but better way in that case is to
-    # disable it using command /actionhealth toggle. And keep in maind that this RexExp
-    # patter might match another message, for example written by player on chat and
-    # then it won't be displayed in console, online panel etc.
-    # - '^[\w\d_]{3,16}: [❤]{5,}$'
+  # Messages to ignore. Filter uses RegExp match
+  ignored-messages: []
 
   logs:
     # If logs should be enabled. This function saves every message to file and when you open online

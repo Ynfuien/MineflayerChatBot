@@ -1,4 +1,5 @@
 import { showMessage, scrollToBottom } from "./chat/output.js";
+import { showActionBar } from "./chat/actionBar.js";
 import { updateTabList } from "./tabList/tabList.js";
 import { showCompletions } from "./chat/tabCompletion.js";
 
@@ -61,6 +62,11 @@ function setup(_main) {
         if (!gotTheLogs) return;
 
         showMessage(main, data);
+    });
+
+    // Acton bar
+    socket.on("action-bar", (data) => {
+        showActionBar(main, data.message);
     });
 
     // Tab completions
