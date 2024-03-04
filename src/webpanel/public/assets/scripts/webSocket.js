@@ -2,6 +2,7 @@ import { showMessage, scrollToBottom } from "./chat/output.js";
 import { showActionBar } from "./chat/actionBar.js";
 import { updateTabList } from "./tabList/tabList.js";
 import { showCompletions } from "./chat/tabCompletion.js";
+import { updateScoreboard } from "./scoreboard/scoreboard.js";
 
 export { setup, sendCommand, sendTabCompletionRequest };
 
@@ -67,6 +68,12 @@ function setup(_main) {
     // Acton bar
     socket.on("action-bar", (data) => {
         showActionBar(main, data.message);
+    });
+
+    // Acton bar
+    socket.on("scoreboard", (data) => {
+        main.scoreboard.data = data.scoreboard;
+        updateScoreboard(main);
     });
 
     // Tab completions

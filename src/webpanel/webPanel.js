@@ -129,6 +129,51 @@ const self = module.exports = {
     },
 
     /**
+     * 
+     * @param {import('mineflayer').ScoreBoard} scoreboard 
+     * @returns 
+     */
+    scoreboardUpdate(scoreboard) {
+        const { bot } = main;
+        if (!bot) return;
+        
+        const { io } = main.webPanel;
+
+        // Clear scoreboard
+        if (scoreboard === null) {
+            io.emit("scoreboard", {
+                scoreboard: null,
+                timestamp: Date.now()
+            });
+
+            return;
+        }
+
+        let { title } = scoreboard;
+        if (title &&  typeof title !== "string") title = title.toMotd();
+
+        const result = {
+            name: scoreboard.name,
+            title,
+            items: []
+        };
+
+        for (const item of scoreboard.items) {
+            result.items.push({
+                name: item.name,
+                value: item.value,
+                displayName: item.displayName.toMotd()
+            });
+        }
+
+        io.emit("scoreboard", {
+            scoreboard: result,
+            timestamp: Date.now()
+        });
+    },
+    
+
+    /**
      * @param {import('../index.js').Main} main 
      */
     async playerListUpdate(main, interval = false) {

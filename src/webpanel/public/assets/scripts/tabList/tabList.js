@@ -32,7 +32,7 @@ function updateTabList(main) {
 
     // Header
     if (lastHeader !== data.header) {
-        elements.header.innerHTML = '';
+        elements.header.textContent = '';
     
         const headerPre = parseMessage(data.header);
         headerPre.classList.add("mc-text");
@@ -43,7 +43,7 @@ function updateTabList(main) {
     
     // Footer
     if (lastFooter !== data.footer) {
-        elements.footer.innerHTML = '';
+        elements.footer.textContent = '';
     
         const footerPre = parseMessage(data.footer);
         footerPre.classList.add("mc-text");
@@ -59,7 +59,7 @@ function updateTabList(main) {
     if (!checkIfPlayerListChanged(playersData)) return;
     lastPlayers = playersData;
 
-    list.innerHTML = '';
+    list.textContent = '';
 
     const count = playersData.length;
     for (let i = 0; i < count; i++) {
