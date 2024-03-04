@@ -1,7 +1,7 @@
 import { sendTabCompletionRequest } from "../webSocket.js";
 import { getTextWidth, getElementFont } from "../utils/text-width-measurer.js";
 
-export { setup, showCompletions, getCompletions };
+export { setup, showCompletions, getCompletions, clear };
 
 /** @type {import("..").Main} */
 let main = null;
