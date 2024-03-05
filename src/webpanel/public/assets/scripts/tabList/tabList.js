@@ -73,8 +73,10 @@ function updateTabList(main) {
         displayName.classList.add("mc-text");
         li.appendChild(displayName);
 
+        const spectator = player.gamemode === 3;
+
         // Scoreboard value
-        if (player.scoreboardValue !== null) {
+        if (!spectator && player.scoreboardValue !== null) {
             const scoreboardValue = parseMessage("§e" + player.scoreboardValue);
             scoreboardValue.classList.add("mc-text");
 
@@ -88,7 +90,7 @@ function updateTabList(main) {
         li.appendChild(img);
 
         // Spectator
-        if (player.gamemode === 3) li.classList.add("spectator");
+        if (spectator) li.classList.add("spectator");
 
         list.appendChild(li);
     }
