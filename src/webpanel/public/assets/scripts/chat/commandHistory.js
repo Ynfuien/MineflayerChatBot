@@ -1,55 +1,91 @@
-import {clearCompletions, getCompletions} from "./tabComplete.js";
-import {moveWindowSelection} from "./utils.js";
+export { setup, addCommand, resetCurrentIndex };
 
-export {changeSelectedUsedCommand, addUsedCommand, resetCurrentSelectedUsedCommand};
+/** @type {import("../index.js").Main} */
+let main;
 
+/**
+ * 
+ * @param {import("../index.js").Main} main 
+ */
+function setup(_main) {
+    main = _main;
 
-const maxUsedCommandsCount = 500;
+    const { input, tabCompletion } = main.chat;
 
-let currentIndex = -1;
+    input.element.addEventListener("keydown", (event) => {
+        if (tabCompletion.shown) return;
+        const { key } = event;
+        
+        if (key === "ArrowUp") {
+            event.preventDefault();
+            event.stopPropagation();
 
-function changeSelectedUsedCommand(main, direction = "up") {
-    const {usedCommands, input} = main.chat;
+            changeSelectedCommand(1);
+            return;
+        }
+        
+        if (key === "ArrowDown") {
+            event.preventDefault();
+            event.stopPropagation();
+
+            changeSelectedCommand(-1);
+            return;
+        }
+    });
+}
+
+/**
+ * @param {number} offset 
+ */
+function changeSelectedCommand(offset) {
+    const { input } = main.chat;
+    const { commandHistory, element: inputElement } = input;
+    const { list, currentIndex, inputBeforeHistory } = commandHistory;
+
+    let nextIndex = currentIndex + offset;
+    if (nextIndex > list.length - 1) return;
+
+    if (nextIndex < 0) {
+        if (nextIndex < -1) return;
+
+        commandHistory.currentIndex = nextIndex;
+        setInput(inputElement, inputBeforeHistory);
+        commandHistory.inputBeforeHistory = "";
+        return;
+    }
     
-    let index = currentIndex;
 
-    if (index === -1) {
-        if (direction === "down") return;
+    if (currentIndex === -1) commandHistory.inputBeforeHistory = inputElement.innerText;
 
-        if (direction === "up") {
-            index = usedCommands.length - 1;
-        }
-    } else {
-        index -= direction === "up" ? 1 : -1;
-        
-        if (index < 0) return;
-        
-        if (index > usedCommands.length - 1) {
-            index = -1;
-        }
-    }
-
-    clearCompletions(main);
-
-    currentIndex = index;
-    input.innerText = index === -1 ? '' : usedCommands[index];
-
-    moveWindowSelection(input.innerText.length);
-    getCompletions(main, input.innerText);
+    commandHistory.currentIndex = nextIndex;
+    const command = list[nextIndex];
+    setInput(inputElement, command);
 }
 
-function addUsedCommand(main, command) {
-    let usedCommands = main.chat.usedCommands;
+/**
+ * @param {HTMLDivElement} input 
+ * @param {string} text 
+ */
+function setInput(input, text) {
+    input.innerText = text;
 
-    if (usedCommands[usedCommands.length - 1] === command) return;
-
-    usedCommands.push(command);
-
-    if (usedCommands.length > maxUsedCommandsCount) {
-        usedCommands.shift();
+    const seleciton = getSelection();
+    for (let i = 0; i < text.length; i++) {
+        seleciton.modify("move", "right", "character");
     }
 }
 
-function resetCurrentSelectedUsedCommand() {
-    currentIndex = -1;
+/**
+ * @param {string} command 
+ */
+function addCommand(command) {
+    const { list, limit } = main.chat.input.commandHistory;
+
+    if (list.unshift(command) > limit) list.pop();
+}
+
+function resetCurrentIndex() {
+    const { commandHistory } = main.chat.input;
+
+    commandHistory.currentIndex = -1;
 }

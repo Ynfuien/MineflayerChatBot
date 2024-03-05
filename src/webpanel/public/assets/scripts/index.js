@@ -2,6 +2,7 @@ import { setup as setupWebSocket } from "./webSocket.js";
 import { setup as setupChatInputs } from "./chat/input.js";
 import { setup as setupChatOutput } from "./chat/output.js";
 import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
+import { setup as setupCommandHistory } from "./chat/commandHistory.js";
 
 import { sendCommand } from "./webSocket.js";
 
@@ -57,7 +58,13 @@ import { sendCommand } from "./webSocket.js";
  *              element: HTMLDivElement,
  *              scrollButton: HTMLButtonElement,
  *              tabListButton: HTMLButtonElement,
- *              lengthLimit: number
+ *              lengthLimit: number,
+ *              commandHistory: {
+ *                  currentIndex: number,
+ *                  inputBeforeHistory: string,
+ *                  limit: number,
+ *                  list: string[]
+ *              }
  *          },
  *          output: {
  *              element: HTMLDivElement,
@@ -107,7 +114,13 @@ import { sendCommand } from "./webSocket.js";
                 element: chat.querySelector("section.input > .input"),
                 scrollButton: chat.querySelector("section.input button.scroll"),
                 tabListButton: chat.querySelector("section.input button.tab-list"),
-                lengthLimit: 256
+                lengthLimit: 256,
+                commandHistory: {
+                    currentIndex: -1,
+                    inputBeforeHistory: "",
+                    limit: 300,
+                    list: []
+                }
             },
             output: {
                 element: chat.querySelector(".output"),
@@ -158,6 +171,7 @@ import { sendCommand } from "./webSocket.js";
     setupChatInputs(main);
     setupChatOutput(main);
     setupTabCompletion(main);
+    setupCommandHistory(main);
 
     setTimeout(() => {
         sendCommand("-t");

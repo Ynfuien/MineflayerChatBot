@@ -1,8 +1,10 @@
 import { isScrollOnTheBottom, scrollToBottom } from "./output.js";
-import { sendCommand } from "../webSocket.js";
-import { getTextWidth, getElementFont } from "../utils/text-width-measurer.js";
 import { toggleVisibility as toggleTabListVisibility } from "../tabList/tabList.js";
 import { clear as clearCompletions } from "./tabCompletion.js";
+import { addCommand as addCommandToHistory, resetCurrentIndex as resetCommandHistoryIndex } from "./commandHistory.js";
+
+import { sendCommand } from "../webSocket.js";
+import { getTextWidth, getElementFont } from "../utils/text-width-measurer.js";
 
 export { setup };
 
@@ -38,15 +40,17 @@ function setup(main) {
     //// Input
     // Enter press and length limit checking
     inputElement.addEventListener("keypress", (event) => {
-        const value = inputElement.innerText;
+        const value = inputElement.innerText.replace(/[\u00A0\u180E\u2000-\u200B\u202F\u205F\u3000\uFEFF]/g, " ");
 
         if (event.code === "Enter") {
             if (!value) return event.preventDefault();
 
-            sendCommand(value.replace(/[\u00A0\u180E\u2000-\u200B\u202F\u205F\u3000\uFEFF]/g, " "));
+            sendCommand(value);
+            addCommandToHistory(value);
 
             inputElement.innerText = "";
             clearCompletions();
+            resetCommandHistoryIndex();
 
             event.preventDefault();
             return;

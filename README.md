@@ -20,6 +20,7 @@ Minecraft bot written in Javascript using [NodeJs](https://nodejs.org) and [Mine
 - Online panel with
   - chat logs
   - command execution
+  - command history
   - tab completion
   - tab list
   - action bar
