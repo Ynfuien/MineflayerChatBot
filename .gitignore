@@ -13,4 +13,6 @@ src/events/playerUpdated.event.js
 
 src/commands/test.command.js
 
+src/webpanel/public/assets/img/backgrounds/Ynfuien/back.png
+
 config.dev.yml

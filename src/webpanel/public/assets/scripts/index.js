@@ -172,9 +172,5 @@ import { sendCommand } from "./webSocket.js";
     setupChatOutput(main);
     setupTabCompletion(main);
     setupCommandHistory(main);
-
-    setTimeout(() => {
-        sendCommand("-t");
-    }, 100);
 })();
 

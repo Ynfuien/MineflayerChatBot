@@ -50,6 +50,8 @@ const self = module.exports = {
 
         io.on("connection", (socket) => {
             self.playerListUpdate(main);
+            const { sidebar } = main.bot.scoreboard;
+            self.scoreboardUpdate(sidebar ? sidebar : null);
 
             socket.emit("config", {
                 chatPatterns: main.config.values['online-panel']['chat-patterns']
