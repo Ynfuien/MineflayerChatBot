@@ -12,8 +12,18 @@
 }
 
 @font-face {
-    font-family: 'Unifont Emojis';
-    src: url('../fonts/Unifont Emojis.otf');
+    font-family: 'Unifont';
+    src: url('../fonts/unifont-15.1.05.otf');
+}
+
+@font-face {
+    font-family: 'Unifont Upper';
+    src: url('../fonts/unifont_upper-15.1.05.otf');
+}
+
+@font-face {
+    font-family: 'Unifont CSUR';
+    src: url('../fonts/unifont_csur-15.1.05.otf');
 }
 
 *,
@@ -64,7 +74,7 @@ html, body {
 
     background-color: #2e2e2e;
 
-    font-family: 'Mojangles', 'Unifont Emojis';
+    font-family: 'Mojangles', 'Unifont', 'Unifont Upper', 'Unifont CSUR';
     color: white;
 }
 
