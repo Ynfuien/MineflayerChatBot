@@ -54,7 +54,4 @@ function updateScoreboard(main) {
 
         list.appendChild(li);
     }
-
-    const height = scoreboardElement.offsetHeight;
-    scoreboardElement.style.setProperty("--height", `${height}px`);
 }

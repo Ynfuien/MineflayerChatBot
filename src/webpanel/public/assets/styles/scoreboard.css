@@ -2,12 +2,9 @@
     background-color: rgba(0, 0, 0, 0.3);
 
     position: absolute;
-    /* --height variable is set with JS
-        and represents just the height
-        of the whole scoreboard */
-    top: calc(50vh + (var(--height, 0) / 3));
+    top: 50vh;
     right: 0.125rem;
-    transform: translateY(-100%);
+    transform: translateY(calc(-100% * (2 / 3)));
 
     font-size: 1.25rem;
     text-shadow: none !important;
