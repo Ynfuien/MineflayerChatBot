@@ -24,9 +24,13 @@ section#chat > section.output {
 
     display: flex;
     flex-direction: column;
+}
 
-    scrollbar-color: hsl(240, 44%, 65%, 0.8);
-    scrollbar-width: thin;
+@supports not selector(section#chat > section.output::-webkit-scrollbar) {
+    section#chat > section.output {
+        scrollbar-color: hsl(240, 44%, 65%, 0.8) transparent;
+        scrollbar-width: thin;
+    }
 }
 
 /* Scrollbar styles */
