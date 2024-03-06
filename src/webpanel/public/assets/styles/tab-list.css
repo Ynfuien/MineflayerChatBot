@@ -5,20 +5,21 @@ section#tab-list {
     transform: translateX(-50%);
 
     z-index: 2;
-    padding: 0.125rem; /* 2px */
+    padding: 0 0.125rem; /* 2px */
 
     max-width: calc(100% - 4rem);
 
     background-color: rgba(0, 0, 0, 0.5);
 
-    font-family: Mojangles;
     font-size: 1.25rem;
-    line-height: 1em;
+    line-height: 0.9em;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    
+    overflow: hidden;
 }
 
 section#tab-list.hidden {
@@ -27,8 +28,29 @@ section#tab-list.hidden {
 
 
 /** Header and footer **/
-section#tab-list > header, footer {
+section#tab-list > header {
     text-align: center;
+
+    transform: translateY(-0.0625rem);
+
+    margin-bottom: 0.25rem; /* 5px */
+}
+
+section#tab-list > header.empty {
+    padding-top: 0.125rem;
+    margin-bottom: 0;
+}
+
+section#tab-list > footer {
+    text-align: center;
+    
+    margin-top: 0.0625rem; /* 1px */
+    padding-bottom: 0.1875rem; /* 3px */
+}
+
+section#tab-list > footer.empty {
+    margin-top: 0;
+    padding-bottom: 0.125rem; /* 2px */
 }
 
 
@@ -64,6 +86,8 @@ section#tab-list > ol > li {
 
     display: flex;
     justify-content: flex-end;
+
+    overflow: hidden;
 }
 
 /* Display name */
@@ -87,7 +111,7 @@ section#tab-list > ol > li > pre:nth-child(2) {
 section#tab-list > ol > li > img {
     height: 100%;
 
-    margin-left: 0.25rem;
+    margin-left: 0.125rem;
 
     image-rendering: pixelated;
     user-select: none;

@@ -34,9 +34,15 @@ function updateTabList(main) {
     if (lastHeader !== data.header) {
         elements.header.textContent = '';
     
-        const headerPre = parseMessage(data.header);
-        headerPre.classList.add("mc-text");
-        elements.header.appendChild(headerPre);
+        if (data.header.length > 0) {
+            const headerPre = parseMessage(data.header);
+            headerPre.classList.add("mc-text");
+            elements.header.appendChild(headerPre);
+            elements.header.classList.remove("empty");
+        } else {
+            elements.header.classList.add("empty");
+        }
+        
 
         lastHeader = data.header;
     }
@@ -45,9 +51,14 @@ function updateTabList(main) {
     if (lastFooter !== data.footer) {
         elements.footer.textContent = '';
     
-        const footerPre = parseMessage(data.footer);
-        footerPre.classList.add("mc-text");
-        elements.footer.appendChild(footerPre);
+        if (data.footer.length > 0) {
+            const footerPre = parseMessage(data.footer);
+            footerPre.classList.add("mc-text");
+            elements.footer.appendChild(footerPre);
+            elements.footer.classList.remove("empty");
+        } else {
+            elements.footer.classList.add("empty");
+        }
 
         lastFooter = data.footer;
     }
