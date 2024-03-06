@@ -3,9 +3,9 @@ const { logBot } = require("../utils/logger.js");
 
 module.exports = {
     name: "bot",
-    enable: false,
-    usage: "<start | stop | restart>",
-    description: "Starts, stops or restarts bot.",
+    enable: true,
+    usage: "<on | off | restart>",
+    description: "Starts, stops or restarts the bot.",
 
     /**
      * @param {import("..").Main} main
@@ -14,18 +14,19 @@ module.exports = {
     run (main, args) {
         const {bot} = main;
 
-        let arg1 = args[0];
+        if (args.length === 0) return false;
+        const arg = args[0].toLowerCase();
 
-        if (arg1 === "stop") {
+        if (["off", "stop", "quit"].includes(arg)) {
             if (!bot) return logBot("&cBot is already off!");
 
             logBot("&bTurning bot &coff&b..");
             bot.end();
-            main.temp.bot.stop = true;
+            main.vars.bot.stop = true;
             return;
         }
 
-        if (arg1 === "start") {
+        if (["on", "start", "join"].includes(arg)) {
             if (bot) return logBot("&cBot is already on!");
 
             logBot("&bTurning bot &aon&b..");
@@ -33,7 +34,7 @@ module.exports = {
             return;
         }
 
-        if (arg1 === "restart") {
+        if (["restart", "rejoin"].includes(arg)) {
             if (!bot) {
                 logBot("&bTurning bot &aon&b..");
                 startBot(main);
@@ -42,7 +43,7 @@ module.exports = {
 
             logBot("&bTurning bot &coff&b..");
             bot.end();
-            main.temp.bot.restart = true;
+            main.vars.bot.restart = true;
             return;
         }
 
@@ -57,8 +58,7 @@ module.exports = {
         if (!args) return [];
         if (args.length !== 1) return [];
 
-        const arg1 = args[0].toLowerCase();
-
-        return ["start", "stop", "restart"].filter(completion => completion.startsWith(arg1));
+        const arg = args[0].toLowerCase();
+        return ["on", "off", "restart"].filter(completion => completion.startsWith(arg));
     }
 }
