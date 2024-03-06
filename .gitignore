@@ -16,3 +16,4 @@ src/commands/test.command.js
 src/webpanel/public/assets/img/backgrounds/Ynfuien/back.png
 
 config.dev.yml
+.env

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const database = require('better-sqlite3')('logs.db');
 // Message types:
 // 0 - bot
@@ -15,6 +17,7 @@ const { startBot } = require('./utils/botManager.js');
 /**
  * @typedef {{
  *      bot: import('mineflayer').Bot | null,
+ *      dev: boolean,
  *      database: import('better-sqlite3').Database,
  *      webPanel: {
  *          io: import('socket.io').Server,
@@ -82,7 +85,7 @@ const { startBot } = require('./utils/botManager.js');
     /** @type {Main} */
     const main = {
         bot: null,
-        dev: true,
+        dev: process.env.DEV_MODE === true ? true : false,
         database,
         webPanel: {},
         commands: {
