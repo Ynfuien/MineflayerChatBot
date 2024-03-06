@@ -1,3 +1,5 @@
+const { scoreboardUpdate } = require("../webpanel/webPanel.js");
+
 module.exports = {
     name: "scoreboard_objective",
     lowLevelApi: true,
@@ -29,6 +31,9 @@ module.exports = {
             } catch {}
             
             scoreboard.title = title;
+            
+            if (bot.scoreboard.sidebar !== scoreboard) return;
+            scoreboardUpdate(scoreboard);
         });
     }
 }
