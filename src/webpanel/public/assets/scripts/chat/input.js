@@ -1,5 +1,6 @@
 import { isScrollOnTheBottom, scrollToBottom } from "./output.js";
 import { toggleVisibility as toggleTabListVisibility } from "../tabList/tabList.js";
+import { toggleVisibility as toggleScoreboardVisibility } from "../scoreboard/scoreboard.js";
 import { clear as clearCompletions } from "./tabCompletion.js";
 import { addCommand as addCommandToHistory, resetCurrentIndex as resetCommandHistoryIndex } from "./commandHistory.js";
 
@@ -34,6 +35,11 @@ function setup(main) {
     //// Tab list button
     input.tabListButton.addEventListener("click", () => {
         toggleTabListVisibility(main);
+    });
+
+    //// Scoreboard button
+    input.scoreboardButton.addEventListener("click", () => {
+        toggleScoreboardVisibility(main);
     });
     
 

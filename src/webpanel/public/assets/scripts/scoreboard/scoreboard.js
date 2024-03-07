@@ -1,6 +1,6 @@
 import { parseMessage } from "../utils/motd-parser.js";
 
-export { updateScoreboard };
+export { updateScoreboard, toggleVisibility };
 
 
 /**

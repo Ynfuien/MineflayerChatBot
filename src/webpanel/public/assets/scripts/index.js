@@ -58,6 +58,7 @@ import { sendCommand } from "./webSocket.js";
  *              element: HTMLDivElement,
  *              scrollButton: HTMLButtonElement,
  *              tabListButton: HTMLButtonElement,
+ *              scoreboardButton: HTMLButtonElement,
  *              lengthLimit: number,
  *              commandHistory: {
  *                  currentIndex: number,
@@ -114,6 +115,7 @@ import { sendCommand } from "./webSocket.js";
                 element: chat.querySelector("section.input > .input"),
                 scrollButton: chat.querySelector("section.input button.scroll"),
                 tabListButton: chat.querySelector("section.input button.tab-list"),
+                scoreboardButton: chat.querySelector("section.input button.scoreboard"),
                 lengthLimit: 256,
                 commandHistory: {
                     currentIndex: -1,

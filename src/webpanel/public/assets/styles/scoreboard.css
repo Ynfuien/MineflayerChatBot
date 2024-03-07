@@ -13,6 +13,10 @@
     overflow: hidden;
 }
 
+#scoreboard.hidden {
+    display: none;
+}
+
 #scoreboard * {
     text-shadow: inherit;
 }
