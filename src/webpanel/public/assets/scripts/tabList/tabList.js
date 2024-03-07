@@ -30,12 +30,16 @@ function updateTabList(main) {
 
     if (elements.main.classList.contains("hidden")) return;
 
+    
+    const { header, footer } = data;
+
     // Header
-    if (lastHeader !== data.header) {
+    if (lastHeader !== header) {
         elements.header.textContent = '';
     
-        if (data.header.length > 0) {
-            const headerPre = parseMessage(data.header);
+        if (header.length > 0) {
+            // .replaces fix leading and trailing new lines being ignored by HTML
+            const headerPre = parseMessage(header.replace(/^\n/, " \n").replace(/\n$/, "\n "));
             headerPre.classList.add("mc-text");
             elements.header.appendChild(headerPre);
             elements.header.classList.remove("empty");
@@ -44,15 +48,16 @@ function updateTabList(main) {
         }
         
 
-        lastHeader = data.header;
+        lastHeader = header;
     }
     
     // Footer
-    if (lastFooter !== data.footer) {
+    if (lastFooter !== footer) {
         elements.footer.textContent = '';
     
-        if (data.footer.length > 0) {
-            const footerPre = parseMessage(data.footer);
+        if (footer.length > 0) {
+            // .replaces fix leading and trailing new lines being ignored by HTML
+            const footerPre = parseMessage(footer.replace(/^\n/, " \n").replace(/\n$/, "\n "));
             footerPre.classList.add("mc-text");
             elements.footer.appendChild(footerPre);
             elements.footer.classList.remove("empty");
@@ -60,7 +65,7 @@ function updateTabList(main) {
             elements.footer.classList.add("empty");
         }
 
-        lastFooter = data.footer;
+        lastFooter = footer;
     }
 
 
