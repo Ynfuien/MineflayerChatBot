@@ -14,16 +14,19 @@
 @font-face {
     font-family: 'Unifont';
     src: url('../fonts/unifont-15.1.05.otf');
+    size-adjust: 80%;
 }
 
 @font-face {
     font-family: 'Unifont Upper';
     src: url('../fonts/unifont_upper-15.1.05.otf');
+    size-adjust: 80%;
 }
 
 @font-face {
     font-family: 'Unifont CSUR';
     src: url('../fonts/unifont_csur-15.1.05.otf');
+    size-adjust: 80%;
 }
 
 *,
@@ -69,10 +72,15 @@ pre.mc-text > * {
 }
 
 /* Body, main */
-html, body {
+html {
+    height: 100%;
+}
+
+body {
     height: 100%;
 
     background-color: #2e2e2e;
+    font-size: 1.25rem;
 
     font-family: 'Mojangles', 'Unifont', 'Unifont Upper', 'Unifont CSUR';
     color: white;

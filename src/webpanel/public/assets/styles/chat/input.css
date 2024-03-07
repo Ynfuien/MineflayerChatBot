@@ -9,7 +9,6 @@ section#chat > section.input {
 
     font-family: inherit;
     color: #dddddd;
-    font-size: 1.25rem;
     line-height: 1em;
     /* 2px 2px 0px */
     text-shadow: 0.125rem 0.125rem 0 color-mix(in srgb, currentColor 25%, black);

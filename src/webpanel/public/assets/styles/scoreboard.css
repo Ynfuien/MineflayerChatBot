@@ -6,7 +6,6 @@
     right: 0.125rem;
     transform: translateY(calc(-100% * (2 / 3)));
 
-    font-size: 1.25rem;
     text-shadow: none !important;
 
     z-index: 2;

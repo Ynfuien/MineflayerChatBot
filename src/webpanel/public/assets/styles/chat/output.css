@@ -20,8 +20,6 @@ section#chat > section.output {
 
     overflow: auto;
 
-    font-size: 1.25rem;
-
     display: flex;
     flex-direction: column;
 }
