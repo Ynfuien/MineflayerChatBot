@@ -1,7 +1,4 @@
-const { logBot } = require('../utils/logger');
 const { tabListUpdate } = require('../webpanel/webPanel');
-
-let timeout = 0;
 
 module.exports = {
     name: "playerlist_header",
@@ -13,9 +10,6 @@ module.exports = {
      * @param {{header?: string, footer?: string}} packet
      */
     run(main, packet) {
-        const { tabList } = main.vars.onlinePanel;
-        if (!tabList.enabled) return;
-        
         const {ChatMessage} = main.prismarine;
 
 

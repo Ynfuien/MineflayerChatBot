@@ -113,20 +113,7 @@ online-panel:
     # Limit value.
     limit: 2000
   
-  # Tab list updates on the panel
-  tab-list:
-    enabled: true
-
-    # Delay in milliseconds.
-    # 50 ms is a 1 Minecraft tick, so tab list won't update faster then that.
-    # Increase it if for some reason it's too fast for you.
-    # Setting it to 50 or lower
-    # delay: 0
-
-    # Also in milliseconds. It's how often player display names should be sent.
-    # Normally they update like never, but if server has e.g. animations
-    # in display names, or players can change it by themselves, then it can happen
-    # more often.
-    # (It will be also sent on every player join/quit event.)
-    # players-interval: 20000
-    players-interval: 100
+  features:
+    player-list:
+      # How often player list is updated. In milliseconds
+      interval: 50

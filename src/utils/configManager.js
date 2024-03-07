@@ -51,6 +51,11 @@ const { doesKeyExist } = require('./objectUtils.js');
  *              interval: number,
  *              'players-interval': number
  *          }
+ *          features: {
+ *              'player-list': {
+ *                  interval: number
+ *              }
+ *          }
  *      }
  * }} Config
  */
@@ -395,41 +400,41 @@ const self = module.exports = {
             })(onlinePanel['last-messages']);
 
 
-            // Tab list
-            main.vars.onlinePanel.tabList.enabled = (function(tabList) {
-                if (!tabList) return false;
+            // // Tab list
+            // main.vars.onlinePanel.tabList.enabled = (function(tabList) {
+            //     if (!tabList) return false;
 
-                const {enabled} = tabList;
-                if (enabled !== true) return false;
+            //     const {enabled} = tabList;
+            //     if (enabled !== true) return false;
 
-                // (function() {
-                //     if (interval === undefined) {
-                //         logError("Tab list interval isn't set! Will be used '50'");
-                //         return;
-                //     }
+            //     // (function() {
+            //     //     if (interval === undefined) {
+            //     //         logError("Tab list interval isn't set! Will be used '50'");
+            //     //         return;
+            //     //     }
     
-                //     if (isNaN(interval)) {
-                //         logError("Tab list interval is incorrect! Will be used '50'");
-                //         return;
-                //     }
-                // })();
+            //     //     if (isNaN(interval)) {
+            //     //         logError("Tab list interval is incorrect! Will be used '50'");
+            //     //         return;
+            //     //     }
+            //     // })();
 
-                // main.vars.onlinePanel.tabList.interval = interval;
+            //     // main.vars.onlinePanel.tabList.interval = interval;
 
-                const playersInterval = tabList['players-interval'];
-                if (playersInterval === undefined) {
-                    logError("Tab list players interval isn't set! Will be used '500'");
-                    return true;
-                }
+            //     const playersInterval = tabList['players-interval'];
+            //     if (playersInterval === undefined) {
+            //         logError("Tab list players interval isn't set! Will be used '500'");
+            //         return true;
+            //     }
 
-                if (isNaN(playersInterval)) {
-                    logError("Tab list players interval is incorrect! Will be used '500'");
-                    return true;
-                }
+            //     if (isNaN(playersInterval)) {
+            //         logError("Tab list players interval is incorrect! Will be used '500'");
+            //         return true;
+            //     }
 
-                main.vars.onlinePanel.tabList.playersInterval = playersInterval;
-                return true;
-            })(onlinePanel['tab-list']);
+            //     main.vars.onlinePanel.tabList.playersInterval = playersInterval;
+            //     return true;
+            // })(onlinePanel['tab-list']);
 
             return true;
         })(config["online-panel"]);

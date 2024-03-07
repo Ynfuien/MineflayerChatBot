@@ -45,12 +45,12 @@ const self = module.exports = {
         server.listen(port, () => {
             logBot(`&eOnline panel is running on port &6${port}&e!`);
 
-            self.playerListUpdate(main, true);
+            self.playerListUpdate(true);
         });
 
         io.on("connection", (socket) => {
             if (main.bot) {
-                self.playerListUpdate(main);
+                self.playerListUpdate();
                 const { sidebar } = main.bot.scoreboard;
                 self.scoreboardUpdate(sidebar ? sidebar : null);
             }
@@ -176,15 +176,12 @@ const self = module.exports = {
         });
     },
     
-
-    /**
-     * @param {import('../index.js').Main} main 
-     */
-    async playerListUpdate(main, interval = false) {
-        const { tabList } = main.vars.onlinePanel;
-        if (interval) setTimeout(() => { self.playerListUpdate(main, true) }, tabList.playersInterval);
+    async playerListUpdate(interval = false) {
+        if (interval) {
+            const intervalValue = main.config.values['online-panel'].features['player-list'].interval;
+            setTimeout(() => { self.playerListUpdate(true) }, typeof intervalValue === "number" ? intervalValue : 100);
+        }
         
-        if (!tabList.enabled) return;
 
         const { bot } = main;
         if (!bot) return;
