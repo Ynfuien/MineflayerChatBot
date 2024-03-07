@@ -5,12 +5,10 @@ server:
   # Default Minecraft servers port is 25565. Set this only if server has different port
   port: 25565
 
-  # Minecraft server version should be selected automatically but if you want specific
+  # Bot should select a Minecraft version automatically, but if you want specific,
   # set this on your own
   version: 1.20.2
 
-
-login:
   # Set this to your email for Minecraft account or to username for offline-mode servers
   username: MySuperUsername
 
@@ -20,11 +18,10 @@ login:
   # Only set this if you are using Microsoft account and then set this to 'microsoft'
   # auth: 'mojang'
 
-
 bot-commands:
   # If you want to disable bot commands, set this to false
 
-  # !!! Command 'config' with subcommands 'set' require system permission
+  # !!! Command 'config' with 'set' subcommand require system permission
   # to write to this file !!!
   enabled: true
 
@@ -105,18 +102,15 @@ online-panel:
     # Bot internal messages
     bot: '&7[{hours}:{minutes}:{seconds}] &f&l[BOT] &r{message}'
 
-  # Messages to load from logs file to show in online panel when you open it
+  # Messages to load from log file to show in online panel when you open it
   last-messages:
-    # Type for limit:
+    # Limit type:
     # count - max messages count
     # time - max messages age in minutes
-    # all - will load all messages from logs file
-
-    # The more messages to load, the longer the panel will take to load, so
-    # don't set limit to high!
+    # all - will load all messages from the log file
     type: 'count'
 
-    # Set it to whatever if type is 'infinity'. 1440 minutes is 24h
+    # Limit value.
     limit: 2000
   
   # Tab list updates on the panel

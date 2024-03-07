@@ -8,9 +8,7 @@ module.exports = {
      * @param {import('../index.js').Main} main
      */
     startBot(main) {
-        const botOptions = {...main.config.values.server, ...main.config.values.login};
-
-        main.bot = mineflayer.createBot(botOptions);
+        main.bot = mineflayer.createBot(main.config.values['bot-options']);
         main.prismarine.ChatMessage = prismarineChat(main.bot.registry);
 
         eventHandler(main);

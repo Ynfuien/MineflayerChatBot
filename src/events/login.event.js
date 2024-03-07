@@ -38,7 +38,7 @@ module.exports = {
         logBot("&dBot joined the server!");
         logBot(`&5Username: &f${bot.username}`);
         logBot(`&5Version: &f${bot.version}`);
-        logBot(`&5Host: &f${config.values.server.host}`);
+        logBot(`&5Host: &f${config.values['bot-options'].host}`);
         
 
         const timeouts = [];

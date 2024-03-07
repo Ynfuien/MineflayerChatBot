@@ -7,12 +7,10 @@ const { doesKeyExist } = require('./objectUtils.js');
 
 /**
  * @typedef {{
- *      server: {
+ *      'bot-options': {
  *          host: string,
  *          port?: number,
  *          version?: string
- *      },
- *      login: {
  *          username: string,
  *          password?: string,
  *          auth?: string
@@ -108,7 +106,7 @@ const self = module.exports = {
         }
 
         // Check obligatory sections
-        for (let sectionkey of ["server.host", "login.username"]) {
+        for (let sectionkey of ["bot-options.host", "bot-options.username"]) {
             if (doesKeyExist(config, sectionkey)) continue;
             
             logError(`Config field '${sectionkey}' isn't set! Bot can't work without it. Correct it and start the bot again.`);
@@ -118,9 +116,9 @@ const self = module.exports = {
         // Checks for each section
         let result;
 
-        // Server
-        result = (function (server) {
-            const { host, port, version } = server;
+        // Bot options
+        result = (function (options) {
+            const { host, port, version, username, password } = options;
 
             // Check host
             const ip = host.toLowerCase();
@@ -165,13 +163,6 @@ const self = module.exports = {
                 }
             }
 
-        })(config.server);
-        if (result === false) return false;
-
-        // Login
-        result = (function (login) {
-            const { username, password } = login;
-            let { auth } = login;
 
             // Check username
             // I guess that's an email check
@@ -191,6 +182,8 @@ const self = module.exports = {
                 return false;
             }
 
+            let { auth } = options;
+
             // Check auth
             if (auth) {
                 if (typeof auth !== "string") {
@@ -205,7 +198,7 @@ const self = module.exports = {
                 }
             }
 
-        })(config.login);
+        })(config['bot-options']);
         if (result === false) return false;
 
         // Commands
