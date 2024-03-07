@@ -17,7 +17,7 @@ const { doesKeyExist } = require('./objectUtils.js');
  *          password?: string,
  *          auth?: string
  *      },
- *      commands: {
+ *      'bot-commands': {
  *          enabled: boolean,
  *          prefix: string
  *      },
@@ -58,12 +58,22 @@ const { doesKeyExist } = require('./objectUtils.js');
  */
 
 
-module.exports = {
+const self = module.exports = {
+    /**
+     * @param {import('../index.js').Main} main
+     * @returns {string}
+     */
+    getConfigPath(main) {
+        return `${__dirname}/../../config${main.dev ? ".dev" : ""}.yml`
+    },
+
     /**
      * @param {import('../index.js').Main} main
      * @returns {{success: boolean, error: string | Error | undefined, config: {values: Config, yawn: YAWN.default}}}
      */
-    loadConfig(filePath) {
+    loadConfig(main) {
+        const filePath = self.getConfigPath(main);
+        
         if (!fs.existsSync(filePath)) return { success: false, error: `Config file doesn't exist! (${filePath})` };
 
         let fileContent;
@@ -99,7 +109,7 @@ module.exports = {
 
         // Check obligatory sections
         for (let sectionkey of ["server.host", "login.username"]) {
-            if (!doesKeyExist(config, sectionkey)) continue;
+            if (doesKeyExist(config, sectionkey)) continue;
             
             logError(`Config field '${sectionkey}' isn't set! Bot can't work without it. Correct it and start the bot again.`);
             return false;

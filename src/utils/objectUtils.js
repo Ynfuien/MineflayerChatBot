@@ -1,38 +1,58 @@
 module.exports = {
+    /**
+     * @param {Object} object 
+     * @param {string} keyPath 
+     * @returns {boolean}
+     */
     doesKeyExist(object, keyPath) {
-        let keys = keyPath.split('.');
+        const keys = keyPath.split('.');
 
         let currentChild = object;
         for (const key of keys) {
-            if (!(key in object)) return false;
-            currentChild = object[key];
+            if (!(key in currentChild)) return false;
+            currentChild = currentChild[key];
         }
 
         return true;
     },
+    
+    /**
+    * @param {Object} object 
+    * @param {string} keyPath 
+    * @returns {{exists: boolean, value?: any}}
+    */
+    getValueByKeyPath(object, keyPath) {
+        const keys = keyPath.split('.');
 
+        let currentChild = object;
+        for (const key of keys) {
+            if (typeof currentChild !== "object" || !(key in currentChild)) return {exists: false};
+            currentChild = currentChild[key];
+        }
+
+        return {exists: true, value: currentChild};
+    },
+
+    /**
+     * @param {Object} object 
+     * @param {string} keyPath 
+     * @param {any} value 
+     * @returns {boolean | Object}
+     */
     setValueByKeyPath(object, keyPath, value) {
-        let keys = keyPath.split('.');
+        const keys = keyPath.split('.');
 
-        let previous = [];
-        {
-            let currentSetting = object;
-            for (const key of keys) {
-                previous.push(currentSetting);
-                currentSetting = currentSetting[key];
-                if (currentSetting === undefined) return false;
-            }
-        }
-        
+        let currentChild = object;
+        for (let i = 0; i < keys.length - 1; i++) {
+            const key = keys[i];
+            if (!(key in currentChild)) return false;
 
-        let returnObject = value;
-        for (let i = previous.length - 1; i >= 0; i--) {
-            let pre = previous[i];
-            pre[keys[i]] = returnObject;
-            returnObject = pre;
+            currentChild = object[key];
         }
 
-        return returnObject;
+        currentChild[keys.pop()] = value;
+
+        return object;
     },
 
     convertObjectToString(object) {
