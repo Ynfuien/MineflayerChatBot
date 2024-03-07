@@ -1,5 +1,4 @@
 const { logBot } = require('../utils/logger.js');
-const { filterElementsThatStartsWith } = require('../utils/YnfuTools.js');
 
 // Also, not now
 module.exports = {
@@ -88,7 +87,7 @@ module.exports = {
         const arg1 = args[0].toLowerCase();
 
         if (args.length === 1) {
-            return filterElementsThatStartsWith(["clear", "leftclick", "rightclick"], arg1);
+            return ["clear", "leftclick", "rightclick"].filter(element => element.startsWith(arg1));
         }
 
         if (args.length === 2) {
@@ -107,7 +106,7 @@ module.exports = {
                 slotsStrings.push(i.toString());
             }
             
-            return filterElementsThatStartsWith(slotsStrings, arg2);
+            return slotsStrings.filter(element => element.startsWith(arg2));
         }
 
         return [];
