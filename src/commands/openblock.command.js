@@ -1,5 +1,6 @@
 const { logBot } = require('../utils/logger.js');
 
+// Didn't have a better way
 const BLOCK_CONTAINERS = [
     "chest",
     "trapped_chest",
@@ -38,22 +39,25 @@ module.exports = {
     async run (main, args) {
         const {bot} = main;
         
-        for (const blockName in bot.registry.blocksByName) {
-            if (blockName.includes("shulker")) console.log(blockName);
-        }
-        console.log(bot.registry.blocksByName["chest"]);
-        console.log(bot.registry.blocksByName["stone"]);
-        
         if (args.length == 0) return false;
 
+        // Get block
         const blockName = args[0].toLowerCase();
         const block = bot.registry.blocksByName[blockName];
 
         if (!block) {
             logBot("&cProvided block is incorrect!");
+
+            for (const name in bot.registry.blocksByName) {
+                if (!name.includes(blockName)) continue;
+
+                logBot(`&cDid you mean '&4${name}&c'?`);
+                return;
+            }
             return;
         }
 
+        // Find it
         let distance = 3;
         const arg2 = parseInt(args[1]);
         if (!isNaN(arg2)) distance = arg2;  
@@ -64,7 +68,7 @@ module.exports = {
         });
 
         if (!foundBlock) {
-            logBot(`&cCouldn't find a ${block.displayName} in distance of ${distance} block(s)!`);
+            logBot(`&cCouldn't find a &4${block.displayName} &cin distance of &4${distance} &cblock(s)!`);
             return;
         }
 
