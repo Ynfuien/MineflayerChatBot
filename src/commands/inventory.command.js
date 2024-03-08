@@ -81,42 +81,31 @@ module.exports = {
      * @param {string[]} args
      */
     tabCompletion(main, args) {
-        if (!args) return [];
         if (args.length > 2) return [];
 
+        // First arg
         const arg1 = args[0].toLowerCase();
-
         if (args.length === 1) {
             return ["clear", "leftclick", "rightclick"].filter(element => element.startsWith(arg1));
         }
 
-        if (args.length === 2) {
-            if (arg1 !== "leftclick" && arg1 !== "rightclick") {
-                return [];
-            }
 
-            const {bot} = main;
-            const arg2 = args[1];
-
-            let slotsCount = bot.inventory.slots.length;
-            if (bot.currentWindow) slotsCount += bot.currentWindow.slots.length;
-
-            let slotsStrings = [];
-            for (let i = 0; i < slotsCount; i++) {
-                slotsStrings.push(i.toString());
-            }
-            
-            return slotsStrings.filter(element => element.startsWith(arg2));
+        // Second
+        if (arg1 !== "leftclick" && arg1 !== "rightclick") {
+            return [];
         }
 
-        return [];
+        const {bot} = main;
+        const arg2 = args[1];
+
+        let slotsCount = bot.inventory.slots.length;
+        if (bot.currentWindow) slotsCount += bot.currentWindow.slots.length;
+
+        let slotsStrings = [];
+        for (let i = 0; i < slotsCount; i++) {
+            slotsStrings.push(i.toString());
+        }
+        
+        return slotsStrings.filter(element => element.startsWith(arg2));
     }
 }
-
-// function getItem(slot) {
-//     if (!slot) {
-//         return "";
-//     }
-
-//     return `x${slot.count} ${slot.name}`;
-// }

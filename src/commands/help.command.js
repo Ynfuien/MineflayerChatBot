@@ -45,9 +45,9 @@ module.exports = {
      * @param {string[]} args
      */
     tabCompletion(main, args) {
-        if (!args) return [];
-        if (args.length !== 1) return [];
-        const {list} = main.commands;
+        if (args.length > 1) return [];
+
+        const { list } = main.commands;
 
         const arg1 = args[0].toLowerCase();
 

@@ -85,24 +85,15 @@ module.exports = {
      * @param {string[]} args
      */
     tabCompletion(main, args) {
-        const completions = [];
-        if (!args) return completions;
-        if (args.length > 2) return completions;
+        if (args.length > 2) return [];
 
+        // First arg
         const arg1 = args[0].toLowerCase();
-        if (args.length === 1) {
-            for (const blockName of BLOCK_CONTAINERS) {
-                if (blockName.startsWith(arg1)) completions.push(blockName);
-            }
+        if (args.length === 1) return BLOCK_CONTAINERS.filter(element => element.startsWith(arg1));
 
-            return completions;
-        }
 
+        // Second
         const arg2 = args[1].toLowerCase();
-        for (const completion of ["1", "2", "3", "4", "5"]) {
-            if (completion.startsWith(arg2)) completions.push(completion);
-        }
-
-        return completions;
+        return ["1", "2", "3", "4", "5"].filter(element => element.startsWith(arg2));
     }
 }

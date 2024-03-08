@@ -55,8 +55,7 @@ module.exports = {
      * @param {string[]} args
      */
     tabCompletion(main, args) {
-        if (!args) return [];
-        if (args.length !== 1) return [];
+        if (args.length > 1) return [];
 
         const arg = args[0].toLowerCase();
         return ["on", "off", "restart"].filter(completion => completion.startsWith(arg));

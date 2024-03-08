@@ -137,22 +137,18 @@ module.exports = {
      * @param {string[]} args
      */
     tabCompletion(main, args) {
-        const {config} = main;
-
-        if (!args) return [];
-        if (args.length == 0) return [];
         if (args.length > 2) return [];
 
-        const arg1 = args[0].toLowerCase();
-
         // First arg
+        const arg1 = args[0].toLowerCase();
         if (args.length === 1) {
             return ["get", "set", "show", "reload"].filter(element => element.startsWith(arg1));
         }
-
         
         // Second arg
-        if (arg1 !== "get" && arg1 !== "set") return [];
+        if (!["get", "set"].includes(arg1)) return [];
+        
+        const { config } = main;
 
         const fullPath = args[1];
 
