@@ -1,81 +1,67 @@
 const { logBot } = require('../utils/logger.js');
 
-// Also, not now
 module.exports = {
     name: "inventory",
     enable: true,
     usage: "<clear | leftclick | rightclick> [slot]",
     aliases: ["inv"],
-    description: "Inventory functions. - WIP",
+    description: "Inventory functions.",
 
     /**
      * @param {import("..").Main} main
      * @param {string[]} args
      */
-    run (main, args) {
-        const {bot} = main;
+    async run(main, args) {
+        const { bot } = main;
 
-
-        let arg1 = args[0];
-        if (!arg1) return false;
-        arg1 = arg1.toLowerCase();
+        if (args.length === 0) return false;
+        const arg1 = args[0].toLowerCase();
 
         // Clear
         if (arg1 === "clear") {
-            (async function(){
-                let slots = bot.inventory.slots;
-                for (let slot of slots) {
-                    if (!slot) continue;
-                    await bot.tossStack(slot);
-                }
-            })();
+            const arg2 = args[1];
+            if (!arg2 || !["y", "yes", "-y"].includes(arg2)) {
+                logBot("&cAre you sure, you want to drop all the items, from your inventory?");
+                logBot(`&cType &4${main.config.values['bot-commands'].prefix}${this.name} clear -y &cto confirm.`);
+                return;
+            }
+
+            const { slots } = bot.inventory;
+            for (const slot of slots) {
+                if (!slot) continue;
+                await bot.tossStack(slot);
+            }
+
             return;
         }
 
-        // Show
-        // if (arg1 === "show") {
-        //     const table = new ascii().setHeading('', '1','2','3','4','5','6','7','8','9');
-
-
-        //     let inventory = bot.inventory;
-        //     let s = inventory.slots;
-
-        //     for (let i = 0; i < s.length; i+=9) {
-        //         table.addRow(i / 9 + 1, getItem(s[i]), getItem(s[i+1]), getItem(s[i+2]), getItem(s[i+3]), getItem(s[i+4]), getItem(s[i+5]), getItem(s[i+6]), getItem(s[i+7]), getItem(s[i+8]));
-        //     }
-
-        //     console.log(table.toString());
-        //     return;
-        // }
-
         // Left and right click
         if (arg1 === "leftclick" || arg1 === "rightclick") {
-            let slot = args[1];
-            if (slot === undefined) {
-                logBot("&cYou have to provide slot to click!");
+            if (args.length < 2) {
+                logBot("&cYou have to provide slot to set!");
                 return;
             }
 
-            slot = parseInt(slot);
+            const slot = parseInt(args[1]);
             if (isNaN(slot)) {
-                logBot("&cProvided slot must be a number!");
+                logBot("&cSlot must be a number!");
                 return;
             }
-
-            // bot.inventory
 
             if (arg1 === "leftclick") {
                 bot.simpleClick.leftMouse(slot);
+                logBot(`&bLeft-clicked slot &3${slot}&a!`);
                 return;
             }
-            
+
             bot.simpleClick.rightMouse(slot);
+            logBot(`&bRight-clicked slot &3${slot}&a!`);
             return;
         }
 
         return false;
     },
-    
+
     /**
      * @param {import("..").Main} main
      * @param {string[]} args
@@ -91,21 +77,19 @@ module.exports = {
 
 
         // Second
-        if (arg1 !== "leftclick" && arg1 !== "rightclick") {
-            return [];
-        }
+        if (!["leftclick", "rightclick"].includes(arg1)) return [];
 
-        const {bot} = main;
+        const { bot } = main;
         const arg2 = args[1];
 
         let slotsCount = bot.inventory.slots.length;
         if (bot.currentWindow) slotsCount += bot.currentWindow.slots.length;
 
-        let slotsStrings = [];
+        const slotsStrings = [];
         for (let i = 0; i < slotsCount; i++) {
             slotsStrings.push(i.toString());
         }
-        
+
         return slotsStrings.filter(element => element.startsWith(arg2));
     }
 }
