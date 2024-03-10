@@ -9,10 +9,12 @@ Minecraft bot written in Javascript using [NodeJs](https://nodejs.org) and [Mine
 # Description
 ### Features:
 - Connecting to Minecraft servers (I know, WOW)
-- Support (in theory) 1.8-1.20.4 - Tested on **1.20.2**
+- Support for 1.20 - 1.20.4
 - Bot commands
   - Stopping, starting and restarting bot
-  - Right/left clicking inventory slots
+  - Editing config on runtime
+  - Left and right clicking inventory slots
+  - Switching and using hotbar slots
 - Ignoring chat messages by RegEx patterns
 - Chat logs in SQLite3 database
 - Ability to execute commands on join
@@ -38,6 +40,13 @@ Minecraft bot written in Javascript using [NodeJs](https://nodejs.org) and [Mine
 Online panel by default should be at http://localhost:3000
 
 
+# Media
+*Old*
+#### (On windows I recommend using [Windows Terminal](https://github.com/microsoft/terminal))
+![Screenshot](https://i.imgur.com/l6YLHuB.gif)
+![Screenshot](https://i.imgur.com/Fx8WeTX.gif)
+
+
 ### Used projects/assets:
 - [ascii-table](https://www.npmjs.com/package/ascii-table)
 - [better-sqlite3](https://www.npmjs.com/package/better-sqlite3)
@@ -54,11 +63,11 @@ Online panel by default should be at http://localhost:3000
 - [GNU Unifont](https://unifoundry.com/unifont/index.html)
 
 
-# Media
-*Old*
-#### (On windows I recommend using [Windows Terminal](https://github.com/microsoft/terminal))
-![Screenshot](https://i.imgur.com/l6YLHuB.gif)
-![Screenshot](https://i.imgur.com/Fx8WeTX.gif)
+# Future
+### Ideas that could be done... someday
+- saving current state of online panel in a (browser) local storage. Like chat size, tab and scoreboard toggle state, command history etc.
+- option to easily change panel background image
+- GUI in the panel, to manage the config even easier
 
 
 # License
