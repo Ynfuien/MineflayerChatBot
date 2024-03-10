@@ -33,7 +33,7 @@ const CHALK_COLORS = {
 let savedMessagesCount = 0;
 let lastMessageTimestamp = Date.now();
 
-/** @type {import('..').Main} */
+/** @type {import('../types.js').Main} */
 let main;
 
 

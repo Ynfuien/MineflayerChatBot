@@ -14,72 +14,6 @@ const {loadCommands} = require('./handlers/command.handler.js');
 const { logBot, setup: setupLogger } = require('./utils/logger.js');
 const { startBot } = require('./utils/botManager.js');
 
-/**
- * @typedef {{
- *      bot: import('mineflayer').Bot | null,
- *      dev: boolean,
- *      database: import('better-sqlite3').Database,
- *      webPanel: {
- *          io: import('socket.io').Server,
- *          app: import('express').Express,
- *          server: import('http').Server
- *      },
- *      commands: {
- *          list: Object.<string, import('./handlers/command.handler.js').BotCommand>,
- *          tabComplete: {
- *              lastPacket: {
- *                  start: number,
- *                  length: number,
- *                  transactionId: number,
- *                  matches: {match: string, tooltip: string}[]
- *              } | null
- *          }
- *      },
- *      prismarine: {
- *          ChatMessage: import('prismarine-chat').ChatMessage
- *      },
- *      config: {
- *          values: import('./utils/configManager.js').Config,
- *          yawn: YAWN.default
- *      },
- *      vars: {
- *          chatLogs: {
- *              enabled: boolean,
- *              limitType?: string,
- *              limit?: number | string
- *          },
- *          onJoin: {
- *              commands: {timeout: number, message: string}[]
- *          },
- *          autoRejoin: {
- *              enabled: boolean,
- *              timeout: number
- *          },
- *          botCommands: {
- *              enabled: boolean,
- *              prefix: string
- *          },
- *          onlinePanel: {
- *              enabled: boolean,
- *              port: number,
- *              messagesLimitType: string,
- *              messagesLimit: number | string,
- *              tabList: {
- *                  enabled: boolean,
- *                  playersInterval?: number
- *              }
- *          },
- *          bot: {
- *              joined: boolean,
- *              logPlayers: boolean,
- *              ignoreActionBar: boolean,
- *              restart: boolean,
- *              stop: boolean   
- *          }
- *      }
- * }} Main
- */
-
 
 (async function() {
     /** @type {Main} */
@@ -118,7 +52,7 @@ const { startBot } = require('./utils/botManager.js');
             }
         }
     };
-
+    
     setupLogger(main);
 
     // Loading config from file

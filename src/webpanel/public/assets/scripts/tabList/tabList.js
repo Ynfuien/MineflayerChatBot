@@ -92,10 +92,17 @@ function updateTabList(main) {
         const spectator = player.gamemode === 3;
 
         // Scoreboard value
-        if (!spectator && player.scoreboardValue !== null) {
-            const scoreboardValue = parseMessage("§e" + player.scoreboardValue);
-            scoreboardValue.classList.add("mc-text");
+        if (!spectator && player.score !== null) {
+            const { score } = player;
+            const { value, numberFormat, styling } = score;
 
+            let displayValue = `§e${value}`;
+            if (numberFormat === 0) displayValue = "";
+            else if (numberFormat === 1) displayValue = `${styling}${value}`;
+            else if (numberFormat === 2) displayValue = styling;
+
+            const scoreboardValue = parseMessage(displayValue);
+            scoreboardValue.classList.add("mc-text");
             li.appendChild(scoreboardValue);
         }
 
@@ -112,6 +119,11 @@ function updateTabList(main) {
     }
 }
 
+/**
+ * 
+ * @param {import('../index.js').Main.tabList.data.player[]} playersData 
+ * @returns 
+ */
 function checkIfPlayerListChanged(playersData) {
     if (playersData.length !== lastPlayers.length) return true; 
 
@@ -123,7 +135,12 @@ function checkIfPlayerListChanged(playersData) {
         if (newPlayer.displayName !== oldPlayer.displayName) return true;
         if (newPlayer.ping !== oldPlayer.ping) return true;
         if (newPlayer.gamemode !== oldPlayer.gamemode) return true;
-        if (newPlayer.scoreboardValue !== oldPlayer.scoreboardValue) return true;
+        if (newPlayer.score === null && oldPlayer.score !== null) return true;
+        if (newPlayer.score) {
+            if (newPlayer.score.value !== oldPlayer.score?.value) return true;
+            if (newPlayer.score.numberFormat !== oldPlayer.score?.numberFormat) return true;
+            if (newPlayer.score.styling !== oldPlayer.score?.styling) return true;
+        }
     }
 
     return false;

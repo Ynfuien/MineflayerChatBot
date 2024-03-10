@@ -5,7 +5,7 @@ module.exports = {
     enable: true,
 
     /**
-     * @param {import("..").Main} main
+     * @param {import('../types.js').Main} main
      */
     run (main, error) {
         logBot(`&cOccurred bot error: ${error}`);

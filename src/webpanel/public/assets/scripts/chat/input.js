@@ -11,7 +11,7 @@ export { setup };
 
 /**
  * 
- * @param {import("..").Main} main 
+ * @param {import("../index.js").Main} main 
  */
 function setup(main) {
     const {input, output} = main.chat;

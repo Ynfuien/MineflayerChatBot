@@ -4,7 +4,7 @@ module.exports = {
     enable: true,
 
     /**
-     * @param {import("..").Main} main
+     * @param {import('../types.js').Main} main
      */
     run (main, packet) {
         main.commands.tabComplete.lastPacket = packet;

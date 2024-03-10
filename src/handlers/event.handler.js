@@ -2,7 +2,7 @@ const fs = require('fs');
 const { logBot } = require('../utils/logger.js');
 
 /**
- * @param {import('../index.js').Main} main
+ * @param {import('../types.js').Main} main
  */
 module.exports = (main) => {
     const {bot} = main;

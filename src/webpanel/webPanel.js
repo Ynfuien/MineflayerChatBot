@@ -8,30 +8,30 @@ const { logBot } = require('../utils/logger.js');
 const { executeCommand } = require('../handlers/command.handler.js');
 const { getTabCompletions } = require('../handlers/tabcomplete.handler.js');
 
-/** @type {import('../index.js').Main} */
+/** @type {import('../types.js').Main} */
 let main;
 
 const self = module.exports = {
     /**
-     * @param {import('../index.js').Main} main 
+     * @param {import('../types.js').Main} main 
      */
     setup: (_main) => {
         main = _main;
-        
-        const {port} = main.config.values['online-panel'];
+
+        const { port } = main.config.values['online-panel'];
 
         const app = express();
         const server = http.createServer(app);
         const io = new Server(server);
-        
-        main.webPanel = {io, app, server};
+
+        main.webPanel = { io, app, server };
 
         app.use(express.static(__dirname + '/public/'));
 
         app.get('/*', (req, res) => {
             res.redirect("/");
         });
-        
+
 
         server.on("error", (error) => {
             logBot(`&cAn error occured in online panel server. Error message: ${error}`);
@@ -41,7 +41,7 @@ const self = module.exports = {
             logBot("&cOnline panel server has been closed!");
         });
 
-        
+
         server.listen(port, () => {
             logBot(`&eOnline panel is running on port &6${port}&e!`);
 
@@ -51,8 +51,8 @@ const self = module.exports = {
         io.on("connection", (socket) => {
             if (main.bot) {
                 self.playerListUpdate();
-                const { sidebar } = main.bot.scoreboard;
-                self.scoreboardUpdate(sidebar ? sidebar : null);
+                const { sidebar } = main.bot.duckTape.scoreboards.byPosition;
+                self.scoreboardUpdate(sidebar);
             }
 
             socket.emit("config", {
@@ -60,14 +60,14 @@ const self = module.exports = {
             });
 
             socket.on("execute-command", (data) => {
-                const {command} = data;
+                const { command } = data;
                 executeCommand(command.trim());
             });
 
             let lastCompletionTimestamp = 0;
             socket.on("get-tab-completions", async (data) => {
-                const {command, timestamp} = data;
-                
+                const { command, timestamp } = data;
+
                 lastCompletionTimestamp = timestamp;
                 const completions = await getTabCompletions(main, command);
 
@@ -78,10 +78,10 @@ const self = module.exports = {
             socket.on("get-last-logs", () => {
                 if (!main) return;
 
-                const {database} = main;
+                const { database } = main;
                 if (!database) return;
 
-                const {messagesLimitType, messagesLimit} = main.vars.onlinePanel;
+                const { messagesLimitType, messagesLimit } = main.vars.onlinePanel;
 
                 let query = "SELECT * FROM messages ";
                 if (messagesLimitType === "count") {
@@ -95,7 +95,7 @@ const self = module.exports = {
                 const messages = database.prepare(query).all();
                 if (messagesLimitType === "count") messages.reverse();
 
-                socket.emit("logs-data", {messages});
+                socket.emit("logs-data", { messages });
             });
         });
     },
@@ -106,7 +106,7 @@ const self = module.exports = {
     sendActionBar(message) {
         const { bot } = main;
         if (!bot) return;
-        
+
         const { io } = main.webPanel;
 
         io.emit("action-bar", {
@@ -116,13 +116,13 @@ const self = module.exports = {
     },
 
     /**
-     * @param {import('prismarine-chat').ChatMessage} header 
-     * @param {import('prismarine-chat').ChatMessage} footer 
+     * @param {import('prismarine-chat').ChatMessage?} header
+     * @param {import('prismarine-chat').ChatMessage?} footer
      */
     tabListUpdate(header, footer) {
         const { bot } = main;
         if (!bot) return;
-        
+
         const { io } = main.webPanel;
 
         io.emit("tab-list", {
@@ -134,13 +134,13 @@ const self = module.exports = {
 
     /**
      * 
-     * @param {import('mineflayer').ScoreBoard} scoreboard 
+     * @param {import('../duck-tapes/scoreboard.tape.js').Scoreboard} scoreboard 
      * @returns 
      */
     scoreboardUpdate(scoreboard) {
         const { bot } = main;
         if (!bot) return;
-        
+
         const { io } = main.webPanel;
 
         // Clear scoreboard
@@ -153,41 +153,43 @@ const self = module.exports = {
             return;
         }
 
-        let { title } = scoreboard;
-        if (title &&  typeof title !== "string") title = title.toMotd();
-
+        const { name, displayText, numberFormat, styling } = scoreboard;
         const result = {
-            name: scoreboard.name,
-            title,
+            name,
+            displayText: displayText.toMotd(),
+            numberFormat,
+            styling: styling ? styling.toMotd() : null,
             items: []
         };
 
-        for (const item of scoreboard.items) {
+        const items = scoreboard.getItemArray();
+        for (const item of items) {
             result.items.push({
                 name: item.name,
                 value: item.value,
-                displayName: item.displayName.toMotd()
+                numberFormat: item.numberFormat,
+                styling: item.styling ? item.styling.toMotd() : null,
+                displayName: item.getFinalDisplayText().toMotd()
             });
         }
 
+        // return;
         io.emit("scoreboard", {
             scoreboard: result,
             timestamp: Date.now()
         });
     },
-    
+
     async playerListUpdate(interval = false) {
+        const { bot } = main;
+        if (!bot) return;
+
         if (interval) {
             const intervalValue = main.config.values['online-panel'].features['player-list'].interval;
             setTimeout(() => { self.playerListUpdate(true) }, typeof intervalValue === "number" ? intervalValue : 100);
         }
-        
 
-        const { bot } = main;
-        if (!bot) return;
-        
         const { io } = main.webPanel;
-
         io.emit("player-list", {
             list: getSortedPlayerList(bot),
             timestamp: Date.now()
@@ -197,12 +199,13 @@ const self = module.exports = {
 
 
 /**
- * @param {import('mineflayer').Bot} bot
+ * @param {import('../types.js').TapedBot} bot
  */
 function getSortedPlayerList(bot) {
-    const {players} = bot;
-    const listScoreboard = bot.scoreboard?.list;
-    
+    const { players } = bot;
+    /** @type {import('../duck-tapes/scoreboard.tape.js').Scoreboard} */
+    const listScoreboard = bot.duckTape.scoreboards.byPosition.list;
+
     const teams = getPlayerTeams(bot);
     const sortedTeams = Object.keys(teams.custom).sort();
 
@@ -217,24 +220,32 @@ function getSortedPlayerList(bot) {
         addPlayers(teamPlayers);
     }
 
-    
+
     function addPlayers(playerList) {
         for (const username of playerList) {
             const player = players[username];
-            const {displayName, ping, gamemode} = player;
+            const { displayName, ping, gamemode } = player;
+            const team = bot.teamMap[username];
 
-            let scoreboardValue = null;
+            let score = null;
             if (listScoreboard) {
-                const playerValues = listScoreboard.itemsMap[username];
-                if (playerValues) scoreboardValue = playerValues.value;
+                const playerScore = listScoreboard.items[username];
+                if (playerScore) {
+                    const styling = playerScore.styling ?? listScoreboard.styling;
+                    score = {
+                        value: playerScore.value,
+                        numberFormat: playerScore.numberFormat ?? listScoreboard.numberFormat,
+                        styling: styling ? styling.toMotd() : null
+                    };
+                }
             }
 
             const playerObject = {
                 username,
-                displayName: displayName.toMotd(),
+                displayName: team ? team.displayName(displayName.toMotd()).toMotd() : displayName.toMotd(),
                 ping,
                 gamemode,
-                scoreboardValue
+                score
             };
 
             // Spectator
@@ -251,18 +262,18 @@ function getSortedPlayerList(bot) {
 }
 
 /**
- * @param {import('mineflayer').Bot} bot
+ * @param {import('../types.js').TapedBot} bot
  * @returns {{custom: Object.<string, string[]>, none: string[]}}
  */
 function getPlayerTeams(bot) {
-    const {teamMap, players} = bot;
-    
+    const { teamMap, players } = bot;
+
     const teams = {};
     const none = [];
 
     for (const username in players) {
         const team = teamMap[username];
-        
+
         if (!team) {
             none.push(username);
             continue;
@@ -279,5 +290,5 @@ function getPlayerTeams(bot) {
     }
     none.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
 
-    return {custom: teams, none};
+    return { custom: teams, none };
 }

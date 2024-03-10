@@ -63,7 +63,7 @@ const { doesKeyExist } = require('./objectUtils.js');
 
 const self = module.exports = {
     /**
-     * @param {import('../index.js').Main} main
+     * @param {import('../types.js').Main} main
      * @returns {string}
      */
     getConfigPath(main) {
@@ -71,7 +71,7 @@ const self = module.exports = {
     },
 
     /**
-     * @param {import('../index.js').Main} main
+     * @param {import('../types.js').Main} main
      * @returns {{success: boolean, error: string | Error | undefined, config: {values: Config, yawn: YAWN.default}}}
      */
     loadConfig(main) {
@@ -97,7 +97,7 @@ const self = module.exports = {
     },
 
     /**
-     * @param {import('../index.js').Main} main 
+     * @param {import('../types.js').Main} main 
      * @param {boolean} logErrors
      * @returns {boolean | {softError: boolean}}
      */
@@ -159,15 +159,6 @@ const self = module.exports = {
                     return false;
                 }
             }
-
-            // Check version
-            if (version) {
-                if (typeof version !== "string") {
-                    logError("Minecraft version must be string! Correct it and restart bot.");
-                    return false;
-                }
-            }
-
 
             // Check username
             // I guess that's an email check

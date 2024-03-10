@@ -20,7 +20,7 @@ const rl = readline.createInterface(process.stdin);
  * }} BotCommand
  */
 
-/** @type {import('../index.js').Main} */
+/** @type {import('../types.js').Main} */
 let main;
 /** @type {Object.<string, BotCommand>} */
 let commands = {};
@@ -28,7 +28,7 @@ let commands = {};
 
 const self = module.exports = {
     /**
-     * @param {import('../index.js').Main} _main 
+     * @param {import('../types.js').Main} _main 
      */
     loadCommands(_main) {
         main = _main;

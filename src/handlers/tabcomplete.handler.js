@@ -4,7 +4,7 @@ module.exports = {
     /**
      * Gets completions for the current input (in the online panel),
      * usernames, minecraft or bot commands, it's all in here.
-     * @param {import("..").Main} main
+     * @param {import('../types.js').Main} main
      * @param {string} text
      * @param {number} timestamp
      * @returns {{type: string, start?: number, length?: number, list: string[]}}
@@ -37,7 +37,7 @@ module.exports = {
 }
 
 /**
- * @param {import("..").Main} main
+ * @param {import('../types.js').Main} main
  * @param {string} text
  * @returns {{type: string, start: number, length: number, list: string[], prefix: string}}
  */

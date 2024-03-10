@@ -4,7 +4,6 @@ import { setup as setupChatOutput } from "./chat/output.js";
 import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
 import { setup as setupCommandHistory } from "./chat/commandHistory.js";
 
-import { sendCommand } from "./webSocket.js";
 
 /**
  * @typedef {{
@@ -33,14 +32,26 @@ import { sendCommand } from "./webSocket.js";
  *      displayName: string,
  *      ping: number,
  *      gamemode: number,
- *      scoreboardValue: number | string | null
+ *      score: null | {
+ *          value: number,
+ *          numberFormat: null | number,
+ *          styling: null | string
+ *      }
  * }} Main.tabList.data.player
  * 
  * 
  * @typedef {{
  *      name: string,
- *      title: string | undefined,
- *      items: {name: string, value: number | string, displayName: string}[]
+ *      displayText: string | undefined,
+ *      numberFormat: null | 0 | 1 | 2,
+ *      styling: null | string,
+ *      items: {
+ *          name: string,
+ *          value: number | string,
+ *          displayName: string,
+ *          numberFormat: null | 0 | 1 | 2,
+ *          styling: null | string
+ *      }[]
  * }} Main.scoreboard.data.scoreboard
  * 
  * 
@@ -91,7 +102,8 @@ import { sendCommand } from "./webSocket.js";
  *          element: HTMLDivElement,
  *          header: HTMLDivElement,
  *          header: HTMLOListElement,
- *          data: Main.scoreboard.data.scoreboard | null
+ *          data: Main.scoreboard.data.scoreboard | null,
+ *          limit: number
  *      }
  * }} Main
  */
@@ -164,7 +176,8 @@ import { sendCommand } from "./webSocket.js";
             element: scoreboard,
             header: scoreboard.querySelector("header"),
             list: scoreboard.querySelector("ol"),
-            data: null
+            data: null,
+            limit: 15
         }
     };
 

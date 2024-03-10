@@ -3,17 +3,17 @@ import { getTextWidth, getElementFont } from "../utils/text-width-measurer.js";
 
 export { setup, showCompletions, getCompletions, clear };
 
-/** @type {import("..").Main} */
+/** @type {import("../index.js").Main} */
 let main = null;
 /** @type {HTMLDivElement} */
 let inputElement = null;
-/** @type {import("..").Main.chat.tabCompletion} */
+/** @type {import("../index.js").Main.chat.tabCompletion} */
 let tabCompletion = null;
 /** @type {string} */
 let inputFont = null;
 
 /**
- * @param {import("..").Main} _main 
+ * @param {import("../index.js").Main} _main 
  */
 function setup(_main) {
     main = _main;

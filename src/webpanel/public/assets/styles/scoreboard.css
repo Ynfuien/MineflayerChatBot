@@ -46,7 +46,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    column-gap: 1rem;
+    /* column-gap: 1rem; */
 }
 
 #scoreboard > ol > li:first-child {
@@ -56,4 +56,12 @@
 
 #scoreboard > ol > li:last-child {
     padding-bottom: 0.0625rem; /* 1px */
+}
+
+#scoreboard > ol > li > pre:first-child {
+    margin-right: 0.25rem; /* 4px */
+}
+
+#scoreboard > ol > li > pre:nth-child(2) {
+    margin-left: 0.75rem; /* 12px */
 }

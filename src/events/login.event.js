@@ -6,7 +6,7 @@ module.exports = {
     enable: true,
 
     /**
-     * @param {import("..").Main} main
+     * @param {import('../types.js').Main} main
      */
     run (main) {
         const {bot, config, vars} = main;

@@ -1,4 +1,5 @@
 const { logChatMessage } = require('../utils/logger.js');
+const { tapeFixNbtMessage } = require('../utils/messageUtils.js');
 const { sendActionBar } = require('../webpanel/webPanel.js');
 
 module.exports = {
@@ -6,18 +7,25 @@ module.exports = {
     enable: true,
 
     /**
-     * @param {import("..").Main} main
+     * @param {import('../types.js').Main} main
      * @param {import("prismarine-chat").ChatMessage} message
      * @param {string} chatPosition
      */
-    run (main, message, chatPosition) {
-        const {chat} = main.config.values;
-        
-        
+    run(main, message, chatPosition) {
+        const { bot } = main;
+        const { ChatMessage } = main.prismarine;
+        const { chat } = main.config.values;
+
         if (message.unsigned) message = message.unsigned;
+        // console.log(message.toMotd());
+        if (bot.supportFeature("chatPacketsUseNbtComponents")) {
+            const tapeFixedJson = tapeFixNbtMessage(message.json);
+            message = new ChatMessage(tapeFixedJson);
+        }
+
         if (chat && chat["ignored-messages"]) {
             const ignoredMessages = chat["ignored-messages"];
-            
+
             if (ignoredMessages.length > 0) {
                 const text = message.toString();
                 for (const pattern of ignoredMessages) {

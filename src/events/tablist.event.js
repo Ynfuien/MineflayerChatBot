@@ -1,3 +1,4 @@
+const { packetToChatMessage } = require('../utils/messageUtils');
 const { tabListUpdate } = require('../webpanel/webPanel');
 
 module.exports = {
@@ -6,37 +7,15 @@ module.exports = {
     enable: true,
 
     /**
-     * @param {import("..").Main} main
+     * @param {import('../types.js').Main} main
      * @param {{header?: string, footer?: string}} packet
      */
     run(main, packet) {
-        const {ChatMessage} = main.prismarine;
+        const { header, footer } = packet;
 
-
-        const {header, footer} = packet;
-        
         const result = {};
-        if (header) {
-            try {
-                const json = JSON.parse(header);
-                const chatMessage = new ChatMessage(json);
-                result.header = chatMessage;
-            } catch (e) {
-                console.log(e);
-                return;
-            }
-        }
-
-        if (footer) {
-            try {
-                const json = JSON.parse(footer);
-                const chatMessage = new ChatMessage(json);
-                result.footer = chatMessage;
-            } catch (e) {
-                console.log(e);
-                return;
-            }
-        }
+        if (header) result.header = packetToChatMessage(main.bot, header);
+        if (footer) result.footer = packetToChatMessage(main.bot, footer);
 
         tabListUpdate(result.header, result.footer);
     }

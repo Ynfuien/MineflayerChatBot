@@ -8,7 +8,7 @@ module.exports = {
     description: "Inventory functions.",
 
     /**
-     * @param {import("..").Main} main
+     * @param {import('../types.js').Main} main
      * @param {string[]} args
      */
     async run(main, args) {
@@ -63,7 +63,7 @@ module.exports = {
     },
 
     /**
-     * @param {import("..").Main} main
+     * @param {import('../types.js').Main} main
      * @param {string[]} args
      */
     tabCompletion(main, args) {

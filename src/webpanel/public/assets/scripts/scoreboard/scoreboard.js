@@ -29,15 +29,16 @@ function updateScoreboard(main) {
     list.textContent = '';
 
     if (data === null) return;
-    const { items, title } = data;
+    const { displayText, numberFormat, styling } = data;
 
     // Title
-    if (title) {
-        const titlePre = parseMessage(title);
+    if (displayText) {
+        const titlePre = parseMessage(displayText);
         titlePre.classList.add("mc-text");
         header.appendChild(titlePre);
     }
 
+    const items = data.items.slice(0, scoreboard.limit);
     for (const item of items) {
         const li = document.createElement("li");
 
@@ -46,11 +47,21 @@ function updateScoreboard(main) {
         displayName.classList.add("mc-text");
         li.appendChild(displayName);
 
-        // Scoreboard value
-        const scoreboardValue = parseMessage("§c" + item.value);
-        scoreboardValue.classList.add("mc-text");
+        const valueFormat = item.numberFormat ?? numberFormat;
+        const valueStyling = item.styling ?? styling;
 
-        li.appendChild(scoreboardValue);
+        // Value
+        let displayValue = `§c${item.value}`;
+        if (valueFormat === 0) displayValue = "";
+        else if (valueFormat === 1) displayValue = `${valueStyling}${item.value}`;
+        else if (valueFormat === 2) displayValue = valueStyling;
+
+        if (displayValue.length > 0) {
+            const scoreboardValue = parseMessage(displayValue);
+            scoreboardValue.classList.add("mc-text");
+    
+            li.appendChild(scoreboardValue);
+        }
 
         list.appendChild(li);
     }
