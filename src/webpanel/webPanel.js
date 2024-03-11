@@ -11,6 +11,8 @@ const { getTabCompletions } = require('../handlers/tabcomplete.handler.js');
 /** @type {import('../types.js').Main} */
 let main;
 
+const lastTabList = {header: null, footer: null};
+
 const self = module.exports = {
     /**
      * @param {import('../types.js').Main} main 
@@ -50,6 +52,7 @@ const self = module.exports = {
 
         io.on("connection", (socket) => {
             if (main.bot) {
+                self.tabListUpdate(lastTabList.header, lastTabList.footer);
                 self.playerListUpdate();
                 const { sidebar } = main.bot.duckTape.scoreboards.byPosition;
                 self.scoreboardUpdate(sidebar);
@@ -122,6 +125,9 @@ const self = module.exports = {
     tabListUpdate(header, footer) {
         const { bot } = main;
         if (!bot) return;
+
+        lastTabList.header = header;
+        lastTabList.footer = footer;
 
         const { io } = main.webPanel;
 
