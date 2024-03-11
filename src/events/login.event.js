@@ -20,11 +20,13 @@ module.exports = {
             const players = bot.players;
             const displayNames = [];
             for (const username in players) {
+                if (!username.match(/^[a-z0-9_]{3,16}$/gi)) continue;
+
                 const displayName = players[username].displayName;
                 displayNames.push(displayName.toMotd());
             }
 
-            logBot(`&5Players in game &7(${Object.keys(players).length})&5:`);
+            logBot(`&5Players in game &7(${displayNames.length})&5:`);
             logBot("§d" + displayNames.join("§7, §d"), '§');
         }, 1500);
 
