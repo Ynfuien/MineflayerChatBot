@@ -57,6 +57,7 @@ function setup(main) {
             inputElement.innerText = "";
             clearCompletions();
             resetCommandHistoryIndex();
+            updateCaret();
 
             event.preventDefault();
             return;
