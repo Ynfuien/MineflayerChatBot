@@ -11,7 +11,7 @@ module.exports = {
      */
     run(main, reason) {
         const message = packetToChatMessage(main.bot, reason);
-        logBot(`§c§lBot has been kicked from the server, reason: §f${message.toMotd()}`, '§');
+        logBot(`§c§lBot has been kicked from the server, reason:\n§f${message.toMotd()}`, '§');
 
         if (!main.vars.autoRejoin.enabled) {
             const { enabled, prefix } = main.vars.botCommands;
