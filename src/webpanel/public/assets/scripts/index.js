@@ -104,7 +104,8 @@ import { setup as setupCommandHistory } from "./chat/commandHistory.js";
  *          header: HTMLOListElement,
  *          data: Main.scoreboard.data.scoreboard | null,
  *          limit: number
- *      }
+ *      },
+ *      status: HTMLDivElement
  * }} Main
  */
 
@@ -178,7 +179,8 @@ import { setup as setupCommandHistory } from "./chat/commandHistory.js";
             list: scoreboard.querySelector("ol"),
             data: null,
             limit: 15
-        }
+        },
+        status: document.querySelector("section#status")
     };
 
 

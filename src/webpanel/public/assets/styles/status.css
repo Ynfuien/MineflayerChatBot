@@ -1,0 +1,18 @@
+section#status {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.6rem;
+
+    z-index: 2;
+
+    font-size: 1.5rem;
+    color: #FF5555;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+section#status.connected {
+    color: #55FF55;
+}

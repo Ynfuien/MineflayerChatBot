@@ -26,6 +26,16 @@ function setup(_main) {
     }
     main.socket = socket;
 
+    const { status } = main;
+    socket.on("connect", () => {
+        status.classList.add("connected");
+        status.title = "Panel is connected to the bot!";
+    });
+
+    socket.on("disconnect", () => {
+        status.classList.remove("connected");
+        status.title = "Panel is not connected to the bot!";
+    });
 
     // Config    
     socket.on("config", (data) => {
