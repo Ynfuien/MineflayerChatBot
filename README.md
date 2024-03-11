@@ -41,10 +41,14 @@ Online panel by default should be at http://localhost:3000
 
 
 # Media
-*Old*
-#### (On windows I recommend using [Windows Terminal](https://github.com/microsoft/terminal))
-![Screenshot](https://i.imgur.com/l6YLHuB.gif)
-![Screenshot](https://i.imgur.com/Fx8WeTX.gif)
+### Overall look
+![Overall](https://i.imgur.com/XXnRPJP.gif)
+
+### Big tab list on a random server
+![Tab list](https://i.imgur.com/ydbsz75.png)
+
+### Tab completions
+![Tab completions](https://i.imgur.com/5QeWgfU.gif)
 
 
 ### Used projects/assets:
