@@ -44,6 +44,7 @@ function updateScoreboard(main) {
 
         // Display name
         const displayName = parseMessage(item.displayName);
+        if (displayName.innerText.length === 0) displayName.innerText = " ";
         displayName.classList.add("mc-text");
         li.appendChild(displayName);
 
