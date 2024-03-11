@@ -38,8 +38,8 @@ function updateTabList(main) {
         elements.header.textContent = '';
     
         if (header.length > 0) {
-            // .replaces fix leading and trailing new lines being ignored by HTML
-            const headerPre = parseMessage(header.replace(/^\n/, " \n").replace(/\n$/, "\n "));
+            // '.replaces' fix leading and trailing new lines being ignored by HTML
+            const headerPre = parseMessage(header.replace(/^\n/, " \n").replace(/\n$/, "\n§r "));
             headerPre.classList.add("mc-text");
             elements.header.appendChild(headerPre);
             elements.header.classList.remove("empty");
@@ -56,8 +56,8 @@ function updateTabList(main) {
         elements.footer.textContent = '';
     
         if (footer.length > 0) {
-            // .replaces fix leading and trailing new lines being ignored by HTML
-            const footerPre = parseMessage(footer.replace(/^\n/, " \n").replace(/\n$/, "\n "));
+            // '.replaces' fix leading and trailing new lines being ignored by HTML
+            const footerPre = parseMessage(footer.replace(/^\n/, " \n").replace(/\n$/, "\n§r "));
             footerPre.classList.add("mc-text");
             elements.footer.appendChild(footerPre);
             elements.footer.classList.remove("empty");
