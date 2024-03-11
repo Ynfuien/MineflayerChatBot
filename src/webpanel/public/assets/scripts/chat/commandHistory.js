@@ -16,21 +16,16 @@ function setup(_main) {
         if (tabCompletion.shown) return;
         const { key } = event;
         
-        if (key === "ArrowUp") {
-            event.preventDefault();
-            event.stopPropagation();
+        if (key !== "ArrowUp" && key !== "ArrowDown") return;
+        event.preventDefault();
+        event.stopPropagation();
 
-            changeSelectedCommand(1);
-            return;
-        }
-        
-        if (key === "ArrowDown") {
-            event.preventDefault();
-            event.stopPropagation();
+        tabCompletion.changingTheInput = true;
+        changeSelectedCommand(key === "ArrowUp" ? 1 : -1);
 
-            changeSelectedCommand(-1);
-            return;
-        }
+        setTimeout(() => {
+            tabCompletion.changingTheInput = false;   
+        });
     });
 }
 
