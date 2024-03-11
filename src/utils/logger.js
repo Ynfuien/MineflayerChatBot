@@ -36,8 +36,17 @@ let lastMessageTimestamp = Date.now();
 /** @type {import('../types.js').Main} */
 let main;
 
+let devTimestamp = 0;
 
 const self = module.exports = {
+    devLog(message, interval = 0, depth = 2) {
+        const now = Date.now();
+        if (now - devTimestamp < interval) return;
+        devTimestamp = now;
+
+        console.dir(message, {depth});
+    },
+
     log(message, codeChar = '&', type = "bot") {
         const time = new Date();
 
