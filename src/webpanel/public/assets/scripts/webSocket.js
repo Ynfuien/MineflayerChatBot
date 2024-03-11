@@ -21,7 +21,7 @@ function setup(_main) {
         socket = io();
     } catch (e) {
         console.log(e);
-        showMessage(main, {message: `Couldn't connect to bot. Error: ${e}`, timestamp: new Date().getTime()});
+        showMessage(main, { message: `Couldn't connect to bot. Error: ${e}`, timestamp: new Date().getTime() });
         return;
     }
     main.socket = socket;
@@ -38,7 +38,7 @@ function setup(_main) {
     socket.emit("get-last-logs");
 
     socket.on("logs-data", (data) => {
-        const {messages} = data;
+        const { messages } = data;
 
         console.log("Displaying last logs...");
         const before = Date.now();
@@ -50,14 +50,14 @@ function setup(_main) {
         scrollToBottom(output);
 
         gotTheLogs = true;
-        
+
         const after = Date.now();
         console.log(`Displayed messages: ${messages.length}\nTime elapsed: ${(after - before) / 1000}s`);
-        
+
         console.log("Last logs displayed!");
     });
 
-    
+
     // Message event
     socket.on("chat-message", (data) => {
         if (!gotTheLogs) return;
@@ -103,18 +103,20 @@ function setup(_main) {
  * @param {string} command 
  */
 function sendCommand(command) {
-    const {socket} = main;
+    const { socket } = main;
     if (!socket) return;
+    if (!socket.connected) return;
 
-    socket.emit("execute-command", {command});
+    socket.emit("execute-command", { command });
 }
 
 /**
  * @param {string} command 
  */
 function sendTabCompletionRequest(command) {
-    const {socket} = main;
+    const { socket } = main;
     if (!socket) return;
+    if (!socket.connected) return;
 
-    socket.emit("get-tab-completions", {command, timestamp: Date.now()});
+    socket.emit("get-tab-completions", { command, timestamp: Date.now() });
 }
