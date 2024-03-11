@@ -203,7 +203,7 @@ const self = module.exports = {
  */
 function getSortedPlayerList(bot) {
     const { players } = bot;
-    /** @type {import('../duck-tapes/scoreboard.tape.js').Scoreboard} */
+    const { ChatMessage } = main.prismarine;
     const listScoreboard = bot.duckTape.scoreboards.byPosition.list;
 
     const teams = getPlayerTeams(bot);
@@ -240,9 +240,18 @@ function getSortedPlayerList(bot) {
                 }
             }
 
+            let finalDisplayName = displayName;
+            if (team) {
+                const msg = new ChatMessage("");
+                msg.color = team.color;
+                msg.extra = [displayName.clone()];
+
+                finalDisplayName = msg;
+            }
+            
             const playerObject = {
                 username,
-                displayName: team ? team.displayName(displayName.toMotd()).toMotd() : displayName.toMotd(),
+                displayName: finalDisplayName.toMotd(),
                 ping,
                 gamemode,
                 score
