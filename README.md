@@ -1,6 +1,4 @@
 # MCB - Mineflayer Chat Bot
-*This project is **WIP**, in the process of rewriting most of the code*
-
 Minecraft bot written in Javascript using [NodeJs](https://nodejs.org) and [Mineflayer](https://www.npmjs.com/package/mineflayer). It was created mainly to help with server and plugin development, since it often requires another player in the game. It's mostly of use when dealing with the chat stuff (who would have thought), and other things requiring a non moving puppet. Also, well, it could be great just as an AFK bot.
 
 **! Using bot on public servers will probably get you banned. You have been warned !**
@@ -20,6 +18,7 @@ Minecraft bot written in Javascript using [NodeJs](https://nodejs.org) and [Mine
 - Ability to execute commands on join
 - Auto rejoin function with custom timeout
 - Online panel with
+  - vanilla look
   - chat logs
   - command execution
   - command history
@@ -27,13 +26,13 @@ Minecraft bot written in Javascript using [NodeJs](https://nodejs.org) and [Mine
   - tab list
   - action bar
   - scoreboard (sidebar)
-  - without mobile (phone) support
+  - and without mobile (phone) support
 
 ### How to install
-1. Download and install [NodeJs](https://nodejs.org), if don't have it
-2. Download source code
-3. Unpack the archive
-4. Run `npm install` in the console in project folder
+1. Download and install [NodeJs](https://nodejs.org), if you don't have it
+2. Download source code or clone the git repository
+3. If needed, unpack the archive
+4. Run `npm install` in a console in the project directory
 5. Edit `config.yml` for your preferences
 6. Run `start.bat` and enjoy
 
@@ -65,13 +64,6 @@ Online panel by default should be at http://localhost:3000
 - [interact.js](https://interactjs.io)
 - [minecraft-font-extractor](https://github.com/Ynfuien/minecraft-font-extractor)
 - [GNU Unifont](https://unifoundry.com/unifont/index.html)
-
-
-# Future
-### Ideas that could be done... someday
-- saving current state of online panel in a (browser) local storage. Like chat size, tab and scoreboard toggle state, command history etc.
-- option to easily change panel background image
-- GUI in the panel, to manage the config even easier
 
 
 # License
