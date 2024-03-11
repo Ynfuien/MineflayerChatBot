@@ -1,4 +1,4 @@
-server:
+bot-options:
   # Server ip
   host: localhost
 
