@@ -7,7 +7,7 @@ server:
 
   # Bot should select a Minecraft version automatically, but if you want specific,
   # set this on your own
-  version: 1.20.2
+  version: 1.20.4
 
   # Set this to your email for Minecraft account or to username for offline-mode servers
   username: MySuperUsername
