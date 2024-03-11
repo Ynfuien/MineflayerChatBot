@@ -15,7 +15,7 @@ const self = module.exports = {
         const ChatMessage = chatMessageLoader(bot.registry);
         
         let jsonString = message;
-        if (bot.supportFeature("chatPacketsUseNbtComponents")) {
+        if (bot.supportFeature("chatPacketsUseNbtComponents") && message.type) {
             if (message.type === "string") return ChatMessage.fromNotch(message.value);
 
             jsonString = processNbtMessage(message);
