@@ -181,13 +181,13 @@ const self = module.exports = {
     },
 
     async playerListUpdate(interval = false) {
-        const { bot } = main;
-        if (!bot) return;
-
         if (interval) {
             const intervalValue = main.config.values['online-panel'].features['player-list'].interval;
             setTimeout(() => { self.playerListUpdate(true) }, typeof intervalValue === "number" ? intervalValue : 100);
         }
+
+        const { bot } = main;
+        if (!bot) return;
 
         const { io } = main.webPanel;
         io.emit("player-list", {
