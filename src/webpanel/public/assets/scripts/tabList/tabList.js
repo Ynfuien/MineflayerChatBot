@@ -28,6 +28,7 @@ function updateTabList(main) {
     const { data, elements } = tabList;
     const { list } = elements;
 
+    elements.main.style.display = "";
     if (elements.main.classList.contains("hidden")) return;
 
     

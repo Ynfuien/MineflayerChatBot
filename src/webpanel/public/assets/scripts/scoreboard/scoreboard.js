@@ -28,6 +28,9 @@ function updateScoreboard(main) {
     header.textContent = '';
     list.textContent = '';
 
+    header.style.display = "none";
+    list.style.display = "none";
+
     if (data === null) return;
     const { displayText, numberFormat, styling } = data;
 
@@ -36,6 +39,8 @@ function updateScoreboard(main) {
         const titlePre = parseMessage(displayText);
         titlePre.classList.add("mc-text");
         header.appendChild(titlePre);
+
+        header.style.display = "";
     }
 
     const items = data.items.slice(0, scoreboard.limit);
@@ -66,4 +71,6 @@ function updateScoreboard(main) {
 
         list.appendChild(li);
     }
+
+    if (items.length > 0) list.style.display = "";
 }
