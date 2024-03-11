@@ -123,7 +123,7 @@ function formatDate(pattern, timestamp) {
         days: date.getDate(),
         hours: date.getHours(),
         minutes: date.getMinutes(),
-        seconds: date.getMinutes()
+        seconds: date.getSeconds()
     };
     
     for (const key in props) {
