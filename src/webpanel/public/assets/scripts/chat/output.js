@@ -143,9 +143,6 @@ function formatDate(pattern, timestamp) {
  * @returns {boolean}
  */
 function isScrollOnTheBottom(output) {
-    // const {scrollHeight, scrollTop, offsetHeight} = output;
-    // console.log({scrollHeight, scrollTop: Math.floor(output.scrollTop), offsetHeight, result: output.scrollHeight - output.scrollTop - output.offsetHeight})
-    // return output.scrollHeight - Math.floor(output.scrollTop) === output.offsetHeight;
     return Math.abs(output.scrollHeight - output.scrollTop - output.offsetHeight) < 3;
 }
 

@@ -183,7 +183,6 @@ class ScoreboardItem {
     getFinalDisplayText() {
         const { team, displayName, name } = this;
 
-        // if (name === "Ynfuien") console.log(this);
         if (displayName) return displayName;
         if (team) return team.displayName(name);
 
@@ -269,7 +268,6 @@ module.exports = {
         bot._client.on("scoreboard_display_objective", /** @param {import('../types.js').ScoreboardDisplayObjectivePacket} packet */ (packet) => {
             const { name, position } = packet;
 
-            console.log(packet);
             // Clear the position
             if (name === "") {
                 setPosition(position, null);
@@ -283,7 +281,6 @@ module.exports = {
 
             // Set a scoreboard to the position
             setPosition(position, scoreboard);
-            // console.dir(scoreboards.byPosition, {depth: 1});
 
             bot.emit("tape_scoreboardChange", scoreboard);
             bot.emit("tape_scoreboardPositioned", scoreboard, position);
@@ -341,7 +338,6 @@ module.exports = {
         });
 
         bot._client.on("teams", (packet) => {
-            // if (packet.team !== "zwykly") console.log(packet);
             setTimeout(() => {
                 const { teamMap } = bot;
 

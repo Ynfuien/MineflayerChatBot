@@ -17,7 +17,7 @@ module.exports = {
         const { chat } = main.config.values;
 
         if (message.unsigned) message = message.unsigned;
-        // console.log(message.toMotd());
+        
         if (bot.supportFeature("chatPacketsUseNbtComponents")) {
             const tapeFixedJson = tapeFixNbtMessage(message.json);
             message = new ChatMessage(tapeFixedJson);
