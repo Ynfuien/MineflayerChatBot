@@ -52,7 +52,7 @@ module.exports = {
                     return;
                 }
 
-                executeCommand(text);
+                executeCommand(command);
             }, command.timeout);
 
             timeouts.push(timeout);
