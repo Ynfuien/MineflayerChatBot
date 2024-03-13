@@ -31,7 +31,6 @@ const CHALK_COLORS = {
 
 
 let savedMessagesCount = 0;
-let lastMessageTimestamp = Date.now();
 
 /** @type {import('../types.js').Main} */
 let main;
@@ -50,17 +49,19 @@ const self = module.exports = {
     log(message, codeChar = '&', type = "bot") {
         const time = new Date();
 
-        logToConsole(message, time, codeChar, type);
-        logToOnlinePanel(message, time, codeChar, type);
-        logToDatabase(message, time, codeChar, type);
+        const str = typeof message === "string" ? message : message.toMotd();
+
+        logToConsole(str, time, codeChar, type);
+        logToOnlinePanel(message, time, type);
+        logToDatabase(str, time, codeChar, type);
     },
 
     logBot(message, codeChar = '&') {
         self.log(`${codeChar}f${message}`, codeChar);
     },
 
-    logChatMessage(message, prefix = '') {
-        self.log(prefix + message.toMotd(), '§', "minecraft");
+    logChatMessage(message) {
+        self.log(message, '§', "minecraft");
     },
 
 
@@ -73,13 +74,10 @@ const self = module.exports = {
         const messagesCount = database.prepare("SELECT COUNT(*) FROM messages").pluck().get();
         savedMessagesCount = messagesCount;
         if (messagesCount < 1) return;
-
-        const timestamp = database.prepare("SELECT timestamp FROM messages ORDER BY timestamp DESC LIMIT 1").pluck().get();
-        lastMessageTimestamp = timestamp;
     }
 }
 
-function logToOnlinePanel(message, date, codeChar = '&', type) {
+function logToOnlinePanel(message, date, type) {
     if (!main) return;
     if (!main.webPanel) return;
     const {io} = main.webPanel;
@@ -88,7 +86,7 @@ function logToOnlinePanel(message, date, codeChar = '&', type) {
     io.emit("chat-message", {
         type,
         timestamp: date ? date.getTime() : Date.now(),
-        message: codeChar != '§' ? message.replace(new RegExp(codeChar, 'g'), '§') : message
+        message: typeof message === "string" ? message.replace(/&/g, "§") : message.json
     });
 }
 
@@ -129,9 +127,6 @@ function logToDatabase(message, date, codeChar = '§', type) {
 
         const result = database.prepare("DELETE FROM messages WHERE timestamp<?").run(limitTimestamp);
         savedMessagesCount -= result.changes;
-
-        const timestamp = database.prepare("SELECT timestamp FROM messages ORDER BY timestamp LIMIT 1").pluck().get();
-        lastMessageTimestamp = timestamp;
         return;
     }
 }

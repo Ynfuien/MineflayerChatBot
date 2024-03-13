@@ -16,14 +16,11 @@ module.exports = (main) => {
 
         if (!event.name) {
             logBot(`&cEvent missing name!`);
-            
             process.exit(1);
         }
         
         if (!event.run) {
             logBot(`&cEvent &e${event.name}&c, missing run function!`);
-            console.logBot(chalk.redBright(`Event ${event.name} !`));
-
             process.exit(1);
         }
         

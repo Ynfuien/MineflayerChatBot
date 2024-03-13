@@ -10,7 +10,7 @@ module.exports = {
      * @param {import('../types.js').Main} main
      * @param {string[]} args
      */
-    async run (main, args) {
+    async run (main) {
         const {bot} = main;
 
         const window = bot.currentWindow;
@@ -28,7 +28,7 @@ module.exports = {
      * @param {import('../types.js').Main} main
      * @param {string[]} args
      */
-    tabCompletion(main, args) {
+    tabCompletion() {
         return [];
     }
 }

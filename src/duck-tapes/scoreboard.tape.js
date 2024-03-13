@@ -337,7 +337,7 @@ module.exports = {
             bot.emit("tape_scoreboardChange", null);
         });
 
-        bot._client.on("teams", (packet) => {
+        bot._client.on("teams", () => {
             setTimeout(() => {
                 const { teamMap } = bot;
 

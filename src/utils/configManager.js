@@ -123,7 +123,7 @@ const self = module.exports = {
 
         // Bot options
         result = (function (options) {
-            const { host, port, version, username, password } = options;
+            const { host, port, username, password } = options;
 
             // Check host
             const ip = host.toLowerCase();

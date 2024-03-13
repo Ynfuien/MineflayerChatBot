@@ -7,7 +7,7 @@ module.exports = {
     /**
      * @param {import('../types.js').Main} main
      */
-    run (main) {
+    run () {
         logBot(`&bBot has been spawned!`);
     }
 }

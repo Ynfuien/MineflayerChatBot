@@ -2,7 +2,6 @@ const fs = require('fs');
 const ascii = require('ascii-table');
 
 const { logBot } = require('../utils/logger.js');
-const { doesKeyExist } = require('../utils/objectUtils.js');
 
 // Console reading
 const readline = require("readline");
