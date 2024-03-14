@@ -1,4 +1,4 @@
-const { scoreboardUpdate, playerListUpdate } = require('../webpanel/webPanel.js');
+const { scoreboardUpdate, playerListUpdate } = require('../web-panel/web-panel.js');
 
 module.exports = {
     name: "tape_scoreboardChange",

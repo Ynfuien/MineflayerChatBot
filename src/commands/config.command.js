@@ -1,8 +1,8 @@
 const { writeFileSync } = require('fs');
 
 const { logBot } = require("../utils/logger.js");
-const { loadConfig, checkConfig, getConfigPath } = require('../utils/configManager.js');
-const ObjectUtils = require('../utils/objectUtils.js');
+const { loadConfig, checkConfig, getConfigPath } = require('../utils/config-manager.js');
+const ObjectUtils = require('../utils/object-utils.js');
 
 module.exports = {
     name: "config",

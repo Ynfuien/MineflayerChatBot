@@ -1,5 +1,5 @@
-const { packetToChatMessage } = require('../utils/messageUtils');
-const { tabListUpdate } = require('../webpanel/webPanel');
+const { packetToChatMessage } = require('../utils/message-utils');
+const { tabListUpdate } = require('../web-panel/web-panel');
 
 module.exports = {
     name: "playerlist_header",

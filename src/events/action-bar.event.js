@@ -1,5 +1,5 @@
-const { packetToChatMessage } = require('../utils/messageUtils.js');
-const { sendActionBar } = require('../webpanel/webPanel.js');
+const { packetToChatMessage } = require('../utils/message-utils.js');
+const { sendActionBar } = require('../web-panel/web-panel.js');
 
 module.exports = {
     name: "action_bar",

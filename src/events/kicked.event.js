@@ -1,5 +1,5 @@
 const { logBot } = require('../utils/logger.js');
-const { packetToChatMessage } = require('../utils/messageUtils.js');
+const { packetToChatMessage } = require('../utils/message-utils.js');
 
 module.exports = {
     name: "kicked",

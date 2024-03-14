@@ -1,7 +1,7 @@
 const { ChatMessage } = require('../utils/chat-message.js');
 const { logChatMessage } = require('../utils/logger.js');
-const { tapeFixNbtMessage } = require('../utils/messageUtils.js');
-const { sendActionBar } = require('../webpanel/web-panel.js');
+const { tapeFixNbtMessage } = require('../utils/message-utils.js');
+const { sendActionBar } = require('../web-panel/web-panel.js');
 
 module.exports = {
     name: "message",

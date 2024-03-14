@@ -31,9 +31,6 @@ const ST = require('./duck-tapes/scoreboard.tape.js');
  *              } | null
  *          }
  *      },
- *      prismarine: {
- *          ChatMessage: import('prismarine-chat').ChatMessage
- *      },
  *      config: {
  *          values: import('./utils/config-manager.js').Config,
  *          yawn: YAWN.default

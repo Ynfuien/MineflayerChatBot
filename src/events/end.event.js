@@ -1,4 +1,4 @@
-const { startBot } = require('../utils/botManager.js');
+const { startBot } = require('../utils/bot-manager.js');
 const { logBot } = require('../utils/logger.js');
 
 module.exports = {

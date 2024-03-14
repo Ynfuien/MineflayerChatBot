@@ -1,5 +1,5 @@
-const { logBot } = require("../utils/logger");
-const { getBotCommand } = require("../handlers/command.handler");
+const { logBot } = require("../utils/logger.js");
+const { getBotCommand } = require("../handlers/command.handler.js");
 
 module.exports = {
     name: "help",
