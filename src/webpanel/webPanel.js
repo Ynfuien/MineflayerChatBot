@@ -4,9 +4,10 @@ const http = require('http');
 const { Server } = require("socket.io");
 
 // Functions
-const { logBot } = require('../utils/logger.js');
+const { logBot, devLog } = require('../utils/logger.js');
 const { executeCommand } = require('../handlers/command.handler.js');
 const { getTabCompletions } = require('../handlers/tabcomplete.handler.js');
+const { ChatMessage } = require('../utils/chat-message.js');
 
 /** @type {import('../types.js').Main} */
 let main;
@@ -51,15 +52,18 @@ const self = module.exports = {
         });
 
         io.on("connection", (socket) => {
-            if (main.bot) {
+            const { bot } = main;
+            if (bot) {
                 self.tabListUpdate(lastTabList.header, lastTabList.footer);
                 self.playerListUpdate();
-                const { sidebar } = main.bot.duckTape.scoreboards.byPosition;
+                const { sidebar } = bot.duckTape.scoreboards.byPosition;
                 self.scoreboardUpdate(sidebar);
+
+                self.updateLanguage();
             }
 
             socket.emit("config", {
-                chatPatterns: main.config.values['online-panel']['chat-patterns']
+                messagePrefixes: main.config.values['online-panel']['message-prefixes']
             });
 
             socket.on("execute-command", (data) => {
@@ -98,13 +102,28 @@ const self = module.exports = {
                 const messages = database.prepare(query).all();
                 if (messagesLimitType === "count") messages.reverse();
 
+                for (const message of messages) message.message = JSON.parse(message.message);
+
                 socket.emit("logs-data", { messages });
             });
         });
     },
 
+    updateLanguage() {
+        if (!main) return;
+        const { bot } = main;
+        if (!bot) return;
+
+        const { io } = main.webPanel;
+        if (!io) return;
+
+        io.emit("language", {
+            language: bot.registry.language
+        });
+    },
+
     /**
-     * @param {import('prismarine-chat').ChatMessage} message 
+     * @param {ChatMessage} message 
      */
     sendActionBar(message) {
         const { bot } = main;
@@ -113,14 +132,14 @@ const self = module.exports = {
         const { io } = main.webPanel;
 
         io.emit("action-bar", {
-            message: message.toMotd(),
+            message,
             timestamp: Date.now()
         });
     },
 
     /**
-     * @param {import('prismarine-chat').ChatMessage?} header
-     * @param {import('prismarine-chat').ChatMessage?} footer
+     * @param {ChatMessage?} header
+     * @param {ChatMessage?} footer
      */
     tabListUpdate(header, footer) {
         const { bot } = main;
@@ -132,8 +151,8 @@ const self = module.exports = {
         const { io } = main.webPanel;
 
         io.emit("tab-list", {
-            header: header ? header.toMotd() : "",
-            footer: footer ? footer.toMotd() : "",
+            header,
+            footer,
             timestamp: Date.now()
         });
     },
@@ -162,9 +181,9 @@ const self = module.exports = {
         const { name, displayText, numberFormat, styling } = scoreboard;
         const result = {
             name,
-            displayText: displayText.toMotd(),
+            displayText: displayText,
             numberFormat,
-            styling: styling ? styling.toMotd() : null,
+            styling: styling,
             items: []
         };
 
@@ -174,8 +193,8 @@ const self = module.exports = {
                 name: item.name,
                 value: item.value,
                 numberFormat: item.numberFormat,
-                styling: item.styling ? item.styling.toMotd() : null,
-                displayName: item.getFinalDisplayText().toMotd()
+                styling: item.styling,
+                displayName: item.getFinalDisplayText()
             });
         }
 
@@ -209,7 +228,6 @@ const self = module.exports = {
  */
 function getSortedPlayerList(bot) {
     const { players } = bot;
-    const { ChatMessage } = main.prismarine;
     const listScoreboard = bot.duckTape.scoreboards.byPosition.list;
 
     const teams = getPlayerTeams(bot);
@@ -241,23 +259,17 @@ function getSortedPlayerList(bot) {
                     score = {
                         value: playerScore.value,
                         numberFormat: playerScore.numberFormat ?? listScoreboard.numberFormat,
-                        styling: styling ? styling.toMotd() : null
+                        styling: styling
                     };
                 }
             }
 
-            let finalDisplayName = displayName;
-            if (team) {
-                const msg = new ChatMessage("");
-                msg.color = team.color;
-                msg.extra = [displayName.clone()];
-
-                finalDisplayName = msg;
-            }
+            const finalDisplayName = new ChatMessage(displayName.json);
+            if (team) finalDisplayName.color = team.color;
             
             const playerObject = {
                 username,
-                displayName: finalDisplayName.toMotd(),
+                displayName: finalDisplayName,
                 ping,
                 gamemode,
                 score

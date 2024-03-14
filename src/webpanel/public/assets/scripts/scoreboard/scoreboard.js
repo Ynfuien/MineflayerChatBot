@@ -1,4 +1,4 @@
-import { parseMessage } from "../utils/motd-parser.js";
+import { ChatMessage } from "../utils/chat-message.js";
 
 export { updateScoreboard, toggleVisibility };
 
@@ -36,38 +36,31 @@ function updateScoreboard(main) {
 
     // Title
     if (displayText) {
-        const titlePre = parseMessage(displayText);
-        titlePre.classList.add("mc-text");
-        header.appendChild(titlePre);
-
+        header.appendChild(displayText.toHTML("mc-text"));
         header.style.display = "";
     }
 
+    // Items
     const items = data.items.slice(0, scoreboard.limit);
     for (const item of items) {
         const li = document.createElement("li");
 
         // Display name
-        const displayName = parseMessage(item.displayName);
+        const displayName = item.displayName.toHTML("mc-text");
         if (displayName.innerText.length === 0) displayName.innerText = " ";
-        displayName.classList.add("mc-text");
         li.appendChild(displayName);
 
+        // Score
         const valueFormat = item.numberFormat ?? numberFormat;
         const valueStyling = item.styling ?? styling;
 
-        // Value
-        let displayValue = `§c${item.value}`;
-        if (valueFormat === 0) displayValue = "";
-        else if (valueFormat === 1) displayValue = `${valueStyling}${item.value}`;
-        else if (valueFormat === 2) displayValue = valueStyling;
+        let displayScore = new ChatMessage({color: "red", text: item.value});
+        if (valueFormat === 0) displayScore = new ChatMessage("");
+        else if (valueFormat === 1) displayScore = ChatMessage.fromLegacy(`${valueStyling.toLegacy()}${value}`);
+        else if (valueFormat === 2) displayScore = valueStyling;
 
-        if (displayValue.length > 0) {
-            const scoreboardValue = parseMessage(displayValue);
-            scoreboardValue.classList.add("mc-text");
-    
-            li.appendChild(scoreboardValue);
-        }
+        const html = displayScore.toHTML("mc-text");
+        if (html.innerText.length > 0) li.appendChild(html);
 
         list.appendChild(li);
     }

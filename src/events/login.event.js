@@ -1,5 +1,6 @@
-const {logBot} = require('../utils/logger.js');
+const {logBot, log} = require('../utils/logger.js');
 const {executeCommand} = require('../handlers/command.handler.js');
+const { ChatMessage } = require('../utils/chat-message.js');
 
 module.exports = {
     name: "login",
@@ -18,16 +19,18 @@ module.exports = {
 
             // Aand log all players at once
             const players = bot.players;
+            /** @type {string[]} */
             const displayNames = [];
             for (const username in players) {
                 if (!username.match(/^[a-z0-9_]{3,16}$/gi)) continue;
 
                 const displayName = players[username].displayName;
-                displayNames.push(displayName.toMotd());
+                displayNames.push(new ChatMessage(displayName.json).toLegacy());
             }
 
+            const message = ChatMessage.fromLegacy("§d" + displayNames.join("§7, §d"));
             logBot(`&5Players in game &7(${displayNames.length})&5:`);
-            logBot("§d" + displayNames.join("§7, §d"), '§');
+            log(message);
         }, 1500);
 
         

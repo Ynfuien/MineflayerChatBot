@@ -62,13 +62,15 @@ pre.mc-text {
 
     color: white;
     font-family: inherit;
+    text-decoration-color: transparent;
     text-decoration-thickness: 0.125rem;
     text-underline-offset: 0.125rem;
     text-shadow: 0.125rem 0.125rem 0 color-mix(in srgb, currentColor 25%, black);
 }
 
-pre.mc-text > * {
-    text-decoration-thickness: inherit;
+pre.mc-text * {
+    text-decoration: inherit;
+    text-decoration-color: currentColor;
 }
 
 /* Body, main */

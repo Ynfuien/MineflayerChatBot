@@ -1,4 +1,5 @@
 const chalk = require('chalk');
+const { ChatMessage } = require('./chat-message.js');
 
 // Legacy codes mapped to hex colors and chalk formats
 const CHALK_COLORS = {
@@ -38,37 +39,48 @@ let main;
 let devTimestamp = 0;
 
 const self = module.exports = {
+    /**
+     * @param {any} message
+     * @param {number} interval
+     * @param {number} depth
+     */
     devLog(message, interval = 0, depth = 2) {
         const now = Date.now();
         if (now - devTimestamp < interval) return;
         devTimestamp = now;
 
-        console.dir(message, {depth});
+        console.dir(message, { depth });
     },
 
-    log(message, codeChar = '&', type = "bot") {
+    /**
+     * 
+     * @param {ChatMessage} message
+     * @param {string} type
+     */
+    log(message, type = "bot") {
         const time = new Date();
 
-        const str = typeof message === "string" ? message : message.toMotd();
-
-        logToConsole(str, time, codeChar, type);
+        logToConsole(message, time, type);
         logToOnlinePanel(message, time, type);
-        logToDatabase(str, time, codeChar, type);
+        logToDatabase(message, time, type);
     },
 
-    logBot(message, codeChar = '&') {
-        self.log(`${codeChar}f${message}`, codeChar);
+    logBot(message) {
+        const chatMessage = ChatMessage.fromLegacy(message, '&');
+        if (!chatMessage.color) chatMessage.color = "white";
+
+        self.log(chatMessage);
     },
 
     logChatMessage(message) {
-        self.log(message, '§', "minecraft");
+        self.log(message, "minecraft");
     },
 
 
     setup(_main) {
         main = _main;
 
-        const {database} = main;
+        const { database } = main;
         if (!database) return;
 
         const messagesCount = database.prepare("SELECT COUNT(*) FROM messages").pluck().get();
@@ -77,34 +89,46 @@ const self = module.exports = {
     }
 }
 
+/**
+ * Logs provided message to the online panel
+ * @param {ChatMessage} message
+ * @param {Date} date
+ * @param {string} type
+ */
 function logToOnlinePanel(message, date, type) {
     if (!main) return;
     if (!main.webPanel) return;
-    const {io} = main.webPanel;
+
+    const { io } = main.webPanel;
     if (!io) return;
 
     io.emit("chat-message", {
         type,
-        timestamp: date ? date.getTime() : Date.now(),
-        message: typeof message === "string" ? message.replace(/&/g, "§") : message.json
+        timestamp: date.getTime(),
+        message: message
     });
 }
 
-function logToDatabase(message, date, codeChar = '§', type) {
+/**
+ * Logs provided message to the database
+ * @param {ChatMessage} message
+ * @param {Date} date
+ * @param {string} type
+ */
+function logToDatabase(message, date, type) {
     if (!main) return;
-    const {database} = main;
+    const { database } = main;
     if (!database) return;
 
-    const {chatLogs} = main.vars;
+    const { chatLogs } = main.vars;
     if (!chatLogs.enabled) return;
 
-    
-    if (codeChar !== '§') message = message.replace(new RegExp(codeChar, 'g'), '§');
-    database.prepare("INSERT INTO messages(message, timestamp, type) VALUES(?, ?, ?)").run(message, date.getTime(), type === "minecraft" ? 1 : 0);
+    const json = JSON.stringify(message);
+    database.prepare("INSERT INTO messages(message, timestamp, type) VALUES(?, ?, ?)").run(json, date.getTime(), type === "minecraft" ? 1 : 0);
     savedMessagesCount++;
 
-    
-    const {limitType, limit} = chatLogs;
+
+    const { limitType, limit } = chatLogs;
 
     // Limit by infinity
     if (limitType === "infinity") return;
@@ -133,12 +157,14 @@ function logToDatabase(message, date, codeChar = '§', type) {
 
 
 /**
- * @param {string} message 
- * @param {Date} time 
- * @param {string} codeChar 
+ * Logs provided message to the console
+ * @param {ChatMessage} message 
+ * @param {Date} time
+ * @param {string} type
  */
-function logToConsole(message, time, codeChar = '§', type) {
-    if (type === "bot") message = `${codeChar}f${codeChar}l[BOT] ${message}`;
+function logToConsole(message, time, type) {
+    message = message.toLegacy();
+    if (type === "bot") message = `§f§l[BOT] ${message}`;
 
     let chars = message.split('');
 
@@ -151,7 +177,7 @@ function logToConsole(message, time, codeChar = '§', type) {
     for (let i = 0; i < chars.length; i++) {
         let char = chars[i];
 
-        if (char != codeChar) {
+        if (char != '§') {
             toLog += currentColor(char);
             continue;
         }
@@ -229,6 +255,6 @@ function logToConsole(message, time, codeChar = '§', type) {
     }
 
 
-    const dateTime = `[${time.toLocaleDateString("pl-PL", {month: "2-digit", day: "2-digit"})} ${time.toLocaleTimeString("pl-pl")}]`;
+    const dateTime = `[${time.toLocaleDateString("pl-PL", { month: "2-digit", day: "2-digit" })} ${time.toLocaleTimeString("pl-pl")}]`;
     console.log(chalk.hex("#969696")(`${dateTime} `) + toLog);
 }

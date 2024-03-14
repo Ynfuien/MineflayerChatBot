@@ -1,13 +1,13 @@
-const PrismarineChat = require('prismarine-chat');
+// const PrismarineChat = require('prismarine-chat');
 
+const { ChatMessage } = require('../utils/chat-message.js');
 const { packetToChatMessage } = require('../utils/messageUtils.js');
+
 const { Team } = require('mineflayer');
 
 
 /** @type {import('../types.js').TapedBot} */
 let bot = null;
-/** @type {PrismarineChat.ChatMessage} */
-let ChatMessage = null;
 
 /**
  * @typedef {Scoreboard} Scoreboard
@@ -18,13 +18,13 @@ let ChatMessage = null;
 class Scoreboard {
     /** @type {string} */
     name;
-    /** @type {PrismarineChat.ChatMessage} */
+    /** @type {ChatMessage} */
     displayText;
     /** @type {0 | 1} */
     type;
     /** @type {null | 0 | 1 | 2} */
     numberFormat;
-    /** @type {null | PrismarineChat.ChatMessage} */
+    /** @type {null | ChatMessage} */
     styling;
 
     /** @type {Object.<string, ScoreboardItem>} */
@@ -54,11 +54,11 @@ class Scoreboard {
             try {
                 const json = JSON.parse(displayText);
                 if (typeof json === "string") {
-                    this.displayText = ChatMessage.fromNotch(json);
+                    this.displayText = ChatMessage.fromLegacy(json);
                     return;
                 }
                 if (json.text && Object.keys(json).length === 1) {
-                    this.displayText = ChatMessage.fromNotch(json.text);
+                    this.displayText = ChatMessage.fromLegacy(json.text);
                     return;
                 }
             } catch {}
@@ -150,11 +150,11 @@ class ScoreboardItem {
     name;
     /** @type {number} */
     value;
-    /** @type {null | PrismarineChat.ChatMessage} */
+    /** @type {null | ChatMessage} */
     displayName;
     /** @type {null | 0 | 1 | 2} */
     numberFormat;
-    /** @type {null | PrismarineChat.ChatMessage} */
+    /** @type {null | ChatMessage} */
     styling;
 
     /** @type {null | Team} */
@@ -184,9 +184,15 @@ class ScoreboardItem {
         const { team, displayName, name } = this;
 
         if (displayName) return displayName;
-        if (team) return team.displayName(name);
+        if (team) {
+            const prefix = new ChatMessage(team.prefix.json);
+            const suffix = new ChatMessage(team.suffix.json);
+            const nameCM = ChatMessage.fromLegacy(name);
 
-        return ChatMessage.fromNotch(name);
+            return prefix.append(nameCM, suffix);
+        }
+
+        return ChatMessage.fromLegacy(name);
     }
 }
 
@@ -197,7 +203,6 @@ module.exports = {
      */
     load(_bot) {
         bot = _bot;
-        ChatMessage = PrismarineChat(bot.registry);
 
         /** @type {import('../types.js').TapedScoreboards} */
         const scoreboards = {
@@ -304,6 +309,7 @@ module.exports = {
                 return;
             }
 
+            // console.log(packet);
             scoreboard.updateScore(packet);
             bot.emit("tape_scoreboardChange", scoreboard);
             bot.emit("tape_scoreboardScoreUpdated", scoreboard, scoreboard.items[itemName]);

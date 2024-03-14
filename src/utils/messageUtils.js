@@ -1,5 +1,5 @@
-const chatMessageLoader = require('prismarine-chat');
 const { processNbtMessage } = require('prismarine-chat');
+const { ChatMessage } = require('./chat-message.js');
 
 const self = module.exports = {
     /**
@@ -9,14 +9,12 @@ const self = module.exports = {
      * both cases.
      * @param {import('../types.js').TapedBot} bot 
      * @param {string | {type: string, value: string | object}} message 
-     * @returns {import('prismarine-chat').ChatMessage}
+     * @returns {ChatMessage}
      */
     packetToChatMessage(bot, message) {
-        const ChatMessage = chatMessageLoader(bot.registry);
-        
         let jsonString = message;
         if (bot.supportFeature("chatPacketsUseNbtComponents") && message.type) {
-            if (message.type === "string") return ChatMessage.fromNotch(message.value);
+            if (message.type === "string") return ChatMessage.fromLegacy(message.value);
 
             jsonString = processNbtMessage(message);
         }
@@ -24,7 +22,6 @@ const self = module.exports = {
         try {
             const json = JSON.parse(jsonString);
             const chatMessage = new ChatMessage(self.tapeFixNbtMessage(json));
-            // const chatMessage = new ChatMessage(json);
             return chatMessage;
         } catch (e) {
             console.log(e);

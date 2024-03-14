@@ -1,20 +1,18 @@
-import { parseMessage } from "../utils/motd-parser.js";
+import { ChatMessage } from "../utils/chat-message.js";
 
 export { showActionBar };
 
 
 /**
  * 
- * @param {import("../index.js").Main} main 
+ * @param {import("../index.js").Main} main
+ * @param {ChatMessage} message
  */
 function showActionBar(main, message) {
     const { actionBar } = main.chat;
 
-    const pre = parseMessage(message);
-    pre.classList.add("mc-text");
-
     actionBar.textContent = '';
-    actionBar.appendChild(pre);
+    actionBar.appendChild(message.toHTML("mc-text"));
 
     actionBar.classList.remove("hidden");
     setTimeout(() => {

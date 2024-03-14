@@ -4,6 +4,7 @@ import { setup as setupChatOutput } from "./chat/output.js";
 import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
 import { setup as setupCommandHistory } from "./chat/commandHistory.js";
 
+import { ChatMessage } from "./utils/chat-message.js";
 
 /**
  * @typedef {{
@@ -29,28 +30,28 @@ import { setup as setupCommandHistory } from "./chat/commandHistory.js";
  * 
  * @typedef {{
  *      username: string,
- *      displayName: string,
+ *      displayName: ChatMessage,
  *      ping: number,
  *      gamemode: number,
  *      score: null | {
  *          value: number,
- *          numberFormat: null | number,
- *          styling: null | string
+ *          numberFormat: undefined | number,
+ *          styling: undefined | ChatMessage
  *      }
  * }} Main.tabList.data.player
  * 
  * 
  * @typedef {{
  *      name: string,
- *      displayText: string | undefined,
- *      numberFormat: null | 0 | 1 | 2,
- *      styling: null | string,
+ *      displayText: ChatMessage | undefined,
+ *      numberFormat: undefined | 0 | 1 | 2,
+ *      styling: undefined | ChatMessage,
  *      items: {
  *          name: string,
  *          value: number | string,
- *          displayName: string,
- *          numberFormat: null | 0 | 1 | 2,
- *          styling: null | string
+ *          displayName: ChatMessage,
+ *          numberFormat: undefined | 0 | 1 | 2,
+ *          styling: undefined | ChatMessage
  *      }[]
  * }} Main.scoreboard.data.scoreboard
  * 
@@ -58,11 +59,12 @@ import { setup as setupCommandHistory } from "./chat/commandHistory.js";
  * @typedef {{
  *      socket: SocketIO,
  *      config: {
- *          chatPatterns: {
+ *          messagePrefixes: {
  *              minecraft: string,
  *              bot: string
- *          }
- *      }
+ *          },
+ *          clientLang: Object.<string, string>
+ *      },
  *      chat: {
  *          element: HTMLDivElement,
  *          input: {
@@ -87,8 +89,8 @@ import { setup as setupCommandHistory } from "./chat/commandHistory.js";
  *      },
  *      tabList: {
  *          data: {
- *              header: string,
- *              footer: string,
+ *              header: ChatMessage,
+ *              footer: ChatMessage,
  *              players: Main.tabList.data.player[]
  *          },
  *          elements: {
@@ -117,10 +119,11 @@ import { setup as setupCommandHistory } from "./chat/commandHistory.js";
     /** @type {Main} */
     const main = {
         config: {
-            chatPatterns: {
-                minecraft: "{message}",
-                bot: "&f&l[BOT] &r{message}"
-            }
+            messagePrefixes: {
+                minecraft: "",
+                bot: "§f§l[BOT] §r"
+            },
+            clientLang: {}
         },
         chat: {
             element: chat,

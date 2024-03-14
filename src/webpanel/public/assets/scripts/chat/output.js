@@ -1,4 +1,4 @@
-import { parseMessage } from "../utils/motd-parser.js";
+import { ChatMessage } from "../utils/chat-message.js";
 
 export { setup, showMessage, isScrollOnTheBottom, scrollToBottom };
 
@@ -66,7 +66,7 @@ function setup(main) {
  * @typedef {{
  *      type: string,
  *      timestamp: number,
- *      message: string
+ *      message: ChatMessage
  * }} MessageData
  */
 
@@ -75,21 +75,18 @@ function setup(main) {
  * @param {MessageData} data 
  */
 function showMessage(main, data, scroll = true) {
-    const { chatPatterns } = main.config;
+    const { messagePrefixes } = main.config;
     const { element: output } = main.chat.output;
 
     let { type } = data;
     if (type === 0) type = "bot";
     else if (type === 1) type = "minecraft";
     
-    const pattern = chatPatterns[type];
-    const message = formatMessage(data, pattern);
-
-    const pre = parseMessage(message);
-    pre.classList.add("mc-text");
+    const prefix = messagePrefixes[type];
+    const message = formatMessage(data, prefix);
 
     const scrollDown = scroll && isScrollOnTheBottom(output);
-    output.appendChild(pre);
+    output.appendChild(message.toHTML("mc-text"));
     
     if (scrollDown) scrollToBottom(output);
 }
@@ -97,15 +94,15 @@ function showMessage(main, data, scroll = true) {
 /**
  * 
  * @param {MessageData} message
- * @param {string} pattern
- * @returns {string}
+ * @param {string} prefix
+ * @returns {ChatMessage}
  */
-function formatMessage(data, pattern) {
+function formatMessage(data, prefix) {
     const { message, timestamp } = data;
 
-    pattern = pattern.replace(/&/g, "§");
-    pattern = formatDate(pattern, timestamp);
-    return pattern.replace(/\{message\}/g, message);
+    prefix = formatDate(prefix, timestamp);
+    const chatMessage = ChatMessage.fromLegacy(prefix);
+    return chatMessage.append(message);
 }
 
 /**

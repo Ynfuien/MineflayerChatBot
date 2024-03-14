@@ -3,6 +3,8 @@ import { showActionBar } from "./chat/actionBar.js";
 import { updateTabList } from "./tabList/tabList.js";
 import { showCompletions } from "./chat/tabCompletion.js";
 import { updateScoreboard } from "./scoreboard/scoreboard.js";
+import { ChatMessage, setLanguage } from "./utils/chat-message.js";
+
 
 export { setup, sendCommand, sendTabCompletionRequest };
 
@@ -40,7 +42,17 @@ function setup(_main) {
     // Config    
     socket.on("config", (data) => {
         main.config = data;
+
+        setLanguage(main.config.clientLang);
     });
+
+    // Config    
+    socket.on("language", (data) => {
+        main.config.clientLang = data.language;
+
+        setLanguage(data.language);
+    });
+
 
     // Get last logs
     let gotTheLogs = false;
@@ -55,7 +67,11 @@ function setup(_main) {
 
         const { element: output } = main.chat.output;
         output.textContent = '';
-        for (const data of messages) showMessage(main, data, false);
+        for (const data of messages) {
+            data.message = new ChatMessage(data.message);
+
+            showMessage(main, data, false);
+        }
 
         scrollToBottom(output);
 
@@ -72,17 +88,36 @@ function setup(_main) {
     socket.on("chat-message", (data) => {
         if (!gotTheLogs) return;
 
+        const { message } = data;
+        if (typeof message === "string") data.message = ChatMessage.fromLegacy(message);
+        else data.message = new ChatMessage(message);
+        
         showMessage(main, data);
     });
 
     // Acton bar
     socket.on("action-bar", (data) => {
-        showActionBar(main, data.message);
+        showActionBar(main, new ChatMessage(data.message));
     });
 
-    // Acton bar
-    socket.on("scoreboard", (data) => {
-        main.scoreboard.data = data.scoreboard;
+    // Scoreboard
+    socket.on("scoreboard", /** @param {{scoreboard: import('.').Main.scoreboard.data.scoreboard}} data */ (data) => {
+        const { scoreboard } = data;
+        main.scoreboard.data = scoreboard;
+
+        if (scoreboard) {
+            const { displayText, items, styling } = scoreboard;
+            if (displayText) scoreboard.displayText = new ChatMessage(displayText);
+            if (styling) scoreboard.styling = new ChatMessage(styling);
+
+            for (const item of items) {
+                const { displayName, styling } = item;
+
+                if (displayName) item.displayName = new ChatMessage(displayName);
+                if (styling) item.styling = new ChatMessage(styling);
+            }
+        }
+        
         updateScoreboard(main);
     });
 
@@ -95,8 +130,9 @@ function setup(_main) {
 
     // Tab list
     socket.on("tab-list", (data) => {
-        main.tabList.data.header = data.header;
-        main.tabList.data.footer = data.footer;
+        const { header, footer } = data;
+        main.tabList.data.header = header ? new ChatMessage(header) : null;
+        main.tabList.data.footer = footer ? new ChatMessage(footer) : null;
 
         updateTabList(main);
     });
@@ -104,6 +140,16 @@ function setup(_main) {
     // Player list
     socket.on("player-list", (data) => {
         main.tabList.data.players = data.list;
+
+        for (const player of main.tabList.data.players) {
+            player.displayName = new ChatMessage(player.displayName);
+
+            const { score } = player;
+            if (score) {
+                const { styling } = score;
+                if (styling) score.styling = new ChatMessage(styling);
+            }
+        }
 
         updateTabList(main);
     });

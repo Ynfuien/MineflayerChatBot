@@ -1,4 +1,4 @@
-import { parseMessage } from "../utils/motd-parser.js";
+import { ChatMessage } from "../utils/chat-message.js";
 
 export { updateTabList, toggleVisibility };
 
@@ -38,33 +38,39 @@ function updateTabList(main) {
     if (lastHeader !== header) {
         elements.header.textContent = '';
     
-        if (header.length > 0) {
-            // '.replaces' fix leading and trailing new lines being ignored by HTML
-            const headerPre = parseMessage(header.replace(/^\n/, " \n").replace(/\n$/, "\n§r "));
-            headerPre.classList.add("mc-text");
-            elements.header.appendChild(headerPre);
-            elements.header.classList.remove("empty");
-        } else {
-            elements.header.classList.add("empty");
-        }
+        // if (header.length > 0) {
+        //     // '.replaces' fix leading and trailing new lines being ignored by HTML
+        //     // const headerPre = parseMessage(header.replace(/^\n/, " \n").replace(/\n$/, "\n§r "));
+        //     // headerPre.classList.add("mc-text");
+        //     // elements.header.appendChild(headerPre);
+        //     elements.header.appendChild(header.toHTML("mc-text"));
+        //     elements.header.classList.remove("empty");
+        // } else {
+        //     elements.header.classList.add("empty");
+        // }
         
+        
+        elements.header.appendChild(header.toHTML("mc-text"));
 
-        lastHeader = header;
+        // lastHeader = header.toL;
     }
     
     // Footer
     if (lastFooter !== footer) {
         elements.footer.textContent = '';
     
-        if (footer.length > 0) {
-            // '.replaces' fix leading and trailing new lines being ignored by HTML
-            const footerPre = parseMessage(footer.replace(/^\n/, " \n").replace(/\n$/, "\n§r "));
-            footerPre.classList.add("mc-text");
-            elements.footer.appendChild(footerPre);
-            elements.footer.classList.remove("empty");
-        } else {
-            elements.footer.classList.add("empty");
-        }
+        // if (footer.length > 0) {
+        //     // '.replaces' fix leading and trailing new lines being ignored by HTML
+        //     // const footerPre = parseMessage(footer.replace(/^\n/, " \n").replace(/\n$/, "\n§r "));
+        //     // footerPre.classList.add("mc-text");
+        //     // elements.footer.appendChild(footerPre);
+        //     elements.footer.appendChild(footer.toHTML("mc-text"));
+        //     elements.footer.classList.remove("empty");
+        // } else {
+        //     elements.footer.classList.add("empty");
+        // }
+        
+        elements.footer.appendChild(footer.toHTML("mc-text"));
 
         lastFooter = footer;
     }
@@ -86,9 +92,7 @@ function updateTabList(main) {
         li.style.setProperty("--col", getColumnNumber(i + 1, count));
 
         // Display name
-        const displayName = parseMessage(player.displayName);
-        displayName.classList.add("mc-text");
-        li.appendChild(displayName);
+        li.appendChild(player.displayName.toHTML("mc-text"));
 
         const spectator = player.gamemode === 3;
 
@@ -97,14 +101,13 @@ function updateTabList(main) {
             const { score } = player;
             const { value, numberFormat, styling } = score;
 
-            let displayValue = `§e${value}`;
-            if (numberFormat === 0) displayValue = "";
-            else if (numberFormat === 1) displayValue = `${styling}${value}`;
-            else if (numberFormat === 2) displayValue = styling;
 
-            const scoreboardValue = parseMessage(displayValue);
-            scoreboardValue.classList.add("mc-text");
-            li.appendChild(scoreboardValue);
+            let displayScore = new ChatMessage({color: "yellow", text: value});
+            if (numberFormat === 0) displayScore = new ChatMessage("");
+            else if (numberFormat === 1) displayScore = ChatMessage.fromLegacy(`${styling.toLegacy()}${value}`);
+            else if (numberFormat === 2) displayScore = styling;
+
+            li.appendChild(displayScore.toHTML("mc-text"));
         }
 
         // Ping img

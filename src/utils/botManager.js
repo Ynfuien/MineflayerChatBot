@@ -1,8 +1,9 @@
 const mineflayer = require('mineflayer');
-const prismarineChat = require('prismarine-chat');
 
 const eventHandler = require('../handlers/event.handler.js');
 const { load: loadScoreboardTape } = require('../duck-tapes/scoreboard.tape.js');
+const { setLanguage } = require('./chat-message.js');
+const { updateLanguage } = require('../webpanel/webPanel.js');
 
 module.exports = {
     /**
@@ -11,7 +12,11 @@ module.exports = {
     startBot(main) {
         const options = structuredClone(main.config.values['bot-options']);
         main.bot = mineflayer.createBot(options);
-        main.prismarine.ChatMessage = prismarineChat(main.bot.registry);
+
+        // Nodejs
+        setLanguage(main.bot.registry.language);
+        // Online panel
+        updateLanguage();
 
         eventHandler(main);
         loadScoreboardTape(main.bot);

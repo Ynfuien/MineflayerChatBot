@@ -90,17 +90,16 @@ online-panel:
   # Port for online panel, default is 3000
   port: 3000
 
-  # Patterns of how to show messages in the panel
-  chat-patterns:
+  # Prefixed for messages in the panel
+  message-prefixes:
     # Available variables:
     # {years}, {months}, {days},
     # {hours}, {minutes}, {seconds}
-    # {message}
 
     # Minecraft messages - chat, commands etc.
-    minecraft: '&7[{hours}:{minutes}:{seconds}] &r{message}'
+    minecraft: '§7[{hours}:{minutes}:{seconds}] §r'
     # Bot internal messages
-    bot: '&7[{hours}:{minutes}:{seconds}] &f&l[BOT] &r{message}'
+    bot: '§7[{hours}:{minutes}:{seconds}] §f§l[BOT] §r'
 
   # Messages to load from log file to show in online panel when you open it
   last-messages:
