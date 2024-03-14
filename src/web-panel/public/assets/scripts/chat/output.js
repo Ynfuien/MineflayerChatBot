@@ -32,7 +32,7 @@ function setup(main) {
 
         outputElement.scrollTo(outputElement.scrollLeft, result);
     });
-    
+
 
     // Using interactjs for resizible output
     interact(outputElement)
@@ -52,7 +52,7 @@ function setup(main) {
                     if (defaultWidth - (lineHeight * 2) < width && defaultWidth + (lineHeight * 2) > width) width = defaultWidth;
 
                     height = (Math.round(height / lineHeight) * lineHeight) + paddingTop;
-                    
+
                     outputElement.style.height = `${height}px`;
                     outputElement.style.width = `${width}px`;
 
@@ -81,13 +81,13 @@ function showMessage(main, data, scroll = true) {
     let { type } = data;
     if (type === 0) type = "bot";
     else if (type === 1) type = "minecraft";
-    
+
     const prefix = messagePrefixes[type];
     const message = formatMessage(data, prefix);
 
     const scrollDown = scroll && isScrollOnTheBottom(output);
     output.appendChild(message.toHTML("mc-text"));
-    
+
     if (scrollDown) scrollToBottom(output);
 }
 
@@ -122,7 +122,7 @@ function formatDate(pattern, timestamp) {
         minutes: date.getMinutes(),
         seconds: date.getSeconds()
     };
-    
+
     for (const key in props) {
         if (!pattern.includes(key)) continue;
 

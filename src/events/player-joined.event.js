@@ -1,4 +1,4 @@
-const {logBot} = require('../utils/logger.js');
+const { logBot } = require('../utils/logger.js');
 
 module.exports = {
     name: "playerJoined",
@@ -7,7 +7,7 @@ module.exports = {
     /**
      * @param {import('../types.js').Main} main
      */
-    run (main, player) {
+    run(main, player) {
         if (!main.vars.bot.logPlayers) return;
 
         // Check for NPCs

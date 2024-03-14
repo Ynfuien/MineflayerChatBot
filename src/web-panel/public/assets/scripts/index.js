@@ -1,8 +1,8 @@
-import { setup as setupWebSocket } from "./webSocket.js";
+import { setup as setupWebSocket } from "./web-socket.js";
 import { setup as setupChatInputs } from "./chat/input.js";
 import { setup as setupChatOutput } from "./chat/output.js";
-import { setup as setupTabCompletion } from "./chat/tabCompletion.js";
-import { setup as setupCommandHistory } from "./chat/commandHistory.js";
+import { setup as setupTabCompletion } from "./chat/tab-completion.js";
+import { setup as setupCommandHistory } from "./chat/command-history.js";
 
 import { ChatMessage } from "./utils/chat-message.js";
 
@@ -111,11 +111,11 @@ import { ChatMessage } from "./utils/chat-message.js";
  * }} Main
  */
 
-(function() {
+(function () {
     const chat = document.querySelector("section#chat");
     const tabList = document.querySelector("section#tab-list");
     const scoreboard = document.querySelector("#scoreboard");
-    
+
     /** @type {Main} */
     const main = {
         config: {

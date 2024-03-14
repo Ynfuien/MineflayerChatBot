@@ -1,7 +1,7 @@
 const { ChatMessage } = require('../utils/chat-message.js');
 const { logChatMessage } = require('../utils/logger.js');
 const { tapeFixNbtMessage } = require('../utils/messageUtils.js');
-const { sendActionBar } = require('../webpanel/webPanel.js');
+const { sendActionBar } = require('../webpanel/web-panel.js');
 
 module.exports = {
     name: "message",
@@ -17,7 +17,7 @@ module.exports = {
         const { chat } = main.config.values;
 
         if (message.unsigned) message = message.unsigned;
-        
+
         let json = message.json;
         if (bot.supportFeature("chatPacketsUseNbtComponents")) {
             json = tapeFixNbtMessage(message.json);

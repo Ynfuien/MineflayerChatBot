@@ -35,7 +35,7 @@ const ST = require('./duck-tapes/scoreboard.tape.js');
  *          ChatMessage: import('prismarine-chat').ChatMessage
  *      },
  *      config: {
- *          values: import('./utils/configManager.js').Config,
+ *          values: import('./utils/config-manager.js').Config,
  *          yawn: YAWN.default
  *      },
  *      vars: {
@@ -82,7 +82,7 @@ const ST = require('./duck-tapes/scoreboard.tape.js');
  *  type: "string" | "compound",
  *  value: string | {color?: object, text?: object}
  * }} NBTTextCompound
- */ 
+ */
 
 // Scoreboard packets
 /** 
@@ -114,7 +114,7 @@ const ST = require('./duck-tapes/scoreboard.tape.js');
  *  entity_name: string,
  *  objective_name: string | undefined
  * }} ResetScorePacket
- */ 
+ */
 
 /** 
  * @typedef {{

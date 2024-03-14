@@ -31,13 +31,13 @@ function updateTabList(main) {
     elements.main.style.display = "";
     if (elements.main.classList.contains("hidden")) return;
 
-    
+
     const { header, footer } = data;
 
     // Header
     if (lastHeader !== header) {
         elements.header.textContent = '';
-    
+
         // if (header.length > 0) {
         //     // '.replaces' fix leading and trailing new lines being ignored by HTML
         //     // const headerPre = parseMessage(header.replace(/^\n/, " \n").replace(/\n$/, "\n§r "));
@@ -48,17 +48,17 @@ function updateTabList(main) {
         // } else {
         //     elements.header.classList.add("empty");
         // }
-        
-        
+
+
         elements.header.appendChild(header.toHTML("mc-text"));
 
         // lastHeader = header.toL;
     }
-    
+
     // Footer
     if (lastFooter !== footer) {
         elements.footer.textContent = '';
-    
+
         // if (footer.length > 0) {
         //     // '.replaces' fix leading and trailing new lines being ignored by HTML
         //     // const footerPre = parseMessage(footer.replace(/^\n/, " \n").replace(/\n$/, "\n§r "));
@@ -69,7 +69,7 @@ function updateTabList(main) {
         // } else {
         //     elements.footer.classList.add("empty");
         // }
-        
+
         elements.footer.appendChild(footer.toHTML("mc-text"));
 
         lastFooter = footer;
@@ -102,7 +102,7 @@ function updateTabList(main) {
             const { value, numberFormat, styling } = score;
 
 
-            let displayScore = new ChatMessage({color: "yellow", text: value});
+            let displayScore = new ChatMessage({ color: "yellow", text: value });
             if (numberFormat === 0) displayScore = new ChatMessage("");
             else if (numberFormat === 1) displayScore = ChatMessage.fromLegacy(`${styling.toLegacy()}${value}`);
             else if (numberFormat === 2) displayScore = styling;
@@ -129,7 +129,7 @@ function updateTabList(main) {
  * @returns 
  */
 function checkIfPlayerListChanged(playersData) {
-    if (playersData.length !== lastPlayers.length) return true; 
+    if (playersData.length !== lastPlayers.length) return true;
 
     for (let i = 0; i < playersData.length; i++) {
         const newPlayer = playersData[i];

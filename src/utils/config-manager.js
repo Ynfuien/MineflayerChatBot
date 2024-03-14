@@ -3,7 +3,7 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 
 const { logBot } = require('./logger.js');
-const { doesKeyExist } = require('./objectUtils.js');
+const { doesKeyExist } = require('./object-utils.js');
 
 /**
  * @typedef {{
@@ -76,7 +76,7 @@ const self = module.exports = {
      */
     loadConfig(main) {
         const filePath = self.getConfigPath(main);
-        
+
         if (!fs.existsSync(filePath)) return { success: false, error: `Config file doesn't exist! (${filePath})` };
 
         let fileContent;
@@ -113,7 +113,7 @@ const self = module.exports = {
         // Check obligatory sections
         for (let sectionkey of ["bot-options.host", "bot-options.username"]) {
             if (doesKeyExist(config, sectionkey)) continue;
-            
+
             logError(`Config field '${sectionkey}' isn't set! Bot can't work without it. Correct it and start the bot again.`);
             return false;
         }
@@ -294,12 +294,12 @@ const self = module.exports = {
                     logError(`Command '${command}' doesn't match pattern! Correct it to work`);
                     continue;
                 }
-                
+
                 const split = command.split(':');
                 const timeout = parseInt(split.shift());
                 const message = split.join(':');
 
-                correctCommands.push({timeout, message});
+                correctCommands.push({ timeout, message });
             }
 
             return correctCommands;

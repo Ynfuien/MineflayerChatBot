@@ -38,20 +38,20 @@ const self = module.exports = {
      */
     tapeFixNbtMessage(json) {
         if (typeof json !== "object") return json;
-    
+
         const keys = Object.keys(json);
         for (const key of keys) {
             const value = json[key];
-    
+
             if (key === "") {
                 json["text"] = self.tapeFixNbtMessage(value);
                 delete json[key];
                 continue;
             }
-    
+
             json[key] = self.tapeFixNbtMessage(value);
         }
-    
+
         return json;
     }
 };

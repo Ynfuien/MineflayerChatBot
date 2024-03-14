@@ -5,7 +5,7 @@ const { logBot } = require('../utils/logger.js');
  * @param {import('../types.js').Main} main
  */
 module.exports = (main) => {
-    const {bot} = main;
+    const { bot } = main;
     const events = fs.readdirSync(__dirname + "/../events").filter(file => file.endsWith("event.js"));
 
     let registeredEventCount = 0;
@@ -18,12 +18,12 @@ module.exports = (main) => {
             logBot(`&cEvent missing name!`);
             process.exit(1);
         }
-        
+
         if (!event.run) {
             logBot(`&cEvent &e${event.name}&c, missing run function!`);
             process.exit(1);
         }
-        
+
         if (typeof event.run !== "function") {
             logBot(`&cEvent &e${event.name}&c, run must be a function!`);
             process.exit(1);
@@ -47,7 +47,7 @@ module.exports = (main) => {
             continue;
         }
 
-        bot.on(event.name, async (arg1, arg2)=> {
+        bot.on(event.name, async (arg1, arg2) => {
             try {
                 await event.run(main, arg1, arg2);
             } catch (error) {
@@ -57,7 +57,7 @@ module.exports = (main) => {
                 console.log(error);
             }
         });
-        
+
     }
 
     logBot(`&aRegistered &b${registeredEventCount} &aevent(s).`);

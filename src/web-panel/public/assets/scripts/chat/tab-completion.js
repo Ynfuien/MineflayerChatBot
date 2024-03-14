@@ -1,4 +1,4 @@
-import { sendTabCompletionRequest } from "../webSocket.js";
+import { sendTabCompletionRequest } from "../web-socket.js";
 import { getTextWidth, getElementFont } from "../utils/text-width-measurer.js";
 
 export { setup, showCompletions, getCompletions, clear };
@@ -28,9 +28,9 @@ function setup(_main) {
     inputElement.addEventListener("input", () => {
         tabCompletion.changingTheInput = true;
         getCompletions();
-        
+
         setTimeout(() => {
-            tabCompletion.changingTheInput = false;   
+            tabCompletion.changingTheInput = false;
         });
     });
 
@@ -42,7 +42,7 @@ function setup(_main) {
     });
 
     inputElement.addEventListener("keydown", (event) => {
-        const {key} = event;
+        const { key } = event;
 
         if (!["Tab", "Escape", "ArrowDown", "ArrowUp"].includes(key)) return;
         event.preventDefault();
@@ -60,7 +60,7 @@ function setup(_main) {
             if (key === "ArrowUp") return changeTheHighlight(tabCompletion.highlightedIndex - 1);
         }
     });
-    
+
     tabCompletion.list.addEventListener("wheel", (event) => {
         event.preventDefault();
 
@@ -81,7 +81,7 @@ function getCompletions() {
         clear();
         return;
     }
-    
+
     const cursorIndex = window.getSelection().focusOffset;
     sendTabCompletionRequest(value.substring(0, cursorIndex));
 }
@@ -136,7 +136,7 @@ function changeTheHighlight(index) {
 
     // Selected class
     for (const child of listElement.children) child.classList.remove("selected");
-    
+
     const selected = Array.from(listElement.children)[index];
     selected.classList.add("selected");
 
@@ -166,15 +166,15 @@ function updateThePlaceholder() {
     const currentCompletionInput = inputText.substring(start, start + length);
     const width = getTextWidth(currentCompletionInput, inputFont);
     placeholder.style.setProperty("--padding-left", `${width}px`);
-    
-    let hidden = (function() {
+
+    let hidden = (function () {
         if (completedIndex !== null) return true;
         if (!highlightedItem.startsWith(currentCompletionInput)) return true;
         if (inputText.length > start + length) return true;
 
         return false;
     })();
-    
+
     if (hidden) placeholder.classList.add("hidden");
     else placeholder.classList.remove("hidden");
 }
@@ -253,10 +253,10 @@ function updateTheList(list) {
         //// Mouse events
         li.addEventListener("mouseenter", (event) => {
             if (list.length < 2) return;
-    
+
             changeTheHighlight(i);
         });
-    
+
         li.addEventListener("click", (event) => {
             if (list.length < 1) return;
 
@@ -304,10 +304,10 @@ function updateTheListScroll(index = null) {
 
         const rowGap = parseInt(listStyles.rowGap.replace("px", ""));
         const height = parseInt(itemStyles.height.replace("px", ""));
-        
+
         updateTheListScroll.stepSize = rowGap + height;
     }
-    
+
     const { stepSize } = updateTheListScroll;
 
     if (index !== null) {
@@ -370,7 +370,7 @@ function updatePosition(text) {
 
 function clear() {
     if (!main) return;
-    
+
     const { list, placeholder } = tabCompletion;
 
     list.textContent = '';

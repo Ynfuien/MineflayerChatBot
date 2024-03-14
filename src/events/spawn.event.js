@@ -1,4 +1,4 @@
-const {logBot} = require('../utils/logger.js');
+const { logBot } = require('../utils/logger.js');
 
 module.exports = {
     name: "spawn",
@@ -7,7 +7,7 @@ module.exports = {
     /**
      * @param {import('../types.js').Main} main
      */
-    run () {
+    run() {
         logBot(`&bBot has been spawned!`);
     }
 }

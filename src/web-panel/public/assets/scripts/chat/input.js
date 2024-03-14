@@ -1,10 +1,10 @@
 import { isScrollOnTheBottom, scrollToBottom } from "./output.js";
-import { toggleVisibility as toggleTabListVisibility } from "../tabList/tabList.js";
+import { toggleVisibility as toggleTabListVisibility } from "../tab-list/tab-list.js";
 import { toggleVisibility as toggleScoreboardVisibility } from "../scoreboard/scoreboard.js";
-import { clear as clearCompletions } from "./tabCompletion.js";
-import { addCommand as addCommandToHistory, resetCurrentIndex as resetCommandHistoryIndex } from "./commandHistory.js";
+import { clear as clearCompletions } from "./tab-completion.js";
+import { addCommand as addCommandToHistory, resetCurrentIndex as resetCommandHistoryIndex } from "./command-history.js";
 
-import { sendCommand } from "../webSocket.js";
+import { sendCommand } from "../web-socket.js";
 import { getTextWidth, getElementFont } from "../utils/text-width-measurer.js";
 
 export { setup };
@@ -14,10 +14,10 @@ export { setup };
  * @param {import("../index.js").Main} main 
  */
 function setup(main) {
-    const {input, output} = main.chat;
+    const { input, output } = main.chat;
     const inputElement = input.element;
     const outputElement = output.element;
-    
+
     //// Scroll down button
     let scrollTimeout = 0;
     input.scrollButton.addEventListener("click", () => {
@@ -41,7 +41,7 @@ function setup(main) {
     input.scoreboardButton.addEventListener("click", () => {
         toggleScoreboardVisibility(main);
     });
-    
+
 
     //// Input
     // Enter press and length limit checking
@@ -62,7 +62,7 @@ function setup(main) {
             event.preventDefault();
             return;
         }
-        
+
         if (value.length >= input.lengthLimit) return event.preventDefault();
     });
 
@@ -85,7 +85,7 @@ function setup(main) {
         let paste = (event.clipboardData || window.clipboardData).getData('text');
         paste = paste.replace(/(\n|\r)/g, "");
 
-        
+
         const range = selection.getRangeAt(0);
         const selectedLenght = Math.abs(range.endOffset - range.startOffset);
 
@@ -98,7 +98,7 @@ function setup(main) {
 
         let selectionIndex = Math.min(selection.focusOffset, selection.anchorOffset);
         selectionIndex += paste.length;
-        
+
         // Paste the result
         selection.deleteFromDocument();
         selection.getRangeAt(0).insertNode(document.createTextNode(paste));
@@ -118,7 +118,7 @@ function setup(main) {
         updateCaret();
     });
 
-    
+
     const inputFont = getElementFont(inputElement);
     function updateCaret() {
         const selection = window.getSelection();

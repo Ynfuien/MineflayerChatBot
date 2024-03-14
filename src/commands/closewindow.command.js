@@ -1,4 +1,4 @@
-const {logBot} = require('../utils/logger.js');
+const { logBot } = require('../utils/logger.js');
 
 module.exports = {
     name: "closewindow",
@@ -10,8 +10,8 @@ module.exports = {
      * @param {import('../types.js').Main} main
      * @param {string[]} args
      */
-    async run (main) {
-        const {bot} = main;
+    async run(main) {
+        const { bot } = main;
 
         const window = bot.currentWindow;
         if (!window) {
@@ -23,7 +23,7 @@ module.exports = {
         logBot(`&aClosed a window!`);
         return;
     },
-    
+
     /**
      * @param {import('../types.js').Main} main
      * @param {string[]} args

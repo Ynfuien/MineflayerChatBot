@@ -12,7 +12,7 @@ const { ChatMessage } = require('../utils/chat-message.js');
 /** @type {import('../types.js').Main} */
 let main;
 
-const lastTabList = {header: null, footer: null};
+const lastTabList = { header: null, footer: null };
 
 const self = module.exports = {
     /**
@@ -266,7 +266,7 @@ function getSortedPlayerList(bot) {
 
             const finalDisplayName = new ChatMessage(displayName.json);
             if (team) finalDisplayName.color = team.color;
-            
+
             const playerObject = {
                 username,
                 displayName: finalDisplayName,

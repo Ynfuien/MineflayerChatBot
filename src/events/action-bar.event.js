@@ -10,9 +10,9 @@ module.exports = {
      * @param {import('../types.js').Main} main
      * @param {{text: string | object}} packet
      */
-    run (main, packet) {
+    run(main, packet) {
         if (main.vars.bot.ignoreActionBar === true) return;
-        
+
         const message = packetToChatMessage(main.bot, packet.text);
         sendActionBar(message);
     }

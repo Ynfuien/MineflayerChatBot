@@ -11,7 +11,7 @@ module.exports = {
      * @param {import('../types.js').Main} main
      * @param {string[]} args
      */
-    run (main, args) {
+    run(main, args) {
         const arg = args[0]?.toLowerCase();
         if (arg) {
             const command = getBotCommand(arg);
@@ -28,9 +28,9 @@ module.exports = {
             return;
         }
 
-        
-        const {list} = main.commands;
-        const {prefix} = main.vars.botCommands;
+
+        const { list } = main.commands;
+        const { prefix } = main.vars.botCommands;
 
         logBot(`&3Available commands &7(${Object.keys(list).length})&3:`);
         for (const commandName in list) {
@@ -54,7 +54,7 @@ module.exports = {
         const completions = [];
         for (const commandName in list) {
             if (commandName.startsWith(arg1)) completions.push(commandName);
-            
+
             const command = list[commandName];
             if (!command.aliases) continue;
             if (!Array.isArray(command.aliases)) continue;

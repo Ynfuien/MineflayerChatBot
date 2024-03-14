@@ -3,7 +3,7 @@ const mineflayer = require('mineflayer');
 const eventHandler = require('../handlers/event.handler.js');
 const { load: loadScoreboardTape } = require('../duck-tapes/scoreboard.tape.js');
 const { setLanguage } = require('./chat-message.js');
-const { updateLanguage } = require('../webpanel/webPanel.js');
+const { updateLanguage } = require('../webpanel/web-panel.js');
 
 module.exports = {
     /**

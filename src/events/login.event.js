@@ -1,5 +1,5 @@
-const {logBot, log} = require('../utils/logger.js');
-const {executeCommand} = require('../handlers/command.handler.js');
+const { logBot, log } = require('../utils/logger.js');
+const { executeCommand } = require('../handlers/command.handler.js');
 const { ChatMessage } = require('../utils/chat-message.js');
 
 module.exports = {
@@ -9,8 +9,8 @@ module.exports = {
     /**
      * @param {import('../types.js').Main} main
      */
-    run (main) {
-        const {bot, config, vars} = main;
+    run(main) {
+        const { bot, config, vars } = main;
 
         // Disable logging 'playerJoined' event, while joining.
         main.vars.bot.logPlayers = false;
@@ -33,7 +33,7 @@ module.exports = {
             log(message);
         }, 1500);
 
-        
+
         if (vars.bot.joined) {
             logBot("&dBot switched subserver!");
             return;
@@ -44,7 +44,7 @@ module.exports = {
         logBot(`&5Username: &f${bot.username}`);
         logBot(`&5Version: &f${bot.version}`);
         logBot(`&5Host: &f${config.values['bot-options'].host}`);
-        
+
 
         const timeouts = [];
         for (const command of main.vars.onJoin.commands) {

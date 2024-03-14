@@ -1,7 +1,5 @@
-// const PrismarineChat = require('prismarine-chat');
-
 const { ChatMessage } = require('../utils/chat-message.js');
-const { packetToChatMessage } = require('../utils/messageUtils.js');
+const { packetToChatMessage } = require('../utils/message-utils.js');
 
 const { Team } = require('mineflayer');
 
@@ -61,7 +59,7 @@ class Scoreboard {
                     this.displayText = ChatMessage.fromLegacy(json.text);
                     return;
                 }
-            } catch {}
+            } catch { }
         }
 
         this.displayText = packetToChatMessage(bot, displayText);
@@ -159,11 +157,11 @@ class ScoreboardItem {
 
     /** @type {null | Team} */
     team;
-    
+
     /**
      * @param {import('../types.js').ScoreboardScorePacket} packet 
      */
-    constructor (packet) {
+    constructor(packet) {
         const { itemName, value, display_name, number_format, styling } = packet;
 
         this.name = itemName;
@@ -214,7 +212,7 @@ module.exports = {
                 belowName: null
             }
         };
-        
+
         for (let i = 3; i <= 18; i++) scoreboards.byPosition[i] = null;
 
         if (!bot.duckTape) bot.duckTape = {};
@@ -222,9 +220,9 @@ module.exports = {
 
 
         // Create, delete and modify scoreboard
-        bot._client.on("scoreboard_objective", /** @param {import('../types.js').ScoreboardObjectivePacket} packet */ (packet) => {
+        bot._client.on("scoreboard_objective", /** @param {import('../types.js').ScoreboardObjectivePacket} packet */(packet) => {
             const { name, action } = packet;
-            
+
             // Create scoreboard
             if (action === 0) {
                 const scoreboard = new Scoreboard(packet);
@@ -270,7 +268,7 @@ module.exports = {
 
 
         // Set scoreboard position
-        bot._client.on("scoreboard_display_objective", /** @param {import('../types.js').ScoreboardDisplayObjectivePacket} packet */ (packet) => {
+        bot._client.on("scoreboard_display_objective", /** @param {import('../types.js').ScoreboardDisplayObjectivePacket} packet */(packet) => {
             const { name, position } = packet;
 
             // Clear the position
@@ -290,10 +288,10 @@ module.exports = {
             bot.emit("tape_scoreboardChange", scoreboard);
             bot.emit("tape_scoreboardPositioned", scoreboard, position);
         });
-        
+
 
         // Set score or remove it
-        bot._client.on("scoreboard_score", /** @param {import('../types.js').ScoreboardScorePacket} packet */ (packet) => {
+        bot._client.on("scoreboard_score", /** @param {import('../types.js').ScoreboardScorePacket} packet */(packet) => {
             const { itemName, action, scoreName } = packet;
 
             const scoreboard = scoreboards.byName[scoreName];
@@ -317,7 +315,7 @@ module.exports = {
 
 
         // Remove score
-        bot._client.on("reset_score", /** @param {import('../types.js').ResetScorePacket} packet */ (packet) => {
+        bot._client.on("reset_score", /** @param {import('../types.js').ResetScorePacket} packet */(packet) => {
             const { entity_name, objective_name } = packet;
 
             if (objective_name) {

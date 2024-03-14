@@ -27,7 +27,7 @@ function getTextWidth(text, font) {
  */
 function getElementFont(element) {
     const style = getComputedStyle(element);
-    
-    const {fontFamily, fontWeight, fontSize} = style;
+
+    const { fontFamily, fontWeight, fontSize } = style;
     return `${fontWeight} ${fontSize} ${fontFamily}`;
 }

@@ -15,7 +15,7 @@ module.exports = {
      * @param {import('../types.js').Main} main
      * @param {string[]} args
      */
-    run (main, args) {
+    run(main, args) {
         if (args.length === 0) return false;
 
         const arg1 = args[0].toLowerCase();
@@ -64,7 +64,7 @@ module.exports = {
             const newValue = args.slice(2).join(' ');
             const newConfig = ObjectUtils.setValueByKeyPath(structuredClone(values), arg2, newValue);
 
-            
+
             if (newConfig === false) {
                 logBot(`&cParent of the setting '${arg2}' doesn't exist.`);
                 return;
@@ -105,7 +105,7 @@ module.exports = {
         // Reload
         if (arg1 === "reload") {
             const { config } = main;
-            
+
             logBot("&bReloading config...");
 
             const result = loadConfig(main);
@@ -144,17 +144,17 @@ module.exports = {
         if (args.length === 1) {
             return ["get", "set", "show", "reload"].filter(element => element.startsWith(arg1));
         }
-        
+
         // Second arg
         if (!["get", "set"].includes(arg1)) return [];
-        
+
         const { config } = main;
 
         const fullPath = args[1];
 
         const splitPath = fullPath.split('.');
         if (splitPath.length < 2) return Object.keys(config.values).filter(element => element.startsWith(fullPath));
-        
+
         const path = splitPath.slice(0, -1).join(".");
         const setting = ObjectUtils.getValueByKeyPath(config.values, path);
 

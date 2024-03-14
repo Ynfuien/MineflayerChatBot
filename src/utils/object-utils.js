@@ -15,7 +15,7 @@ module.exports = {
 
         return true;
     },
-    
+
     /**
     * @param {Object} object 
     * @param {string} keyPath 
@@ -26,11 +26,11 @@ module.exports = {
 
         let currentChild = object;
         for (const key of keys) {
-            if (typeof currentChild !== "object" || !(key in currentChild)) return {exists: false};
+            if (typeof currentChild !== "object" || !(key in currentChild)) return { exists: false };
             currentChild = currentChild[key];
         }
 
-        return {exists: true, value: currentChild};
+        return { exists: true, value: currentChild };
     },
 
     /**
@@ -83,12 +83,12 @@ function objectToString(object, deep = 0) {
         return "§#FFFFFF" + object;
     }
 
-    
+
     let string = deep == 0 ? '' : `\n${"  ".repeat(deep)}`;
 
     if (Array.isArray(object)) {
         if (object.length < 1) {
-            return "§#FFFFFF[]"; 
+            return "§#FFFFFF[]";
         }
 
         for (const element of object) {

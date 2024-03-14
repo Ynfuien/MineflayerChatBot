@@ -1,6 +1,6 @@
 {
   "name": "mineflayer-chat-bot",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Chat bot for Minecraft servers",
   "main": "src/index.js",
   "scripts": {
@@ -23,8 +23,5 @@
     "prismarine-chat": "^1.10.0",
     "socket.io": "^4.7.4",
     "yawn-yaml": "^1.5.0"
-  },
-  "devDependencies": {
-    "eslint": "^8.57.0"
   }
 }

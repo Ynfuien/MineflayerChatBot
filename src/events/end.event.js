@@ -8,7 +8,7 @@ module.exports = {
     /**
      * @param {import('../types.js').Main} main
      */
-    run (main) {
+    run(main) {
         logBot("&cBot has been turned off.");
         main.bot = null;
 
@@ -23,7 +23,7 @@ module.exports = {
             return;
         }
 
-        
+
         // If stop command used
         if (main.vars.bot.stop === true) {
             main.vars.bot.stop = false;
@@ -31,7 +31,7 @@ module.exports = {
         }
 
         // If auto rejoin is set
-        const {enabled, timeout} =  main.vars.autoRejoin;
+        const { enabled, timeout } = main.vars.autoRejoin;
         if (enabled !== true) return;
 
         if (timeout > 0) {
@@ -41,7 +41,7 @@ module.exports = {
         setTimeout(() => {
             if (!main.bot) {
                 logBot("Rejoining to server..")
-                startBot(main); 
+                startBot(main);
             }
         }, timeout * 1000);
     }

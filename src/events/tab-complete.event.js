@@ -6,7 +6,7 @@ module.exports = {
     /**
      * @param {import('../types.js').Main} main
      */
-    run (main, packet) {
+    run(main, packet) {
         main.commands.tabComplete.lastPacket = packet;
     }
 }

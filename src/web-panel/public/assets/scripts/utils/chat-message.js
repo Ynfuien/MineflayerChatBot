@@ -526,7 +526,7 @@ class ChatMessage {
         const element = document.createElement(isClass ? "pre" : "span");
         if (isClass) element.classList.add(className);
 
-        
+
         const { translate, with: _with, extra, text, color, keybind, selector } = this;
 
         // Color
@@ -555,7 +555,7 @@ class ChatMessage {
                 textDecorationChanged = true;
             } else element.style.setProperty(style.property, value ? style.valueTrue : style.valueFalse);
 
-            
+
             parentStyling[formatName] = value;
         }
 

@@ -6,16 +6,16 @@ const database = require('better-sqlite3')('logs.db');
 // 1 - minecraft
 database.prepare("CREATE TABLE IF NOT EXISTS messages (message TEXT DEFAULT \"\", timestamp INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, type INTEGER DEFAULT 0)").run();
 
-const webPanel = require('./webpanel/webPanel.js');
+const webPanel = require('./webpanel/web-panel.js');
 const configManager = require('./utils/configManager.js');
 
-const {loadCommands} = require('./handlers/command.handler.js');
+const { loadCommands } = require('./handlers/command.handler.js');
 
 const { logBot, setup: setupLogger } = require('./utils/logger.js');
 const { startBot } = require('./utils/botManager.js');
 
 
-(async function() {
+(async function () {
     /** @type {Main} */
     const main = {
         bot: null,
@@ -52,7 +52,7 @@ const { startBot } = require('./utils/botManager.js');
             }
         }
     };
-    
+
     setupLogger(main);
 
     // Loading config from file
@@ -63,11 +63,11 @@ const { startBot } = require('./utils/botManager.js');
         process.exit(1);
     }
     main.config = configResult.config;
-    
+
     // Checking config for user's mistakes
     const checkConfig = configManager.checkConfig(main);
     if (checkConfig === false) process.exit(1);
-    
+
     let timeout = 0;
     if (checkConfig.softError) {
         timeout = 5 * 1000;
@@ -76,7 +76,7 @@ const { startBot } = require('./utils/botManager.js');
         logBot("&bConfig &asuccessfully &bloaded!");
     }
 
-    
+
     logBot("&bCreating bot..");
     startBot(main);
 

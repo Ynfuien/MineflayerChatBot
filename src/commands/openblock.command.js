@@ -36,9 +36,9 @@ module.exports = {
      * @param {import('../types.js').Main} main
      * @param {string[]} args
      */
-    async run (main, args) {
-        const {bot} = main;
-        
+    async run(main, args) {
+        const { bot } = main;
+
         if (args.length == 0) return false;
 
         // Get block
@@ -60,7 +60,7 @@ module.exports = {
         // Find it
         let distance = 3;
         const arg2 = parseInt(args[1]);
-        if (!isNaN(arg2)) distance = arg2;  
+        if (!isNaN(arg2)) distance = arg2;
 
         const foundBlock = bot.findBlock({
             maxDistance: distance,
@@ -72,14 +72,14 @@ module.exports = {
             return;
         }
 
-        
+
         // Open it
         await bot.openContainer(foundBlock);
-        
+
         logBot(`&aOpened ${block.displayName}'s inventory!`);
         return;
     },
-    
+
     /**
      * @param {import('../types.js').Main} main
      * @param {string[]} args

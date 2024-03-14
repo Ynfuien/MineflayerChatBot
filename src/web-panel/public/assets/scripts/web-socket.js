@@ -1,18 +1,18 @@
 import { showMessage, scrollToBottom } from "./chat/output.js";
 import { showActionBar } from "./chat/actionBar.js";
-import { updateTabList } from "./tabList/tabList.js";
-import { showCompletions } from "./chat/tabCompletion.js";
+import { updateTabList } from "./tab-list/tab-list.js";
+import { showCompletions } from "./chat/tab-completion.js";
 import { updateScoreboard } from "./scoreboard/scoreboard.js";
 import { ChatMessage, setLanguage } from "./utils/chat-message.js";
 
 
 export { setup, sendCommand, sendTabCompletionRequest };
 
-/** @type {import(".").Main} */
+/** @type {import("./index.js").Main} */
 let main;
 
 /**
- * @param {import(".").Main} main 
+ * @param {import("./index.js").Main} main 
  */
 function setup(_main) {
     main = _main;
@@ -42,8 +42,6 @@ function setup(_main) {
     // Config    
     socket.on("config", (data) => {
         main.config = data;
-
-        setLanguage(main.config.clientLang);
     });
 
     // Config    
@@ -91,7 +89,7 @@ function setup(_main) {
         const { message } = data;
         if (typeof message === "string") data.message = ChatMessage.fromLegacy(message);
         else data.message = new ChatMessage(message);
-        
+
         showMessage(main, data);
     });
 
@@ -101,7 +99,7 @@ function setup(_main) {
     });
 
     // Scoreboard
-    socket.on("scoreboard", /** @param {{scoreboard: import('.').Main.scoreboard.data.scoreboard}} data */ (data) => {
+    socket.on("scoreboard", /** @param {{scoreboard: import('./index.js').Main.scoreboard.data.scoreboard}} data */(data) => {
         const { scoreboard } = data;
         main.scoreboard.data = scoreboard;
 
@@ -117,7 +115,7 @@ function setup(_main) {
                 if (styling) item.styling = new ChatMessage(styling);
             }
         }
-        
+
         updateScoreboard(main);
     });
 

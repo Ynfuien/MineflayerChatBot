@@ -15,7 +15,7 @@ function setup(_main) {
     input.element.addEventListener("keydown", (event) => {
         if (tabCompletion.shown) return;
         const { key } = event;
-        
+
         if (key !== "ArrowUp" && key !== "ArrowDown") return;
         event.preventDefault();
         event.stopPropagation();
@@ -24,7 +24,7 @@ function setup(_main) {
         changeSelectedCommand(key === "ArrowUp" ? 1 : -1);
 
         setTimeout(() => {
-            tabCompletion.changingTheInput = false;   
+            tabCompletion.changingTheInput = false;
         });
     });
 }
@@ -48,7 +48,7 @@ function changeSelectedCommand(offset) {
         commandHistory.inputBeforeHistory = "";
         return;
     }
-    
+
 
     if (currentIndex === -1) commandHistory.inputBeforeHistory = inputElement.innerText;
 

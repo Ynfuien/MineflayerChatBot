@@ -16,7 +16,7 @@ module.exports = {
         // Bot command
         if (isBotCommand(text)) return await getBotCommandCompletions(main, text);
 
-        if (!bot) return {type: "usernames", list: []};
+        if (!bot) return { type: "usernames", list: [] };
 
         // Minecraft command
         if (text.startsWith(`\\${prefix}`)) text = text.substring(1);
@@ -26,7 +26,7 @@ module.exports = {
         const split = text.split(' ');
         const lastWord = split.pop();
         const list = Object.keys(bot.players).filter(username => username.toLowerCase().startsWith(lastWord));
-        
+
         return {
             type: "usernames",
             start: split.join(' ').length + (split.length === 0 ? 0 : 1),
@@ -143,5 +143,5 @@ async function tabComplete(main, text, timeout = "auto") {
         };
     }
 
-    return {type: "minecraft-command", list: []};
+    return { type: "minecraft-command", list: [] };
 }

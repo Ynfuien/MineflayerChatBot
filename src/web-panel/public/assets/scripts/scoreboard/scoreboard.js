@@ -54,7 +54,7 @@ function updateScoreboard(main) {
         const valueFormat = item.numberFormat ?? numberFormat;
         const valueStyling = item.styling ?? styling;
 
-        let displayScore = new ChatMessage({color: "red", text: item.value});
+        let displayScore = new ChatMessage({ color: "red", text: item.value });
         if (valueFormat === 0) displayScore = new ChatMessage("");
         else if (valueFormat === 1) displayScore = ChatMessage.fromLegacy(`${valueStyling.toLegacy()}${value}`);
         else if (valueFormat === 2) displayScore = valueStyling;

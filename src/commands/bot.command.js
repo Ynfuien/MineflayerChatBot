@@ -11,8 +11,8 @@ module.exports = {
      * @param {import('../types.js').Main} main
      * @param {string[]} args
      */
-    run (main, args) {
-        const {bot} = main;
+    run(main, args) {
+        const { bot } = main;
 
         if (args.length === 0) return false;
         const arg = args[0].toLowerCase();

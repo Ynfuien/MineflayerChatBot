@@ -56,10 +56,10 @@ const self = module.exports = {
                 asciiTable.addRow(file, "❌ -> missing 'run'!");
                 continue;
             }
-            
+
             if (typeof command.run !== "function") {
                 // logBot(`&cCommand &e${command.name}&c, run must be a function!`);
-                
+
                 asciiTable.addRow(file, "❌ -> 'run' isn't a function!");
                 continue;
             }
@@ -69,13 +69,13 @@ const self = module.exports = {
                 continue;
             }
 
-            
+
             asciiTable.addRow(file, "✅");
             commands[command.name] = command;
             count++;
         }
 
-        asciiTable.toString().split('\n').forEach(line => logBot("&#d1d1d1"+line));
+        asciiTable.toString().split('\n').forEach(line => logBot("&#d1d1d1" + line));
         logBot(`&aRegistered &b${count} &acommand(s)!`);
 
         if (main.vars.botCommands.enabled !== true) {
@@ -98,29 +98,29 @@ const self = module.exports = {
      * @param {string} text
      */
     async executeCommand(text) {
-        const {bot} = main;
+        const { bot } = main;
         const botPrefix = main.vars.botCommands.prefix;
 
         try {
             //// Minecraft command or chat message
             if (!self.isBotCommand(text)) {
                 if (!bot) return logBot("&cBot isn't working!");
-                
+
                 // If bot prefix is escaped, remove escape char ('\')
-                if (text.startsWith(`\\${botPrefix}`)) text = text.substring(1); 
+                if (text.startsWith(`\\${botPrefix}`)) text = text.substring(1);
 
                 bot.chat(text);
                 return;
             }
-    
-            
+
+
             //// Bot command
             const args = text.split(' ');
             const commandName = args.shift().substring(botPrefix.length).toLowerCase();
-    
+
             const command = self.getBotCommand(commandName);
             if (command === null) return logBot("&cThere is no such command!");
-    
+
             const result = await command.run(main, args);
             if (result === false) logBot(`&cCorrect command usage: ${botPrefix}${commandName} ${command.usage}`);
         } catch (error) {
@@ -155,10 +155,10 @@ const self = module.exports = {
      * @returns {boolean}
      */
     isBotCommand(command) {
-        const {enabled, prefix} = main.vars.botCommands;
-    
+        const { enabled, prefix } = main.vars.botCommands;
+
         if (!enabled) return false;
-        
+
         return command.startsWith(prefix);
     }
 }

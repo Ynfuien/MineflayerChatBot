@@ -11,14 +11,14 @@ module.exports = {
      * @param {import('../types.js').Main} main
      * @param {string[]} args
      */
-    run (main, args) {
-        const {bot} = main.vars;
-        
+    run(main, args) {
+        const { bot } = main.vars;
+
         const arg1 = args[0]?.toLowerCase();
 
         if (arg1 === "on" || arg1 === "enable") {
             if (bot.ignoreActionBar === false) return logBot("&cAction bar messages are already on!");
-            
+
             bot.ignoreActionBar = false;
             logBot("&bAction bar messages turned &aon&b!");
             return;
