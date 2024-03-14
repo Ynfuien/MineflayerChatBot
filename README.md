@@ -64,6 +64,7 @@ Online panel by default should be at http://localhost:3000
 - [interact.js](https://interactjs.io)
 - [minecraft-font-extractor](https://github.com/Ynfuien/minecraft-font-extractor)
 - [GNU Unifont](https://unifoundry.com/unifont/index.html)
+- [Font Awesome](https://fontawesome.com)
 
 
 # License
