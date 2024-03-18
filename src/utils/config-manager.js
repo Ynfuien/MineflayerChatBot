@@ -38,7 +38,7 @@ const { doesKeyExist } = require('./object-utils.js');
  *      'online-panel': {
  *          enabled: boolean,
  *          port: number,
- *          'message-prefixed': {
+ *          'message-prefixes': {
  *              minecraft: string,
  *              bot: string
  *          },
