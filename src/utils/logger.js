@@ -52,7 +52,7 @@ const self = module.exports = {
         const str = typeof message === "string" ? message : message.toMotd();
 
         logToConsole(str, time, codeChar, type);
-        logToOnlinePanel(message, time, type);
+        logToOnlinePanel(str, time, type);
         logToDatabase(str, time, codeChar, type);
     },
 
@@ -86,7 +86,7 @@ function logToOnlinePanel(message, date, type) {
     io.emit("chat-message", {
         type,
         timestamp: date ? date.getTime() : Date.now(),
-        message: typeof message === "string" ? message.replace(/&/g, "§") : message.json
+        message: message.replace(/&/g, "§")
     });
 }
 
