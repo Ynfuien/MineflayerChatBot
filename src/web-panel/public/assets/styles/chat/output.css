@@ -48,6 +48,8 @@ section#chat > section.output > pre {
     line-height: 0.9em;
     text-indent: -0.5rem;
     padding-left: 0.5rem;
+
+    cursor: default;
 }
 
 section#chat > section.output > pre:first-child {

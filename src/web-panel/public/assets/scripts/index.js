@@ -3,6 +3,7 @@ import { setup as setupChatInputs } from "./chat/input.js";
 import { setup as setupChatOutput } from "./chat/output.js";
 import { setup as setupTabCompletion } from "./chat/tab-completion.js";
 import { setup as setupCommandHistory } from "./chat/command-history.js";
+import { setup as setupHoverEvent } from "./chat/hover-event.js";
 
 import { ChatMessage } from "./utils/chat-message.js";
 
@@ -85,6 +86,10 @@ import { ChatMessage } from "./utils/chat-message.js";
  *              scrollStepSize: number
  *          },
  *          actionBar: HTMLDivElement,
+ *          hover: {
+ *              element: HTMLDivElement,
+ *              frame: HTMLDivElement
+ *          },
  *          tabCompletion: Main.chat.tabCompletion
  *      },
  *      tabList: {
@@ -145,6 +150,10 @@ import { ChatMessage } from "./utils/chat-message.js";
                 scrollStepSize: 7
             },
             actionBar: chat.querySelector(".action-bar"),
+            hover: {
+                element: chat.querySelector(".hover"),
+                frame: chat.querySelector(".hover > .frame")
+            },
             tabCompletion: {
                 element: chat.querySelector("section.input > .tab-completion"),
                 list: chat.querySelector("section.input > .tab-completion > .list"),
@@ -192,5 +201,8 @@ import { ChatMessage } from "./utils/chat-message.js";
     setupChatOutput(main);
     setupTabCompletion(main);
     setupCommandHistory(main);
+    setupHoverEvent(main);
+
+    window.main = main;
 })();
 

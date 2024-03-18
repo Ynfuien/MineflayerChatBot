@@ -1,0 +1,42 @@
+section.hover {
+    --light: rgba(80, 0, 255, 31.37255%);
+    --dark: rgba(40, 0, 127, 31.37255%);
+
+    display: none;
+    position: absolute;
+
+    z-index: 3;
+
+    background-color: rgba(16, 0, 16, 94.11765%);
+
+    clip-path: polygon(0 0.125rem, 0.125rem 0.125rem, 0.125rem 0, calc(100% - 0.125rem) 0, calc(100% - 0.125rem) 0.125rem, 100% 0.125rem, 100% calc(100% - 0.125rem), calc(100% - 0.125rem) calc(100% - 0.125rem), calc(100% - 0.125rem) 100%, 0.125rem 100%, 0.125rem calc(100% - 0.125rem), 0 calc(100% - 0.125rem));
+
+    justify-content: center;
+    align-items: center;
+
+    pointer-events: none;
+}
+
+section.hover.shown {
+    display: flex;
+}
+
+section.hover > .frame {
+    padding: 0.125rem 0.25rem;
+    margin: 0.125rem;
+
+    border-width: 0.125rem;
+    border-style: solid;
+    border-image: linear-gradient(to bottom, var(--light), var(--dark)) 30%;
+}
+
+section.hover > .frame > pre {
+    height: 1em;
+    line-height: 0.8;
+
+    white-space: pre;
+}
+
+section.hover > .frame > pre:nth-child(2) {
+    margin-top: 0.25rem;
+}

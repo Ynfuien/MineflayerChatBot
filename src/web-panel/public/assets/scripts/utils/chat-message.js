@@ -2,7 +2,7 @@
  * // Events
  * @typedef {{
  *  action: "show_text" | "show_entity" | "show_item",
- *  contents: string | object | ChatMessage
+ *  contents: string | ChatMessage | {name: string, type: string, id: string} | {id: string, tag: string}
  * }} HoverEvent
  * 
  * @typedef {{
@@ -121,45 +121,6 @@ const styleLegend = {
 const LEGACY_CHAR = '§';
 const reset = () => LEGACY_CHAR + styleLegend.formats.reset.code;
 
-
-// const htmlStyleLegend = {
-//     colors: {
-//         black: '#000000',
-//         dark_blue: '#0000AA',
-//         dark_green: '#00AA00',
-//         dark_aqua: '#00AAAA',
-//         dark_red: '#AA0000',
-//         dark_purple: '#AA00AA',
-//         gold: '#FFAA00',
-//         gray: '#AAAAAA',
-//         dark_gray: '#555555',
-//         blue: '#5555FF',
-//         green: '#55FF55',
-//         aqua: '#55FFFF',
-//         red: '#FF5555',
-//         light_purple: '#FF55FF',
-//         yellow: '#FFFF55',
-//         white: '#FFFFFF'
-//     },
-//     formats: {
-//         bold: {
-//             property: "font-weight",
-//             value: "bold"
-//         },
-//         strikethrough: {
-//             property: "text-decoration-line",
-//             value: "line-through"
-//         },
-//         underlined: {
-//             property: "text-decoration-line",
-//             value: "underline"
-//         },
-//         underlined: {
-//             property: "font-style",
-//             value: "italic"
-//         }
-//     }
-// };
 
 // Keybinds from .minecraft/options.txt
 const keybinds = {
@@ -433,9 +394,12 @@ class ChatMessage {
                 // Can't use the 'extra' parsing logic, because of 'with' items
                 // being just a placeholders for the final message.
                 for (const item of _with) {
-                    let itemResult = item.toLegacy(null, parentStyling.clone());
+                    const parentStylingClone = parentStyling.clone();
+                    parentStylingClone.translate = true;
+                    let itemResult = item.toLegacy(null, parentStylingClone);
 
-                    if (item.hasAnyStyle()) {
+                    const lastStyle = ChatMessage.getTheLastStyle(itemResult);
+                    if (lastStyle.hasAnyStyle()) {
                         if (parentStyling.color) itemResult += parentStyling.#getStylesInLegacy();
                         else itemResult += reset() + parentStyling.#getFormatsInLegacy();
                     }
@@ -521,13 +485,52 @@ class ChatMessage {
     //#endregion
 
     //#region HTML stuff
-    toHTML(className = "", parentStyling = new ChatMessage()) {
-        const isClass = typeof className === "string";
-        const element = document.createElement(isClass ? "pre" : "span");
-        if (isClass) element.classList.add(className);
 
+    /**
+     * Parses this ChatMessage object to a HTML pre tag.
+     * @param {string | null} className Class to append to the pre tag
+     * @param {boolean} extra Whether to parse also click/hover/insert events
+     * @returns {HTMLPreElement}
+     */
+    toHTML(className = null, extra = false) {
+        const pre = document.createElement("pre");
+        if (className) pre.classList.add(className);
+
+        //// Parse
+        const parsed = this.#toHTML(extra);
+
+        //// Move everything from the parsed <span> to the <pre>
+        // Child nodes
+        while (parsed.hasChildNodes()) {
+            pre.append(parsed.firstChild);
+        }
+
+        // Attributes
+        for (const attribute of parsed.attributes) {
+            const { name, value } = attribute;
+
+            pre.setAttribute(name, value);
+        }
+
+        return pre;
+    }
+
+    /**
+     * @param {boolean} extraParsing 
+     * @param {ChatMessage} parentStyling 
+     * @returns {HTMLSpanElement}
+     */
+    #toHTML(extraParsing, parentStyling = new ChatMessage()) {
+        const element = document.createElement("span");
 
         const { translate, with: _with, extra, text, color, keybind, selector } = this;
+
+        if (extraParsing) {
+            const { hoverEvent, clickEvent, insertion } = this;
+            if (hoverEvent) element.setAttribute("hover-event", JSON.stringify(hoverEvent));
+            if (clickEvent) element.setAttribute("click-event", JSON.stringify(clickEvent));
+            if (insertion) element.setAttribute("insertion", insertion);
+        }
 
         // Color
         if (color && color !== parentStyling.color) {
@@ -598,7 +601,7 @@ class ChatMessage {
 
             if (_with) {
                 for (const item of _with) {
-                    const itemElement = item.toHTML(null, parentStyling.clone());
+                    const itemElement = item.#toHTML(extraParsing, parentStyling.clone());
                     list.push(itemElement);
                 }
             }
@@ -637,13 +640,20 @@ class ChatMessage {
                 translateElement.appendChild(item.cloneNode(true));
             }
 
+            const end = translated.substring(lastIndex);
+            if (end) {
+                const span = document.createElement("span");
+                span.innerText = end;
+                translateElement.appendChild(span);
+            }
             element.appendChild(translateElement);
         }
 
         // Extra
         if (extra) {
             for (const entry of extra) {
-                const entryElement = entry.toHTML(null, parentStyling.clone());
+                const entryElement = entry.#toHTML(extraParsing, parentStyling.clone());
+                if (entryElement.innerText.length === 0 && entryElement.innerHTML.length === 0) continue;
                 element.appendChild(entryElement);
             }
         }
@@ -666,6 +676,55 @@ class ChatMessage {
         }
 
         return false;
+    }
+
+    /**
+     * Returns the last style (color and/or formats) in the message.
+     * Will return empty ChatMessage if no style found.
+     * @returns {ChatMessage}
+     */
+    getTheLastStyle() {
+        return ChatMessage.getTheLastStyle(this.toLegacy());
+    }
+
+    /**
+     * Returns the last style (color and/or formats) in the message.
+     * Will return empty ChatMessage if no style found.
+     * @param {string} legacyMessage
+     * @returns {ChatMessage}
+     */
+    static getTheLastStyle(legacyMessage, codeChar = LEGACY_CHAR) {
+        if (legacyMessage.trim().length === 0) return new ChatMessage();
+
+        const codePattern = new RegExp(`${codeChar}(#[a-f\\d]{6}|[a-fk-or\\d])`, "gi");
+        const matches = legacyMessage.match(codePattern);
+
+        let result = new ChatMessage();
+        if (!matches) return result;
+        
+        for (let i = matches.length; i > 0; i--) {
+            const match = matches[i - 1];
+            const code = match.substring(1);
+
+            if (code.startsWith("#")) {
+                result.color = code;
+                break;
+            }
+
+            const style = styleLegend.getStyleByCode(code);
+            if (!style) continue;
+
+            if (style.type === "colors") {
+                result.color = style.value;
+                break;
+            }
+
+            if (style.value === "reset") break;
+
+            result[style.value] = true;
+        }
+
+        return result;
     }
 
     /**
@@ -766,6 +825,5 @@ function parseKeybind(keybind) {
     return translate;
 }
 
-// if (module) module.exports = { setLanguage, ChatMessage };
 export { setLanguage, ChatMessage };
 window.cm = ChatMessage;

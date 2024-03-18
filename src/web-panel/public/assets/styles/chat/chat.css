@@ -3,6 +3,7 @@
 @import url('action-bar.css');
 @import url('buttons.css');
 @import url('tab-completion.css');
+@import url('hover-event.css');
 
 section#chat {
     overflow: auto;

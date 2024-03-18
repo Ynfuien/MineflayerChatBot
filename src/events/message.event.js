@@ -19,16 +19,14 @@ module.exports = {
         if (message.unsigned) message = message.unsigned;
 
         let json = message.json;
-        if (bot.supportFeature("chatPacketsUseNbtComponents")) {
-            json = tapeFixNbtMessage(message.json);
-        }
+        if (bot.supportFeature("chatPacketsUseNbtComponents")) json = tapeFixNbtMessage(message.json);
         message = new ChatMessage(json);
 
         if (chat && chat["ignored-messages"]) {
             const ignoredMessages = chat["ignored-messages"];
 
             if (ignoredMessages.length > 0) {
-                const text = message.toString();
+                const text = message.getText();
                 for (const pattern of ignoredMessages) {
                     if (text.match(new RegExp(pattern, 'g'))) return;
                 }

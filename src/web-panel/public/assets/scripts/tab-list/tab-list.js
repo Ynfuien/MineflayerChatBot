@@ -30,6 +30,7 @@ function updateTabList(main) {
 
     elements.main.style.display = "";
     if (elements.main.classList.contains("hidden")) return;
+    if (window.tabListDebug) return;
 
 
     const { header, footer } = data;

@@ -1,8 +1,10 @@
+const mojangson = require('mojangson');
+
 /**
  * // Events
  * @typedef {{
  *  action: "show_text" | "show_entity" | "show_item",
- *  contents: string | object | ChatMessage
+*  contents: string | ChatMessage | {name: string, type: string, id: string} | {id: string, tag: string}
  * }} HoverEvent
  * 
  * @typedef {{
@@ -230,6 +232,23 @@ class ChatMessage {
             // Object type - using clone so original json stays intact
             if (typeof value === "object") {
                 this[key] = structuredClone(value);
+
+                // Changing hoverEvent's 'tag' from mojangson string, to a JSON
+                let tag = value?.contents?.tag;;
+                if (key === "hoverEvent" && tag) {
+                    // Tape-fixing error in a mojangson parser
+                    const double = crypto.randomUUID();
+                    const single = crypto.randomUUID();
+                    tag = tag.replace(/\\\\"/g, `{${double}}`)
+                        .replace(/\\"/g, `{${double}}`)
+                        .replace(/\\'/g, `{${single}}`);
+
+                    const parsed = mojangson.parse(tag);
+                    let json = JSON.stringify(mojangson.simplify(parsed));
+                    json = json.replace(new RegExp(`\{${double}\}`, 'g'), `\\"`).replace(new RegExp(`\{${single}\}`, 'g'), `'`);
+
+                    this[key].contents.tag = json;
+                }
                 continue;
             }
 
@@ -393,9 +412,12 @@ class ChatMessage {
                 // Can't use the 'extra' parsing logic, because of 'with' items
                 // being just a placeholders for the final message.
                 for (const item of _with) {
-                    let itemResult = item.toLegacy(null, parentStyling.clone());
+                    const parentStylingClone = parentStyling.clone();
+                    parentStylingClone.translate = true;
+                    let itemResult = item.toLegacy(null, parentStylingClone);
 
-                    if (item.hasAnyStyle()) {
+                    const lastStyle = ChatMessage.getTheLastStyle(itemResult);
+                    if (lastStyle.hasAnyStyle()) {
                         if (parentStyling.color) itemResult += parentStyling.#getStylesInLegacy();
                         else itemResult += reset() + parentStyling.#getFormatsInLegacy();
                     }
@@ -493,6 +515,55 @@ class ChatMessage {
         }
 
         return false;
+    }
+
+    /**
+     * Returns the last style (color and/or formats) in the message.
+     * Will return empty ChatMessage if no style found.
+     * @returns {ChatMessage}
+     */
+    getTheLastStyle() {
+        return ChatMessage.getTheLastStyle(this.toLegacy());
+    }
+
+    /**
+     * Returns the last style (color and/or formats) in the message.
+     * Will return empty ChatMessage if no style found.
+     * @param {string} legacyMessage
+     * @returns {ChatMessage}
+     */
+    static getTheLastStyle(legacyMessage, codeChar = LEGACY_CHAR) {
+        if (legacyMessage.trim().length === 0) return new ChatMessage();
+
+        const codePattern = new RegExp(`${codeChar}(#[a-f\\d]{6}|[a-fk-or\\d])`, "gi");
+        const matches = legacyMessage.match(codePattern);
+
+        let result = new ChatMessage();
+        if (!matches) return result;
+
+        for (let i = matches.length; i > 0; i--) {
+            const match = matches[i - 1];
+            const code = match.substring(1);
+
+            if (code.startsWith("#")) {
+                result.color = code;
+                break;
+            }
+
+            const style = styleLegend.getStyleByCode(code);
+            if (!style) continue;
+
+            if (style.type === "colors") {
+                result.color = style.value;
+                break;
+            }
+
+            if (style.value === "reset") break;
+
+            result[style.value] = true;
+        }
+
+        return result;
     }
 
     /**

@@ -86,7 +86,7 @@ function showMessage(main, data, scroll = true) {
     const message = formatMessage(data, prefix);
 
     const scrollDown = scroll && isScrollOnTheBottom(output);
-    output.appendChild(message.toHTML("mc-text"));
+    output.appendChild(message.toHTML("mc-text", true));
 
     if (scrollDown) scrollToBottom(output);
 }

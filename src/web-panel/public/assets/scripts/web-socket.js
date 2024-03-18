@@ -1,5 +1,5 @@
 import { showMessage, scrollToBottom } from "./chat/output.js";
-import { showActionBar } from "./chat/actionBar.js";
+import { showActionBar } from "./chat/action-bar.js";
 import { updateTabList } from "./tab-list/tab-list.js";
 import { showCompletions } from "./chat/tab-completion.js";
 import { updateScoreboard } from "./scoreboard/scoreboard.js";
@@ -41,7 +41,11 @@ function setup(_main) {
 
     // Config    
     socket.on("config", (data) => {
-        main.config = data;
+        for (const key in data) {
+            const value = data[key];
+
+            main.config[key] = value;
+        }
     });
 
     // Config    
@@ -86,10 +90,7 @@ function setup(_main) {
     socket.on("chat-message", (data) => {
         if (!gotTheLogs) return;
 
-        const { message } = data;
-        if (typeof message === "string") data.message = ChatMessage.fromLegacy(message);
-        else data.message = new ChatMessage(message);
-
+        data.message = new ChatMessage(data.message);
         showMessage(main, data);
     });
 
