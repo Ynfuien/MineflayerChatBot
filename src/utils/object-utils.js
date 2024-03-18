@@ -65,22 +65,19 @@ function objectToString(object, deep = 0) {
         return "§#FFFFFFnull";
     }
 
-    if (typeof object !== "object") {
+    const type = typeof object;
+    if (type !== "object") {
 
-        let type = typeof object;
-        if (type === "string") {
-            return `§#CE9178"${object}"`;
+        switch (type) {
+            case "string":
+                return `§#CE9178"${object}"`;
+            case "bigint":
+                return "§#B5CEA8" + object;
+            case "boolean":
+                return "§#569CD6" + object;
+            default:
+                return "§#FFFFFF" + object;
         }
-
-        if (type === "bigint" || type === "number") {
-            return "§#B5CEA8" + object;
-        }
-
-        if (type === "boolean") {
-            return "§#569CD6" + object;
-        }
-
-        return "§#FFFFFF" + object;
     }
 
 

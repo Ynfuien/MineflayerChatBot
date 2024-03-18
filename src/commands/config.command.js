@@ -1,8 +1,9 @@
 const { writeFileSync } = require('fs');
 
-const { logBot } = require("../utils/logger.js");
+const { logBot, log } = require("../utils/logger.js");
 const { loadConfig, checkConfig, getConfigPath } = require('../utils/config-manager.js');
 const ObjectUtils = require('../utils/object-utils.js');
+const { ChatMessage } = require('../utils/chat-message.js');
 
 module.exports = {
     name: "config",
@@ -178,7 +179,5 @@ module.exports = {
  */
 function logObjectString(objectString) {
     const lines = objectString.split('\n');
-    for (const line of lines) {
-        logBot(line, '§');
-    }
+    for (const line of lines) log(ChatMessage.fromLegacy(line));
 }
