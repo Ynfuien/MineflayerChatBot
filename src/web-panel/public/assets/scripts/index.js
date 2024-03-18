@@ -1,5 +1,6 @@
 import { setup as setupWebSocket } from "./web-socket.js";
 import { setup as setupChat } from "./chat/chat.js";
+import { load as loadSavedConfiguration } from "./local-storage.js";
 
 import { ChatMessage } from "./utils/chat-message.js";
 
@@ -194,6 +195,8 @@ import { ChatMessage } from "./utils/chat-message.js";
 
     setupWebSocket(main);
     setupChat(main);
+
+    loadSavedConfiguration(main);
 
     window.main = main;
 })();

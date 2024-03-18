@@ -3,6 +3,7 @@ import { toggleVisibility as toggleTabListVisibility } from "../../tab-list/tab-
 import { toggleVisibility as toggleScoreboardVisibility } from "../../scoreboard/scoreboard.js";
 import { clear as clearCompletions } from "./tab-completion.js";
 import { addCommand as addCommandToHistory, resetCurrentIndex as resetCommandHistoryIndex } from "./command-history.js";
+import { save as saveConfiguration } from "../../local-storage.js";
 
 import { sendCommand } from "../../web-socket.js";
 import { getTextWidth, getElementFont } from "../../utils/text-width-measurer.js";
@@ -35,11 +36,13 @@ function setup(main) {
     //// Tab list button
     input.tabListButton.addEventListener("click", () => {
         toggleTabListVisibility(main);
+        saveConfiguration(main);
     });
 
     //// Scoreboard button
     input.scoreboardButton.addEventListener("click", () => {
         toggleScoreboardVisibility(main);
+        saveConfiguration(main);
     });
 
 

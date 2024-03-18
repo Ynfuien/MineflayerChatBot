@@ -1,6 +1,6 @@
 import { ChatMessage } from "../utils/chat-message.js";
 
-export { updateTabList, toggleVisibility };
+export { updateTabList, toggleVisibility, isHidden };
 
 let lastHeader = "";
 let lastFooter = "";
@@ -17,6 +17,12 @@ function toggleVisibility(main) {
     if (tabList.classList.contains("hidden")) return;
 
     updateTabList(main);
+}
+
+function isHidden(main) {
+    const { main: tabList } = main.tabList.elements;
+
+    return tabList.classList.contains("hidden");
 }
 
 /**

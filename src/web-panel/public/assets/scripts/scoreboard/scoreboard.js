@@ -1,6 +1,6 @@
 import { ChatMessage } from "../utils/chat-message.js";
 
-export { updateScoreboard, toggleVisibility };
+export { updateScoreboard, toggleVisibility, isHidden };
 
 
 /**
@@ -13,6 +13,12 @@ function toggleVisibility(main) {
     if (scoreboard.classList.contains("hidden")) return;
 
     updateScoreboard(main);
+}
+
+function isHidden(main) {
+    const { element: scoreboard } = main.scoreboard;
+
+    return scoreboard.classList.contains("hidden");
 }
 
 /**

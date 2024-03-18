@@ -1,3 +1,5 @@
+import { save as saveConfiguration } from "../../local-storage.js";
+
 export { setup, addCommand, resetCurrentIndex };
 
 /** @type {import("../../index.js").Main} */
@@ -77,6 +79,8 @@ function addCommand(command) {
     const { list, limit } = main.chat.input.commandHistory;
 
     if (list.unshift(command) > limit) list.pop();
+
+    saveConfiguration(main);
 }
 
 function resetCurrentIndex() {

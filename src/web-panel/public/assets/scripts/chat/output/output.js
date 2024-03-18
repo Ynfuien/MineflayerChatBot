@@ -1,4 +1,5 @@
 import { ChatMessage } from "../../utils/chat-message.js";
+import { save as saveConfiguration } from "../../local-storage.js";
 
 export { setup, showMessage, isScrollOnTheBottom, scrollToBottom };
 
@@ -59,6 +60,9 @@ function setup(main) {
                     if (scroll) scrollToBottom(outputElement);
                 }
             }
+        })
+        .on("resizeend", () => {
+            saveConfiguration(main);
         });
 }
 
