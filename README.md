@@ -19,13 +19,11 @@ Minecraft bot written in Javascript using [NodeJs](https://nodejs.org) and [Mine
 - Auto rejoin function with custom timeout
 - Online panel with
   - vanilla look
-  - chat logs
-  - command execution
-  - command history
-  - tab completion
+  - chat - supporting hover messages
+  - commands - with tab completions and history (arrow up)
   - tab list
-  - action bar
   - scoreboard (sidebar)
+  - action bar
   - and without mobile (phone) support
 
 ### How to install
@@ -57,6 +55,7 @@ Online panel by default should be at http://localhost:3000
 - [express](https://www.npmjs.com/package/express)
 - [js-yaml](https://www.npmjs.com/package/js-yaml)
 - [mineflayer](https://www.npmjs.com/package/mineflayer)
+- [mojangson](https://www.npmjs.com/package/mojangson)
 - [nodemon](https://www.npmjs.com/package/nodemon)
 - [prismarine-chat](https://www.npmjs.com/package/prismarine-chat)
 - [socket.io](https://www.npmjs.com/package/socket.io)
