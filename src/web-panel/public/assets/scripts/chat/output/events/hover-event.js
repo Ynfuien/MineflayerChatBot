@@ -1,21 +1,20 @@
-import { ChatMessage } from "../utils/chat-message.js";
+import { ChatMessage } from "../../../utils/chat-message.js";
 
 
 export { setup };
 
-/** @type {import("../index.js").Main} */
+/** @type {import("../../../index.js").Main} */
 let main;
 
 let rootFontSize = 16;
 
 /**
- * @param {import("../index.js").Main} _main 
+ * @param {import("../../../index.js").Main} _main 
  */
 function setup(_main) {
     main = _main;
 
-    const { output, hover } = main.chat;
-    const { frame } = hover;
+    const { frame } = main.chat.hover;
 
     const documentStyles = getComputedStyle(document.documentElement);
     rootFontSize = documentStyles.fontSize; // returns string with 'px'
@@ -90,7 +89,7 @@ function getHoverEventAtCursor(x, y) {
 
 /**
  * Parses hover event contents into ChatMessages
- * @param {import("../utils/chat-message.js").HoverEvent} hoverEvent
+ * @param {import("../../../utils/chat-message.js").HoverEvent} hoverEvent
  * @returns {ChatMessage[]}
  */
 function getFinalMessages(hoverEvent) {

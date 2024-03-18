@@ -1,7 +1,7 @@
-import { showMessage, scrollToBottom } from "./chat/output.js";
-import { showActionBar } from "./chat/action-bar.js";
+import { showMessage, scrollToBottom } from "./chat/output/output.js";
+import { showActionBar } from "./chat/output/action-bar.js";
 import { updateTabList } from "./tab-list/tab-list.js";
-import { showCompletions } from "./chat/tab-completion.js";
+import { showCompletions } from "./chat/input/tab-completion.js";
 import { updateScoreboard } from "./scoreboard/scoreboard.js";
 import { ChatMessage, setLanguage } from "./utils/chat-message.js";
 

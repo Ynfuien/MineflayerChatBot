@@ -1,9 +1,5 @@
 import { setup as setupWebSocket } from "./web-socket.js";
-import { setup as setupChatInputs } from "./chat/input.js";
-import { setup as setupChatOutput } from "./chat/output.js";
-import { setup as setupTabCompletion } from "./chat/tab-completion.js";
-import { setup as setupCommandHistory } from "./chat/command-history.js";
-import { setup as setupHoverEvent } from "./chat/hover-event.js";
+import { setup as setupChat } from "./chat/chat.js";
 
 import { ChatMessage } from "./utils/chat-message.js";
 
@@ -197,11 +193,7 @@ import { ChatMessage } from "./utils/chat-message.js";
 
 
     setupWebSocket(main);
-    setupChatInputs(main);
-    setupChatOutput(main);
-    setupTabCompletion(main);
-    setupCommandHistory(main);
-    setupHoverEvent(main);
+    setupChat(main);
 
     window.main = main;
 })();

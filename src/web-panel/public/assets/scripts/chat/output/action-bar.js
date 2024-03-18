@@ -1,11 +1,11 @@
-import { ChatMessage } from "../utils/chat-message.js";
+import { ChatMessage } from "../../utils/chat-message.js";
 
 export { showActionBar };
 
 
 /**
  * 
- * @param {import("../index.js").Main} main
+ * @param {import("../../index.js").Main} main
  * @param {ChatMessage} message
  */
 function showActionBar(main, message) {

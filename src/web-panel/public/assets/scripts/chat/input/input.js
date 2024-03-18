@@ -1,17 +1,17 @@
-import { isScrollOnTheBottom, scrollToBottom } from "./output.js";
-import { toggleVisibility as toggleTabListVisibility } from "../tab-list/tab-list.js";
-import { toggleVisibility as toggleScoreboardVisibility } from "../scoreboard/scoreboard.js";
+import { isScrollOnTheBottom, scrollToBottom } from "../output/output.js";
+import { toggleVisibility as toggleTabListVisibility } from "../../tab-list/tab-list.js";
+import { toggleVisibility as toggleScoreboardVisibility } from "../../scoreboard/scoreboard.js";
 import { clear as clearCompletions } from "./tab-completion.js";
 import { addCommand as addCommandToHistory, resetCurrentIndex as resetCommandHistoryIndex } from "./command-history.js";
 
-import { sendCommand } from "../web-socket.js";
-import { getTextWidth, getElementFont } from "../utils/text-width-measurer.js";
+import { sendCommand } from "../../web-socket.js";
+import { getTextWidth, getElementFont } from "../../utils/text-width-measurer.js";
 
 export { setup };
 
 /**
  * 
- * @param {import("../index.js").Main} main 
+ * @param {import("../../index.js").Main} main 
  */
 function setup(main) {
     const { input, output } = main.chat;

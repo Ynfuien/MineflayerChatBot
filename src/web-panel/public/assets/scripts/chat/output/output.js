@@ -1,11 +1,11 @@
-import { ChatMessage } from "../utils/chat-message.js";
+import { ChatMessage } from "../../utils/chat-message.js";
 
 export { setup, showMessage, isScrollOnTheBottom, scrollToBottom };
 
 
 /**
  * 
- * @param {import("../index.js").Main} main 
+ * @param {import("../../index.js").Main} main 
  */
 function setup(main) {
     const { output } = main.chat;
@@ -71,7 +71,7 @@ function setup(main) {
  */
 
 /**
- * @param {import("../index.js").Main} main 
+ * @param {import("../../index.js").Main} main 
  * @param {MessageData} data 
  */
 function showMessage(main, data, scroll = true) {

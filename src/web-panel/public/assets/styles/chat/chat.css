@@ -1,9 +1,10 @@
-@import url('input.css');
-@import url('output.css');
-@import url('action-bar.css');
-@import url('buttons.css');
-@import url('tab-completion.css');
-@import url('hover-event.css');
+@import url('input/input.css');
+@import url('input/buttons.css');
+@import url('input/tab-completion.css');
+
+@import url('output/output.css');
+@import url('output/action-bar.css');
+@import url('output/hover-event.css');
 
 section#chat {
     overflow: auto;

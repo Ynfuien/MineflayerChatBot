@@ -1,11 +1,11 @@
 export { setup, addCommand, resetCurrentIndex };
 
-/** @type {import("../index.js").Main} */
+/** @type {import("../../index.js").Main} */
 let main;
 
 /**
  * 
- * @param {import("../index.js").Main} main 
+ * @param {import("../../index.js").Main} main 
  */
 function setup(_main) {
     main = _main;
