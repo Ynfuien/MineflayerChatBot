@@ -25,11 +25,17 @@ module.exports = {
                 if (!username.match(/^[a-z0-9_]{3,16}$/gi)) continue;
 
                 const displayName = players[username].displayName;
-                displayNames.push(new ChatMessage(displayName.json).toLegacy());
+                const legacy = new ChatMessage(displayName.json).toLegacy();
+                displayNames.push(legacy || username);
             }
 
-            const message = ChatMessage.fromLegacy("§d" + displayNames.join("§7, §d"));
+            if (displayNames.length === 0) {
+                logBot(`&5There are no players in the game. (How did this happen? I know! Probably server is messing with packets!)`);
+                return;
+            }
+
             logBot(`&5Players in game &7(${displayNames.length})&5:`);
+            const message = ChatMessage.fromLegacy("§d" + displayNames.join("§7, §d"));
             log(message);
         }, 1500);
 

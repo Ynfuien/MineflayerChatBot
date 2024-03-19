@@ -1,4 +1,5 @@
-const { logBot } = require('../utils/logger.js');
+const { ChatMessage } = require('../utils/chat-message.js');
+const { logBot, log } = require('../utils/logger.js');
 const { packetToChatMessage } = require('../utils/message-utils.js');
 
 module.exports = {
@@ -11,7 +12,7 @@ module.exports = {
      */
     run(main, reason) {
         const message = packetToChatMessage(main.bot, reason);
-        logBot(`§c§lBot has been kicked from the server, reason:\n§f${message.toMotd()}`, '§');
+        log(ChatMessage.fromLegacy(`§c§lBot has been kicked from the server, reason:\n§f${message.toLegacy()}`));
 
         if (!main.vars.autoRejoin.enabled) {
             const { enabled, prefix } = main.vars.botCommands;

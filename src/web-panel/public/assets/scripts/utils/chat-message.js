@@ -2,7 +2,8 @@
  * // Events
  * @typedef {{
  *  action: "show_text" | "show_entity" | "show_item",
- *  contents: string | ChatMessage | {name: string, type: string, id: string} | {id: string, tag: string}
+ *  contents?: string | ChatMessage | {name: string, type: string, id: string} | {id: string, tag: string},
+ *  value?: string | ChatMessage | {name: string, type: string, id: string} | {id: string, tag: string}
  * }} HoverEvent
  * 
  * @typedef {{
@@ -213,8 +214,8 @@ class ChatMessage {
         // Yes. This and all the ugliness above is just for the nice VS Code IntelliSense
         for (const key in this) delete this[key];
 
-        if (typeof json === "string") {
-            this.text = json;
+        if (typeof json === "string" || typeof json === "number") {
+            this.text = json.toString();
             return;
         }
 
@@ -224,7 +225,8 @@ class ChatMessage {
 
             // Arrays ('extra' and 'with')
             if (Array.isArray(value)) {
-                this[key] = value.map(item => new ChatMessage(item));
+                if (!this[key]) this[key] = [];
+                this[key].push(...value.map(item => new ChatMessage(item)));
                 continue;
             }
 
@@ -246,6 +248,25 @@ class ChatMessage {
                 this[key] = value.toLowerCase();
                 continue;
             }
+
+            
+            if (key === "text") {
+                // Numbers, probably
+                if (typeof value !== "string") {
+                    this[key] = value.toString();
+                    continue;
+                }
+
+                // Old things using old legacy format as it's should not be used
+                if (value.includes(LEGACY_CHAR)) {
+                    const parsed = ChatMessage.fromLegacy(value);
+                    if (!this.extra) this.extra = [];
+
+                    this.extra.unshift(parsed);
+                    continue;
+                }
+            }
+            
 
             this[key] = value;
         }
@@ -577,7 +598,7 @@ class ChatMessage {
         let textContent = "";
 
         // Text
-        if (text) textContent += text;
+        if (text !== null && text !== undefined) textContent += text;
 
         // Keybind
         if (keybind) textContent += parseKeybind(keybind);
@@ -653,7 +674,7 @@ class ChatMessage {
         if (extra) {
             for (const entry of extra) {
                 const entryElement = entry.#toHTML(extraParsing, parentStyling.clone());
-                if (entryElement.innerText.length === 0 && entryElement.innerHTML.length === 0) continue;
+                if (entryElement.textContent.length === 0 && entryElement.innerHTML.length === 0) continue;
                 element.appendChild(entryElement);
             }
         }

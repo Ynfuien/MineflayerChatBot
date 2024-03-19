@@ -109,7 +109,7 @@ async function tabComplete(main, text, timeout = "auto") {
     });
 
     // Setting a timeout
-    if (timeout === "auto") timeout = main.bot.player.ping + 10;
+    if (timeout === "auto") timeout = (main.bot?.player?.ping || 10) + 10;
 
     // Timeout promise
     let interval = null;

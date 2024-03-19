@@ -45,7 +45,7 @@ module.exports = {
             let slot = quickBarSlot;
 
             if (args.length > 1) {
-                slot = parseInt(args.shift());
+                slot = parseInt(args[1]);
                 if (isNaN(slot)) {
                     logBot("&cSlot must be a number!");
                     return;
@@ -72,7 +72,7 @@ module.exports = {
             let slot = quickBarSlot;
 
             if (args.length > 1) {
-                slot = parseInt(args.shift());
+                slot = parseInt(args[1]);
                 if (isNaN(slot)) {
                     logBot("&cSlot must be a number!");
                     return;
@@ -98,7 +98,7 @@ module.exports = {
 
             let slot = quickBarSlot;
             if (args.length > 1) {
-                slot = parseInt(args.shift());
+                slot = parseInt(args[1]);
                 if (isNaN(slot)) {
                     logBot("&cSlot must be a number!");
                     return;

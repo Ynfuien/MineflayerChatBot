@@ -1,4 +1,5 @@
 import { ChatMessage } from "../../../utils/chat-message.js";
+import itemAttributes from "./item-attributes.js";
 
 
 export { setup };
@@ -32,8 +33,9 @@ function setup(_main) {
 
         // Hover event already parsed
         if (target === lastHoverEvent) {
-            updatePosition(x, y);
+            // updatePosition(x, y);
             show();
+            updatePosition(x, y);
             return;
         }
         lastHoverEvent = target;
@@ -48,8 +50,9 @@ function setup(_main) {
 
         for (const message of messages) frame.appendChild(message.toHTML("mc-text"));
 
-        updatePosition(x, y);
+        // updatePosition(x, y);
         show();
+        updatePosition(x, y);
     });
 }
 
@@ -96,11 +99,15 @@ function getFinalMessages(hoverEvent) {
     const messages = [];
     const { config } = main;
 
+    const { action } = hoverEvent;
+    let contents = hoverEvent.contents ?? hoverEvent.value;
+    if (Array.isArray(contents)) contents = new ChatMessage({ extra: contents });
+
     // Show text - mostly custom hover messages
-    if (hoverEvent.action === "show_text") {
+    if (action === "show_text") {
         // Spliting the message every new line,
         // because I need them seperate in the DOM
-        const legacy = new ChatMessage(hoverEvent.contents).toLegacy();
+        const legacy = new ChatMessage(contents).toLegacy();
         const lines = legacy.split("\n");
 
         let prevLineStyle = new ChatMessage();
@@ -118,8 +125,8 @@ function getFinalMessages(hoverEvent) {
     }
 
     // Show entity - mainly used in command responses by vanilla
-    if (hoverEvent.action === "show_entity") {
-        const { name, type, id } = hoverEvent.contents;
+    if (action === "show_entity") {
+        const { name, type, id } = contents;
         if (!name || !type || !id) return messages;
 
         const translatedType = config.clientLang[`entity.${type.replace(":", ".")}`];
@@ -135,49 +142,210 @@ function getFinalMessages(hoverEvent) {
 
     // Show item - also mostly custom, didn't see it in the vanilla chat,
     // looks the same as hover in the inventory
-    if (hoverEvent.action === "show_item") {
-        const { id, tag } = hoverEvent.contents;
-        if (!id) return;
+    if (action === "show_item") return getShowItemHover(contents);
 
-        const translateId = id.replace(":", ".");
-        let displayName = config.clientLang[`item.${translateId}`] || config.clientLang[`block.${translateId}`];
-        if (!displayName) return;
+    return messages;
+}
 
-        let displayNameMsg = new ChatMessage(displayName);
-        let loreMsg = [];
-        const idMsg = new ChatMessage({ color: "dark_gray", text: id });
-        let nbtMsg = null;
+/**
+ * Yep. It's a mess...
+ * @returns {ChatMessage[]}
+ */
+function getShowItemHover(contents) {
+    const { config } = main;
+
+    const messages = [];
+
+    const { id, tag } = contents;
+    if (!id) return messages;
+
+    const translateId = id.replace(':', '.');
+    let displayName = config.clientLang[`item.${translateId}`] || config.clientLang[`block.${translateId}`];
+    if (!displayName) displayName = translateId;
+
+    const defaultAttributes = itemAttributes[id.substring("minecraft:".length)];
+
+    let displayNameMsg = new ChatMessage(displayName);
+    let enchantmentsMsg = [];
+    let loreMsg = [];
+    const idMsg = new ChatMessage({ color: "dark_gray", text: id });
+    let attributeMsg = [];
+    let canDestroyMsg = [];
+    let unbreakableMsg = [];
+    let nbtMsg = null;
+    let damageMsg = null;
 
 
-        if (tag) {
-            const nbt = JSON.parse(tag);
+    let sharpnessLvl = 0;
+    if (tag) {
+        const nbt = JSON.parse(tag);
 
-            const count = Object.keys(nbt).length;
-            if (count > 0) nbtMsg = new ChatMessage({ color: "dark_gray", text: `NBT: ${count} tag(s)` });
+        const count = Object.keys(nbt).length;
+        if (count > 0) nbtMsg = new ChatMessage({
+            color: "dark_gray",
+            translate: "item.nbt_tags",
+            with: [count.toString()]
+        });
 
-            const { display } = nbt;
-            if (display) {
-                const { Name, Lore } = display;
+        const { display, Damage, Enchantments, CanDestroy, AttributeModifiers, Unbreakable, HideFlags } = nbt;
+        if (display) {
+            const { Name, Lore } = display;
 
-                if (Name) displayNameMsg = new ChatMessage(Name);
-                if (Lore) {
-                    for (const line of Lore) {
-                        const lineMsg = new ChatMessage(line);
+            if (Name) displayNameMsg = new ChatMessage(Name);
+            if (Lore) {
+                for (const line of Lore) {
+                    const lineMsg = new ChatMessage(line);
 
-                        if (!lineMsg.color) lineMsg.color = "dark_purple";
-                        if (!("italic" in lineMsg)) lineMsg.italic = true;
-                        loreMsg.push(lineMsg);
-                    }
+                    if (!lineMsg.color) lineMsg.color = "dark_purple";
+                    if (!("italic" in lineMsg)) lineMsg.italic = true;
+                    loreMsg.push(lineMsg);
                 }
             }
         }
 
+        if (Unbreakable) unbreakableMsg.push(new ChatMessage({ color: "blue", translate: "item.unbreakable" }));
 
-        messages.push(displayNameMsg, ...loreMsg, idMsg);
-        if (nbtMsg) messages.push(nbtMsg);
+        if (Enchantments) {
+            for (const enchant of Enchantments) {
+                const { id, lvl } = enchant;
+                if (id === "minecraft:sharpness") sharpnessLvl = lvl;
 
-        return messages;
+                const enchantMsg = new ChatMessage({
+                    color: "gray",
+                    translate: `enchantment.${id.replace(':', '.')}`,
+                    extra: [
+                        { text: " " },
+                        lvl <= 10 ? { translate: `enchantment.level.${lvl}` } : { text: lvl }
+                    ]
+                });
+
+                enchantmentsMsg.push(enchantMsg);
+            }
+        }
+
+        if (AttributeModifiers) {
+            attributeMsg = [];
+
+            const slots = {};
+
+            for (const attribute of AttributeModifiers) {
+                const { Slot } = attribute;
+                if (!slots[Slot]) slots[Slot] = [];
+
+                slots[Slot].push(attribute);
+            }
+
+            for (const slot in slots) {
+                // New line
+                attributeMsg.push(new ChatMessage());
+
+                // "When in Main Hand:" etc.
+                const slotMsg = new ChatMessage({ color: "gray", translate: `item.modifiers.${slot}` });
+                attributeMsg.push(slotMsg);
+
+                const attributes = slots[slot];
+                for (const attribute of attributes) {
+                    let { AttributeName, Amount, Operation } = attribute;
+
+                    if (Amount === 0) continue;
+                    if (AttributeName.startsWith("minecraft:")) AttributeName = AttributeName.substring("minecraft:".length);
+
+                    const plus = Amount > 0;
+                    if (Operation === 1 || Operation === 2) Amount *= 100;
+                    Amount = Math.abs(Amount);
+
+                    const attrMsg = new ChatMessage({
+                        color: plus ? "blue" : "red",
+                        translate: `attribute.modifier.${plus ? "plus" : "take"}.${Operation}`,
+                        with: [
+                            { text: Amount },
+                            { translate: `attribute.name.${AttributeName}` }
+                        ]
+                    });
+
+                    attributeMsg.push(attrMsg);
+                }
+            }
+        }
+
+        if (CanDestroy) {
+            canDestroyMsg.push(new ChatMessage());
+            canDestroyMsg.push(new ChatMessage({ color: "gray", translate: "item.canBreak" }))
+            for (const id of CanDestroy) {
+                let translated = config.clientLang[`item.${id.replace(':', '.')}`] ?? config.clientLang[`block.${id.replace(':', '.')}`];
+                canDestroyMsg.push(new ChatMessage({ color: "dark_gray", text: translated }));
+            }
+        }
+
+        if (Damage) {
+            const item = config.itemsData[id.substring("minecraft.".length)];
+            let maxDurability = item?.maxDurability;
+            if (!maxDurability) maxDurability = 0;
+
+            damageMsg = new ChatMessage({
+                color: "white",
+                translate: "item.durability",
+                with: [
+                    maxDurability - Damage,
+                    maxDurability
+                ]
+            });
+        }
     }
+
+
+    if (defaultAttributes && attributeMsg.length === 0) {
+        const slots = {};
+
+        for (const attribute of defaultAttributes) {
+            const { slot } = attribute;
+            if (!slots[slot]) slots[slot] = [];
+
+            slots[slot].push(attribute);
+        }
+
+        for (const slot in slots) {
+            // New line
+            attributeMsg.push(new ChatMessage());
+
+            // "When in Main Hand:" etc.
+            const slotMsg = new ChatMessage({ color: "gray", translate: `item.modifiers.${slot}` });
+            attributeMsg.push(slotMsg);
+
+            const attributes = slots[slot];
+            for (const attribute of attributes) {
+                let { value, name } = attribute;
+                if (name === "generic.attack_damage" && sharpnessLvl > 0) {
+                    value += (sharpnessLvl / 2) + 0.5;
+                }
+
+                const attrMsg = new ChatMessage({
+                    color: "dark_green",
+                    text: " ",
+                    translate: "attribute.modifier.equals.0",
+                    with: [
+                        { text: value },
+                        { translate: `attribute.name.${name}` }
+                    ]
+                });
+
+                attributeMsg.push(attrMsg);
+            }
+        }
+    }
+
+
+    messages.push(
+        displayNameMsg,
+        ...enchantmentsMsg,
+        ...loreMsg,
+        ...attributeMsg,
+        ...unbreakableMsg,
+        ...canDestroyMsg,
+        idMsg
+    );
+    if (nbtMsg) messages.push(nbtMsg);
+    if (damageMsg) messages.push(damageMsg);
 
     return messages;
 }

@@ -32,14 +32,13 @@ function updateTabList(main) {
     const tabList = main.tabList;
 
     const { data, elements } = tabList;
-    const { list } = elements;
+    const { list, main: tabListElement } = elements;
 
-    elements.main.style.display = "";
-    if (elements.main.classList.contains("hidden")) return;
-    if (window.tabListDebug) return;
+    tabListElement.style.display = "";
+    if (tabListElement.classList.contains("hidden")) return;
 
 
-    const { header, footer } = data;
+    let { header, footer } = data;
 
     // Header
     if (lastHeader !== header) {
@@ -57,9 +56,18 @@ function updateTabList(main) {
         // }
 
 
-        elements.header.appendChild(header.toHTML("mc-text"));
+        if (header) {
+            // Fixing leading and trailing new lines being ignored by HTML 
+            const text = header.getText();
+            if (text.startsWith('\n')) header = new ChatMessage(" ").append(header);
+            if (text.endsWith('\n')) header.append(new ChatMessage(" "));
 
-        // lastHeader = header.toL;
+            elements.header.appendChild(header.toHTML("mc-text"));
+            elements.header.classList.remove("empty");
+        } else {
+            elements.header.classList.add("empty");
+        }
+        lastHeader = header;
     }
 
     // Footer
@@ -77,11 +85,21 @@ function updateTabList(main) {
         //     elements.footer.classList.add("empty");
         // }
 
-        elements.footer.appendChild(footer.toHTML("mc-text"));
+        if (footer) {
+            // Fixing leading and trailing new lines being ignored by HTML 
+            const text = footer.getText();
+            if (text.startsWith('\n')) footer = new ChatMessage(" ").append(footer);
+            if (text.endsWith('\n')) footer.append(new ChatMessage(" "));
 
+            elements.footer.appendChild(footer.toHTML("mc-text"));
+            elements.footer.classList.remove("empty");
+        } else {
+            elements.footer.classList.add("empty");
+        }
         lastFooter = footer;
     }
 
+    // console.log(tabListElement.textContent.length);
 
     // Player list
     /** @type {import("../index.js").Main.tabList.data.player[]} */

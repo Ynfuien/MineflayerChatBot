@@ -10,16 +10,22 @@ module.exports = {
      */
     run(main) {
         logBot("&cBot has been turned off.");
-        main.bot = null;
+        // Timeout because 'kick' event happens after 'end' event,
+        // and kick event needs the bot instance.
+        setTimeout(() => {
+            main.bot = null;
+        }, 10);
 
         main.vars.bot.joined = false;
         main.vars.bot.logPlayers = false;
 
         // If restart command used
         if (main.vars.bot.restart === true) {
-            main.vars.bot.restart = false;
-            logBot("&bTurning bot &aon&f..")
-            startBot(main);
+            setTimeout(() => {
+                main.vars.bot.restart = false;
+                logBot("&bTurning bot &aon&f..");
+                startBot(main);
+            }, 20);
             return;
         }
 

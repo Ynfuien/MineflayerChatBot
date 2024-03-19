@@ -53,7 +53,7 @@ function updateScoreboard(main) {
 
         // Display name
         const displayName = item.displayName.toHTML("mc-text");
-        if (displayName.innerText.length === 0) displayName.innerText = " ";
+        if (displayName.textContent.length === 0) displayName.textContent = " ";
         li.appendChild(displayName);
 
         // Score
@@ -66,7 +66,7 @@ function updateScoreboard(main) {
         else if (valueFormat === 2) displayScore = valueStyling;
 
         const html = displayScore.toHTML("mc-text");
-        if (html.innerText.length > 0) li.appendChild(html);
+        if (html.textContent.length > 0) li.appendChild(html);
 
         list.appendChild(li);
     }

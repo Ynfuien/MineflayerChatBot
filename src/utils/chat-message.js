@@ -4,7 +4,8 @@ const mojangson = require('mojangson');
  * // Events
  * @typedef {{
  *  action: "show_text" | "show_entity" | "show_item",
-*  contents: string | ChatMessage | {name: string, type: string, id: string} | {id: string, tag: string}
+ *  contents?: string | ChatMessage | {name: string, type: string, id: string} | {id: string, tag: string}
+ *  value?: string | ChatMessage | {name: string, type: string, id: string} | {id: string, tag: string}
  * }} HoverEvent
  * 
  * @typedef {{
@@ -214,8 +215,8 @@ class ChatMessage {
         // Yes. This and all the ugliness above is just for the nice VS Code IntelliSense
         for (const key in this) delete this[key];
 
-        if (typeof json === "string") {
-            this.text = json;
+        if (typeof json === "string" || typeof json === "number") {
+            this.text = json.toString();
             return;
         }
 
@@ -225,7 +226,8 @@ class ChatMessage {
 
             // Arrays ('extra' and 'with')
             if (Array.isArray(value)) {
-                this[key] = value.map(item => new ChatMessage(item));
+                if (!this[key]) this[key] = [];
+                this[key].push(...value.map(item => new ChatMessage(item)));
                 continue;
             }
 
@@ -233,21 +235,65 @@ class ChatMessage {
             if (typeof value === "object") {
                 this[key] = structuredClone(value);
 
-                // Changing hoverEvent's 'tag' from mojangson string, to a JSON
-                let tag = value?.contents?.tag;;
-                if (key === "hoverEvent" && tag) {
-                    // Tape-fixing error in a mojangson parser
-                    const double = crypto.randomUUID();
-                    const single = crypto.randomUUID();
-                    tag = tag.replace(/\\\\"/g, `{${double}}`)
-                        .replace(/\\"/g, `{${double}}`)
-                        .replace(/\\'/g, `{${single}}`);
+                if (key === "hoverEvent") {
+                    // Old format
+                    if (value.action !== "show_text") {
+                        let compund = value.value;
+                        if (typeof compund === "string") {
+                            console.log("Striiiiiiiiiiiiiing!");
+                            continue;
+                        }
 
-                    const parsed = mojangson.parse(tag);
-                    let json = JSON.stringify(mojangson.simplify(parsed));
-                    json = json.replace(new RegExp(`\{${double}\}`, 'g'), `\\"`).replace(new RegExp(`\{${single}\}`, 'g'), `'`);
+                        if (compund) {
+                            // Show entity
+                            if (value.action === "show_entity") {
+                                if (compund.text) compund = mojangson.parse(compund.text);
+                                const contents = mojangson.simplify(compund);
 
-                    this[key].contents.tag = json;
+                                const { type } = contents;
+                                if (!type.startsWith("minecraft:")) contents.type = "minecraft:" + type;
+
+                                this[key].contents = contents;
+                                delete this[key].value;
+                                continue;
+                            }
+
+                            // Show item
+                            const contents = mojangson.simplify(compund);
+                            const { id, tag } = contents;
+
+                            if (!id.startsWith("minecraft:")) contents.id = `minecraft:${id}`;
+
+                            if ("Count" in contents) {
+                                contents.count = contents.Count;
+                                delete contents.Count;
+                            }
+
+                            if (tag) contents.tag = JSON.stringify(tag);
+
+                            this[key].contents = contents;
+                            delete this[key].value;
+                            continue;
+                        }
+                    }
+
+                    // Changing hoverEvent's 'tag' from mojangson string, to a JSON
+                    let tag = value?.contents?.tag;
+                    if (tag) {
+                        // Tape-fixing error in a mojangson parser
+                        const double = crypto.randomUUID();
+                        const single = crypto.randomUUID();
+                        tag = tag.replace(/\\\\"/g, `{${double}}`)
+                            .replace(/\\"/g, `{${double}}`)
+                            .replace(/\\'/g, `{${single}}`);
+
+
+                        const parsed = mojangson.parse(tag);
+                        let json = JSON.stringify(mojangson.simplify(parsed));
+                        json = json.replace(new RegExp(`\{${double}\}`, 'g'), `\\"`).replace(new RegExp(`\{${single}\}`, 'g'), `'`);
+
+                        this[key].contents.tag = json;
+                    }
                 }
                 continue;
             }
@@ -263,6 +309,23 @@ class ChatMessage {
             if (key === "color") {
                 this[key] = value.toLowerCase();
                 continue;
+            }
+
+            if (key === "text") {
+                // Numbers, probably
+                if (typeof value !== "string") {
+                    this[key] = value.toString();
+                    continue;
+                }
+
+                // Old things using old legacy format as it's should not be used
+                if (value.includes(LEGACY_CHAR)) {
+                    const parsed = ChatMessage.fromLegacy(value);
+                    if (!this.extra) this.extra = [];
+
+                    this.extra.unshift(parsed);
+                    continue;
+                }
             }
 
             this[key] = value;

@@ -55,6 +55,11 @@ function setup(_main) {
         setLanguage(data.language);
     });
 
+    // Items data    
+    socket.on("items-data", (data) => {
+        main.config.itemsData = data.itemsData;
+    });
+
 
     // Get last logs
     let gotTheLogs = false;

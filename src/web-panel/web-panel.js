@@ -4,7 +4,7 @@ const http = require('http');
 const { Server } = require("socket.io");
 
 // Functions
-const { logBot, devLog } = require('../utils/logger.js');
+const { logBot } = require('../utils/logger.js');
 const { executeCommand } = require('../handlers/command.handler.js');
 const { getTabCompletions } = require('../handlers/tabcomplete.handler.js');
 const { ChatMessage } = require('../utils/chat-message.js');
@@ -60,6 +60,7 @@ const self = module.exports = {
                 self.scoreboardUpdate(sidebar);
 
                 self.updateLanguage();
+                self.updateItemsData();
             }
 
             socket.emit("config", {
@@ -119,6 +120,29 @@ const self = module.exports = {
 
         io.emit("language", {
             language: bot.registry.language
+        });
+    },
+
+    updateItemsData() {
+        if (!main) return;
+        const { bot } = main;
+        if (!bot) return;
+
+        const { io } = main.webPanel;
+        if (!io) return;
+
+        const itemsData = {};
+        const { itemsArray } = bot.registry;
+
+        for (const item of itemsArray) {
+            const { maxDurability } = item;
+            if (!maxDurability) continue;
+
+            itemsData[item.name] = { maxDurability };
+        }
+
+        io.emit("items-data", {
+            itemsData
         });
     },
 
@@ -264,7 +288,8 @@ function getSortedPlayerList(bot) {
                 }
             }
 
-            const finalDisplayName = new ChatMessage(displayName.json);
+            const displayNameText = displayName.json?.text || "";
+            const finalDisplayName = displayNameText.includes('§') ? ChatMessage.fromLegacy(displayNameText) : new ChatMessage(displayName.json);
             if (team) finalDisplayName.color = team.color;
 
             const playerObject = {

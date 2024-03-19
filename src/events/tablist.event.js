@@ -11,6 +11,9 @@ module.exports = {
      * @param {{header?: string, footer?: string}} packet
      */
     run(main, packet) {
+        const { bot } = main;
+        if (!bot) return;
+        
         const { header, footer } = packet;
 
         const result = {};
