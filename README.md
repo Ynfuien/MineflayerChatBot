@@ -19,19 +19,21 @@ Minecraft bot written in Javascript using [NodeJs](https://nodejs.org) and [Mine
 - Auto rejoin function with custom timeout
 - Online panel with
   - vanilla look
-  - chat - supporting hover messages
+  - chat - supporting hover messages <sup>[1]</sup>
   - commands - with tab completions and history (arrow up)
   - tab list
   - scoreboard (sidebar)
   - action bar
   - and without mobile (phone) support
 
+<sup>1.</sup> Full support for `show_text` action, but partial support for `show_entity` and `show_item` actions.
+
 ### How to install
 1. Download and install [NodeJs](https://nodejs.org), if you don't have it
 2. Download source code or clone the git repository
 3. If needed, unpack the archive
 4. Run `npm install` in a console in the project directory
-5. Edit `config.yml` for your preferences
+5. Copy `config.default.yml`, rename it to `config.yml` and edit for your preferences
 6. Run `start.bat` and enjoy
 
 Online panel by default should be at http://localhost:3000
