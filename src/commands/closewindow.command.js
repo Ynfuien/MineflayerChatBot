@@ -12,6 +12,10 @@ module.exports = {
      */
     async run(main) {
         const { bot } = main;
+        if (!bot) {
+            logBot("&cBot isn't on!")
+            return;
+        }
 
         const window = bot.currentWindow;
         if (!window) {

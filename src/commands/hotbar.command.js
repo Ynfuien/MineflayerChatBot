@@ -12,6 +12,10 @@ module.exports = {
      */
     async run(main, args) {
         const { bot } = main;
+        if (!bot) {
+            logBot("&cBot isn't on!")
+            return;
+        }
 
         if (args.length === 0) return false;
         const arg1 = args[0].toLowerCase();
