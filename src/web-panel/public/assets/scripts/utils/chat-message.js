@@ -823,7 +823,7 @@ function parseTranslate(translate, list) {
 
     for (let i = 0; i < list.length; i++) {
         const item = list[i];
-        translate = translate.replace(new RegExp(`%${i + 1}$s`, 'g'), item).replace("%s", item);
+        translate = translate.replace(new RegExp(`%${i + 1}\\$s`, 'g'), item).replace("%s", item);
     }
 
     return translate;
