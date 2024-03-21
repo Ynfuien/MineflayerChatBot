@@ -24,6 +24,7 @@ Minecraft bot written in Javascript using [NodeJs](https://nodejs.org) and [Mine
   - tab list
   - scoreboard (sidebar)
   - action bar
+  - map viewer (filled map)
   - and without mobile (phone) support
 
 <sup>1.</sup> Full support for `show_text` action, but partial support for `show_entity` and `show_item` actions.

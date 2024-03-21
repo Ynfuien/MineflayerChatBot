@@ -1,6 +1,8 @@
 import { isScrollOnTheBottom, scrollToBottom } from "../output/output.js";
 import { toggleVisibility as toggleTabListVisibility } from "../../tab-list/tab-list.js";
 import { toggleVisibility as toggleScoreboardVisibility } from "../../scoreboard/scoreboard.js";
+import { toggleVisibility as toggleMapsVisibility } from "../../maps/maps.js";
+
 import { clear as clearCompletions } from "./tab-completion.js";
 import { addCommand as addCommandToHistory, resetCurrentIndex as resetCommandHistoryIndex } from "./command-history.js";
 import { save as saveConfiguration } from "../../local-storage.js";
@@ -43,6 +45,11 @@ function setup(main) {
     input.scoreboardButton.addEventListener("click", () => {
         toggleScoreboardVisibility(main);
         saveConfiguration(main);
+    });
+
+    //// Maps button
+    input.mapsButton.addEventListener("click", () => {
+        toggleMapsVisibility();
     });
 
 

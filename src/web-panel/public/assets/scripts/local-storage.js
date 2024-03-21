@@ -3,17 +3,12 @@ import { isHidden as isScoreboardHidden, toggleVisibility as toggleScoreboard } 
 
 export { load, save };
 
-const rootFontSize = (function() {
-    const documentStyles = getComputedStyle(document.documentElement);
-
-    let { fontSize } = documentStyles; // returns string with 'px'
-    return parseInt(fontSize.substring(0, fontSize.length - 2));
-})();
-
 /**
  * @param {import(".").Main} main 
  */
 function load(main) {
+    const { rootFontSize } = main;
+    
     const json = localStorage.getItem("saved-data");
     if (!json) return;
 
@@ -48,6 +43,7 @@ function load(main) {
  * @param {import(".").Main} main 
  */
 function save(main) {
+    const { rootFontSize } = main;
     const { element: chat } = main.chat.output;
 
     const data = {

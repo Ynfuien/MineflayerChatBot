@@ -7,8 +7,6 @@ export { setup };
 /** @type {import("../../../index.js").Main} */
 let main;
 
-let rootFontSize = 16;
-
 /**
  * @param {import("../../../index.js").Main} _main 
  */
@@ -16,10 +14,6 @@ function setup(_main) {
     main = _main;
 
     const { frame } = main.chat.hover;
-
-    const documentStyles = getComputedStyle(document.documentElement);
-    rootFontSize = documentStyles.fontSize; // returns string with 'px'
-    rootFontSize = parseInt(rootFontSize.substring(0, rootFontSize.length - 2));
 
     let lastHoverEvent = null;
     document.addEventListener("mousemove", (event) => {
@@ -371,6 +365,7 @@ function isShown() {
  * @param {number} y 
  */
 function updatePosition(x, y) {
+    const { rootFontSize } = main;
     const { element } = main.chat.hover;
 
     // Offset to the top right

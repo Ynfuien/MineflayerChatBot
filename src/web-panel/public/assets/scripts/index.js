@@ -1,8 +1,11 @@
 import { setup as setupWebSocket } from "./web-socket.js";
 import { setup as setupChat } from "./chat/chat.js";
+import { setup as setupMaps } from "./maps/maps.js";
+
 import { load as loadSavedConfiguration } from "./local-storage.js";
 
 import { ChatMessage } from "./utils/chat-message.js";
+import { MCMap } from "./maps/maps.js";
 
 /**
  * @typedef {{
@@ -61,6 +64,7 @@ import { ChatMessage } from "./utils/chat-message.js";
  *              minecraft: string,
  *              bot: string
  *          },
+ *          mapColors: Object.<number, import("./maps/maps.js").Color>,
  *          clientLang: Object.<string, string>
  *      },
  *      chat: {
@@ -70,6 +74,7 @@ import { ChatMessage } from "./utils/chat-message.js";
  *              scrollButton: HTMLButtonElement,
  *              tabListButton: HTMLButtonElement,
  *              scoreboardButton: HTMLButtonElement,
+ *              mapsButton: HTMLButtonElement,
  *              lengthLimit: number,
  *              commandHistory: {
  *                  currentIndex: number,
@@ -91,8 +96,8 @@ import { ChatMessage } from "./utils/chat-message.js";
  *      },
  *      tabList: {
  *          data: {
- *              header: ChatMessage,
- *              footer: ChatMessage,
+ *              header: ChatMessage | null,
+ *              footer: ChatMessage | null,
  *              players: Main.tabList.data.player[]
  *          },
  *          elements: {
@@ -105,11 +110,25 @@ import { ChatMessage } from "./utils/chat-message.js";
  *      scoreboard: {
  *          element: HTMLDivElement,
  *          header: HTMLDivElement,
- *          header: HTMLOListElement,
+ *          list: HTMLOListElement,
  *          data: Main.scoreboard.data.scoreboard | null,
  *          limit: number
  *      },
- *      status: HTMLDivElement
+ *      maps: {
+ *          elements: {
+ *              main: HTMLDivElement,
+ *              viewer: {
+ *                  left: HTMLButtonElement,
+ *                  img: HTMLImageElement,
+ *                  right: HTMLButtonElement
+ *              },
+ *              list: HTMLOListElement
+ *          },
+ *          list: MCMap[],
+ *          byId: Object.<number, MCMap>
+ *      },
+ *      status: HTMLDivElement,
+ *      rootFontSize: number
  * }} Main
  */
 
@@ -117,6 +136,7 @@ import { ChatMessage } from "./utils/chat-message.js";
     const chat = document.querySelector("section#chat");
     const tabList = document.querySelector("section#tab-list");
     const scoreboard = document.querySelector("#scoreboard");
+    const maps = document.querySelector("section#maps");
 
     /** @type {Main} */
     const main = {
@@ -125,6 +145,7 @@ import { ChatMessage } from "./utils/chat-message.js";
                 minecraft: "",
                 bot: "§f§l[BOT] §r"
             },
+            mapColors: {},
             clientLang: {}
         },
         chat: {
@@ -134,6 +155,7 @@ import { ChatMessage } from "./utils/chat-message.js";
                 scrollButton: chat.querySelector("section.input button.scroll"),
                 tabListButton: chat.querySelector("section.input button.tab-list"),
                 scoreboardButton: chat.querySelector("section.input button.scoreboard"),
+                mapsButton: chat.querySelector("section.input button.maps"),
                 lengthLimit: 256,
                 commandHistory: {
                     currentIndex: -1,
@@ -171,8 +193,8 @@ import { ChatMessage } from "./utils/chat-message.js";
         },
         tabList: {
             data: {
-                header: "",
-                footer: "",
+                header: null,
+                footer: null,
                 players: []
             },
             elements: {
@@ -189,12 +211,32 @@ import { ChatMessage } from "./utils/chat-message.js";
             data: null,
             limit: 15
         },
-        status: document.querySelector("section#status")
+        maps: {
+            elements: {
+                main: maps,
+                viewer: {
+                    left: maps.querySelector("div > button.left"),
+                    img: maps.querySelector("div > .map > img"),
+                    right: maps.querySelector("div > button.right")
+                },
+                list: maps.querySelector("ul")
+            },
+            list: [],
+            byId: {}
+        },
+        status: document.querySelector("section#status"),
+        rootFontSize: (function() {
+            const documentStyles = getComputedStyle(document.documentElement);
+        
+            let { fontSize } = documentStyles; // returns string with 'px'
+            return parseInt(fontSize.substring(0, fontSize.length - 2));
+        })()
     };
 
 
     setupWebSocket(main);
     setupChat(main);
+    setupMaps(main);
 
     loadSavedConfiguration(main);
 

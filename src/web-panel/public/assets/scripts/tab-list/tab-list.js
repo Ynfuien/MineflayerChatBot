@@ -44,18 +44,6 @@ function updateTabList(main) {
     if (lastHeader !== header) {
         elements.header.textContent = '';
 
-        // if (header.length > 0) {
-        //     // '.replaces' fix leading and trailing new lines being ignored by HTML
-        //     // const headerPre = parseMessage(header.replace(/^\n/, " \n").replace(/\n$/, "\n§r "));
-        //     // headerPre.classList.add("mc-text");
-        //     // elements.header.appendChild(headerPre);
-        //     elements.header.appendChild(header.toHTML("mc-text"));
-        //     elements.header.classList.remove("empty");
-        // } else {
-        //     elements.header.classList.add("empty");
-        // }
-
-
         if (header) {
             // Fixing leading and trailing new lines being ignored by HTML 
             const text = header.getText();
@@ -74,17 +62,6 @@ function updateTabList(main) {
     if (lastFooter !== footer) {
         elements.footer.textContent = '';
 
-        // if (footer.length > 0) {
-        //     // '.replaces' fix leading and trailing new lines being ignored by HTML
-        //     // const footerPre = parseMessage(footer.replace(/^\n/, " \n").replace(/\n$/, "\n§r "));
-        //     // footerPre.classList.add("mc-text");
-        //     // elements.footer.appendChild(footerPre);
-        //     elements.footer.appendChild(footer.toHTML("mc-text"));
-        //     elements.footer.classList.remove("empty");
-        // } else {
-        //     elements.footer.classList.add("empty");
-        // }
-
         if (footer) {
             // Fixing leading and trailing new lines being ignored by HTML 
             const text = footer.getText();
@@ -99,7 +76,6 @@ function updateTabList(main) {
         lastFooter = footer;
     }
 
-    // console.log(tabListElement.textContent.length);
 
     // Player list
     /** @type {import("../index.js").Main.tabList.data.player[]} */

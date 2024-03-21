@@ -4,9 +4,25 @@ const ST = require('./duck-tapes/scoreboard.tape.js');
  * Duck taped bot
  * @typedef {import('mineflayer').Bot & {
  *  duckTape: {
- *      scoreboards: TapedScoreboards
+ *      scoreboards: TapedScoreboards,
+ *      maps: TapedMaps
  *  }
  * }} TapedBot
+ */
+
+/** 
+ * @typedef {{
+ *  list: ST.Scoreboard[],
+ *  byName: Object.<string, ST.Scoreboard>,
+ *  byPosition: {[position in 'list' | 'sidebar' | 'belowName' | 0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18]: ST.Scoreboard | null}
+ * }} TapedScoreboards
+ */
+
+/** 
+ * @typedef {{
+ *  list: import('./duck-tapes/map.tape.js').MCMap[],
+ *  byId: Object.<number, import('./duck-tapes/map.tape.js').MCMap>
+ * }} TapedMaps
  */
 
 /**
@@ -113,14 +129,19 @@ const ST = require('./duck-tapes/scoreboard.tape.js');
  * }} ResetScorePacket
  */
 
-/** 
+/** Map packet
  * @typedef {{
- *  list: Scoreboard[],
- *  byName: Object.<string, ST.Scoreboard>,
- *  byPosition: {[position in 'list' | 'sidebar' | 'belowName' | 0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18]: ST.Scoreboard | null},
- * }} TapedScoreboards
+ *  itemDamage: number,
+ *  scale: number,
+ *  locked: boolean,
+ *  icons: {type: number, x: number, z: number, direction: number, displayName?: string}[],
+ *  columns: number,
+ *  rows?: number,
+ *  x?: number,
+ *  y?: number,
+ *  data?: number[]
+ * }} MapPacket
  */
-
 
 
 module.exports = null;

@@ -1,6 +1,7 @@
 const { logBot, log } = require('../utils/logger.js');
 const { executeCommand } = require('../handlers/command.handler.js');
 const { ChatMessage } = require('../utils/chat-message.js');
+const { clearMaps } = require('../web-panel/web-panel.js');
 
 module.exports = {
     name: "login",
@@ -39,9 +40,10 @@ module.exports = {
             log(message);
         }, 1500);
 
-
         if (vars.bot.joined) {
             logBot("&dBot switched subserver!");
+            
+            clearMaps();
             return;
         }
 

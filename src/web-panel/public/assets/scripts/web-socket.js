@@ -4,6 +4,7 @@ import { updateTabList } from "./tab-list/tab-list.js";
 import { showCompletions } from "./chat/input/tab-completion.js";
 import { updateScoreboard } from "./scoreboard/scoreboard.js";
 import { ChatMessage, setLanguage } from "./utils/chat-message.js";
+import { clear as clearMaps, handleMapPacket, updateMapColors } from "./maps/maps.js";
 
 
 export { setup, sendCommand, sendTabCompletionRequest };
@@ -46,6 +47,8 @@ function setup(_main) {
 
             main.config[key] = value;
         }
+
+        updateMapColors();
     });
 
     // Config    
@@ -58,6 +61,29 @@ function setup(_main) {
     // Items data    
     socket.on("items-data", (data) => {
         main.config.itemsData = data.itemsData;
+    });
+
+    // Map    
+    socket.on("map", (data) => {
+        handleMapPacket(data);
+    });
+
+    // Bot start event    
+    socket.on("bot-start", () => {
+        clearMaps();
+
+        main.tabList.data.header = null;
+        main.tabList.data.footer = null;
+        main.tabList.data.players = [];
+        updateTabList(main);
+
+        main.scoreboard.data = null;
+        updateScoreboard(main);
+    });
+
+    // Bot start event    
+    socket.on("clear-maps", () => {
+        clearMaps();
     });
 
 

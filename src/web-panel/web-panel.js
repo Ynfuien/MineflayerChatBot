@@ -8,6 +8,7 @@ const { logBot } = require('../utils/logger.js');
 const { executeCommand } = require('../handlers/command.handler.js');
 const { getTabCompletions } = require('../handlers/tabcomplete.handler.js');
 const { ChatMessage } = require('../utils/chat-message.js');
+const { mapColors } = require('../duck-tapes/map.tape.js');
 
 /** @type {import('../types.js').Main} */
 let main;
@@ -53,6 +54,12 @@ const self = module.exports = {
 
         io.on("connection", (socket) => {
             const { bot } = main;
+
+            socket.emit("config", {
+                messagePrefixes: main.config.values['online-panel']['message-prefixes'],
+                mapColors
+            });
+
             if (bot) {
                 self.tabListUpdate(lastTabList.header, lastTabList.footer);
                 self.playerListUpdate();
@@ -61,11 +68,11 @@ const self = module.exports = {
 
                 self.updateLanguage();
                 self.updateItemsData();
+                
+                for (const map of bot.duckTape.maps.list) {
+                    self.updateMap(map.createPacket());
+                }
             }
-
-            socket.emit("config", {
-                messagePrefixes: main.config.values['online-panel']['message-prefixes']
-            });
 
             socket.on("execute-command", (data) => {
                 const { command } = data;
@@ -110,6 +117,17 @@ const self = module.exports = {
         });
     },
 
+    sendBotStartEvent() {
+        if (!main) return;
+        const { bot } = main;
+        if (!bot) return;
+
+        const { io } = main.webPanel;
+        if (!io) return;
+
+        io.emit("bot-start");
+    },
+
     updateLanguage() {
         if (!main) return;
         const { bot } = main;
@@ -144,6 +162,32 @@ const self = module.exports = {
         io.emit("items-data", {
             itemsData
         });
+    },
+
+    /**
+     * Sends a data about Minecraft map (item, not the world)
+     * @param {import('../types.js').MapPacket} packet 
+     */
+    updateMap(packet) {
+        if (!main) return;
+        const { bot } = main;
+        if (!bot) return;
+
+        const { io } = main.webPanel;
+        if (!io) return;
+
+        io.emit("map", packet);
+    },
+
+    clearMaps() {
+        if (!main) return;
+        const { bot } = main;
+        if (!bot) return;
+
+        const { io } = main.webPanel;
+        if (!io) return;
+
+        io.emit("clear-maps");
     },
 
     /**

@@ -1,9 +1,12 @@
 const mineflayer = require('mineflayer');
 
 const eventHandler = require('../handlers/event.handler.js');
+
 const { load: loadScoreboardTape } = require('../duck-tapes/scoreboard.tape.js');
+const { load: loadMapTape } = require('../duck-tapes/map.tape.js');
+
 const { setLanguage } = require('./chat-message.js');
-const { updateLanguage, updateItemsData: updateItemData } = require('../web-panel/web-panel.js');
+const { updateLanguage, updateItemsData: updateItemData, sendBotStartEvent } = require('../web-panel/web-panel.js');
 
 module.exports = {
     /**
@@ -16,10 +19,13 @@ module.exports = {
         // Nodejs
         setLanguage(main.bot.registry.language);
         // Online panel
+        sendBotStartEvent();
         updateLanguage();
         updateItemData();
 
         eventHandler(main);
+
         loadScoreboardTape(main.bot);
+        loadMapTape(main.bot);
     }
 }

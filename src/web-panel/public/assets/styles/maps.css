@@ -1,0 +1,125 @@
+section#maps {
+    --map-size: 8rem;
+
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+
+    padding: 0.5rem;
+
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px 2px black;
+    backdrop-filter: blur(2px);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 2rem;
+
+    overflow: hidden;
+}
+
+section#maps.hidden {
+    display: none;
+}
+
+section#maps > .viewer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 1rem;
+}
+
+section#maps > .viewer > .map {
+    --map-scale: 3;
+
+    display: block;
+
+    width: calc(var(--map-size) * var(--map-scale));
+    height: calc(var(--map-size) * var(--map-scale));
+
+    background-image: url("../img/maps/background.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    image-rendering: pixelated;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+section#maps > .viewer > .map > img {
+    display: block;
+
+    width: calc(100% - (0.75rem * var(--map-scale)));
+    height: calc(100% - (0.75rem * var(--map-scale)));
+
+    image-rendering: pixelated;
+}
+
+section#maps > .viewer > button {
+    font-size: 3rem;
+    width: 1em;
+    height: 1em;
+
+    --border-width: 0.25em;
+
+    border: 0 solid currentColor;
+    border-width: var(--border-width) var(--border-width) 0 0;
+    border-radius: calc(var(--border-width) * 0.625);
+    clip-path: polygon(0 0, 100% 100%, 100% 0);
+    outline: none;
+
+    color: white;
+    cursor: pointer;
+}
+
+button.left {
+    transform: rotateZ(-135deg) translate(-25%, 25%);
+}
+
+button.right {
+    transform: rotateZ(45deg) translate(-25%, 25%);
+}
+
+section#maps > .viewer > button:hover {
+    color: rgb(153, 226, 69);
+}
+
+section#maps > ul {
+    --column-gap: 1rem;
+
+    /* calc(4 maps + 3 column gaps) */
+    max-width: calc((var(--max-map-count) * var(--map-size)) + ((var(--max-map-count) - 1) * var(--column-gap)));
+    
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: nowrap;
+    column-gap: var(--column-gap);
+}
+
+section#maps > ul > li {
+    display: flex;
+    
+    transition: margin-left 100ms ease-in-out;
+}
+
+section#maps > ul > li.selected {
+    outline: 1px solid white;
+    outline-offset: 2px;
+}
+
+section#maps > ul > li:hover {
+    cursor: pointer;
+}
+
+section#maps > ul > li > canvas {
+    width: var(--map-size);
+    height: var(--map-size);
+}
