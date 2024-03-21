@@ -76,9 +76,21 @@ module.exports = {
             return;
         }
 
+        
+        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve(false), 1000));
+        const eventPromise = new Promise(async (resolve) => {
+            try {
+                // Open block
+                await bot.openContainer(foundBlock);
+                resolve(true);
+            } catch {}
+        });
 
-        // Open it
-        await bot.openContainer(foundBlock);
+        const result = await Promise.race([eventPromise, timeoutPromise]);
+        if (!result) {
+            logBot(`&c${block.displayName} couldn't be opened!`);
+            return;
+        }
 
         logBot(`&aOpened ${block.displayName}'s inventory!`);
         return;
