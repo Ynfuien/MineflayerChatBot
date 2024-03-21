@@ -50,6 +50,9 @@ Online panel by default should be at http://localhost:3000
 ### Tab completions
 ![Tab completions](https://i.imgur.com/5QeWgfU.gif)
 
+### Map viewer
+![Map viewer](https://i.imgur.com/2HA4hXS.png)
+
 
 ### Used projects/assets:
 - [ascii-table](https://www.npmjs.com/package/ascii-table)
