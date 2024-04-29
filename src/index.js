@@ -16,7 +16,7 @@ const { startBot } = require('./utils/bot-manager.js');
 
 
 (async function () {
-    /** @type {Main} */
+    /** @type {import('./types.js').Main} */
     const main = {
         bot: null,
         dev: process.env.DEV_MODE === "true" ? true : false,
