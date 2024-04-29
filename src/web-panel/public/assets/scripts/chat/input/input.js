@@ -10,7 +10,7 @@ import { save as saveConfiguration } from "../../local-storage.js";
 import { sendCommand } from "../../web-socket.js";
 import { getTextWidth, getElementFont } from "../../utils/text-width-measurer.js";
 
-export { setup, suggestCommand };
+export { setup, suggestCommand, insertText };
 
 /** @type {import("../../index.js").Main} */
 let main;
@@ -167,6 +167,28 @@ function suggestCommand(command) {
 
     const windowSelection = getSelection();
     for (let i = 0; i < command.length; i++) {
+        windowSelection.modify("move", "right", "character");
+    }
+}
+
+/**
+ * @param {string} text 
+ */
+function insertText(text) {
+    const { element } = main.chat.input;
+
+    let value = element.textContent;
+    if (document.activeElement !== element) return suggestCommand(value + text);
+
+    const windowSelection = getSelection();
+    const cursorIndex = windowSelection.focusOffset;
+    const before = value.substring(0, cursorIndex);
+    const after = value.substring(cursorIndex, value.length);
+
+    element.textContent = before + text + after;
+
+    const index = before.length + text.length;
+    for (let i = 0; i < index; i++) {
         windowSelection.modify("move", "right", "character");
     }
 }
