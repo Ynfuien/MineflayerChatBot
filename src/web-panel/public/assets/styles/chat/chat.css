@@ -17,3 +17,7 @@ section#chat {
     row-gap: 3.25rem; /* 52px */
     justify-content: flex-end;
 }
+
+section#chat.hidden {
+    display: none;
+}

@@ -56,7 +56,7 @@ svg.svg-icon {
 }
 
 /* Minecraft text */
-pre.mc-text {
+.mc-text {
     white-space: pre-wrap;
     word-wrap: break-word;
 
@@ -68,7 +68,7 @@ pre.mc-text {
     text-shadow: 0.125rem 0.125rem 0 color-mix(in srgb, currentColor 25%, black);
 }
 
-pre.mc-text * {
+.mc-text * {
     text-decoration: inherit;
     text-decoration-color: currentColor;
 }

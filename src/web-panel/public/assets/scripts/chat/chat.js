@@ -4,6 +4,7 @@ import { setup as setupCommandHistory } from "./input/command-history.js";
 
 import { setup as setupOutput } from "./output/output.js";
 import { setup as setupHoverEvent } from "./output/events/hover-event.js";
+import { setup as setupClickEvent } from "./output/events/click-event.js";
 
 export { setup };
 
@@ -19,4 +20,5 @@ function setup(main) {
     // Output
     setupOutput(main);
     setupHoverEvent(main);
+    setupClickEvent(main);
 }

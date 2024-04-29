@@ -5,6 +5,7 @@ import { showCompletions } from "./chat/input/tab-completion.js";
 import { updateScoreboard } from "./scoreboard/scoreboard.js";
 import { ChatMessage, setLanguage } from "./utils/chat-message.js";
 import { clear as clearMaps, handleMapPacket, updateMapColors } from "./maps/maps.js";
+import { updateTranslations } from "./chat/output/events/click-event.js";
 
 
 export { setup, sendCommand, sendTabCompletionRequest };
@@ -56,6 +57,7 @@ function setup(_main) {
         main.config.clientLang = data.language;
 
         setLanguage(data.language);
+        updateTranslations();
     });
 
     // Items data    

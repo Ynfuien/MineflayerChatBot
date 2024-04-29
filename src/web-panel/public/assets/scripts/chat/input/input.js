@@ -10,13 +10,18 @@ import { save as saveConfiguration } from "../../local-storage.js";
 import { sendCommand } from "../../web-socket.js";
 import { getTextWidth, getElementFont } from "../../utils/text-width-measurer.js";
 
-export { setup };
+export { setup, suggestCommand };
+
+/** @type {import("../../index.js").Main} */
+let main;
 
 /**
  * 
- * @param {import("../../index.js").Main} main 
+ * @param {import("../../index.js").Main} _main 
  */
-function setup(main) {
+function setup(_main) {
+    main = _main;
+
     const { input, output } = main.chat;
     const inputElement = input.element;
     const outputElement = output.element;
@@ -148,5 +153,20 @@ function setup(main) {
         inputElement.style.setProperty("--vertical-caret-position", `${textWidth}px`);
         inputElement.style.setProperty("--vertical-caret-display", "block");
         inputElement.style.setProperty("--horizontal-caret-display", "none");
+    }
+}
+
+/**
+ * @param {string} command 
+ */
+function suggestCommand(command) {
+    const { element } = main.chat.input;
+
+    element.textContent = command;
+    element.focus();
+
+    const windowSelection = getSelection();
+    for (let i = 0; i < command.length; i++) {
+        windowSelection.modify("move", "right", "character");
     }
 }

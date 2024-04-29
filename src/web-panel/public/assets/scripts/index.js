@@ -94,6 +94,20 @@ import { MCMap } from "./maps/maps.js";
  *          },
  *          tabCompletion: Main.chat.tabCompletion
  *      },
+ *      openUrl: {
+ *          element: HTMLDivElement,
+ *          lastUrl: string,
+ *          text: {
+ *              info: HTMLPreElement,
+ *              url: HTMLPreElement,
+ *              warning: HTMLPreElement
+ *          },
+ *          buttons: {
+ *              yes: HTMLButtonElement,
+ *              copy: HTMLButtonElement,
+ *              no: HTMLButtonElement
+ *          }
+ *      }
  *      tabList: {
  *          data: {
  *              header: ChatMessage | null,
@@ -134,6 +148,7 @@ import { MCMap } from "./maps/maps.js";
 
 (function () {
     const chat = document.querySelector("section#chat");
+    const openUrl = document.querySelector("section#open-url");
     const tabList = document.querySelector("section#tab-list");
     const scoreboard = document.querySelector("#scoreboard");
     const maps = document.querySelector("section#maps");
@@ -189,6 +204,20 @@ import { MCMap } from "./maps/maps.js";
                     list: [],
                     type: "usernames"
                 }
+            }
+        },
+        openUrl: {
+            element: openUrl,
+            lastUrl: "",
+            text: {
+                info: openUrl.querySelector(".text > .info"),
+                url: openUrl.querySelector(".text > .url"),
+                warning: openUrl.querySelector(".text > .warning")
+            },
+            buttons: {
+                yes: openUrl.querySelector(".buttons > .yes"),
+                copy: openUrl.querySelector(".buttons > .copy"),
+                no: openUrl.querySelector(".buttons > .no")
             }
         },
         tabList: {
