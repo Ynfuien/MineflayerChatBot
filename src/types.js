@@ -5,7 +5,8 @@ const ST = require('./duck-tapes/scoreboard.tape.js');
  * @typedef {import('mineflayer').Bot & {
  *  duckTape: {
  *      scoreboards: TapedScoreboards,
- *      maps: TapedMaps
+ *      maps: TapedMaps,
+ *      chatSuggestions: string[]
  *  }
  * }} TapedBot
  */
@@ -141,6 +142,15 @@ const ST = require('./duck-tapes/scoreboard.tape.js');
  *  y?: number,
  *  data?: number[]
  * }} MapPacket
+ */
+
+
+
+/** Chat suggestions packet
+ * @typedef {{
+ *  action: 0 | 1 | 2,
+ *  entries: string[]
+ * }} ChatSuggestionsPacket
  */
 
 

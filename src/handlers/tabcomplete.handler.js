@@ -22,10 +22,21 @@ module.exports = {
         if (text.startsWith(`\\${prefix}`)) text = text.substring(1);
         if (text.startsWith('/')) return await tabComplete(main, text);
 
-        // Players usernames
+        // Player usernames and chat suggestions
         const split = text.split(' ');
         const lastWord = split.pop();
+
+        // Players
         const list = Object.keys(bot.players).filter(username => username.toLowerCase().startsWith(lastWord));
+
+        // Chat suggestions
+        const suggestions = bot.duckTape.chatSuggestions;
+        for (const suggestion of suggestions) {
+            if (suggestion.startsWith(lastWord)) list.push(suggestion);
+        }
+
+        // list.sort();
+        list.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
 
         return {
             type: "usernames",
@@ -80,7 +91,7 @@ async function getBotCommandCompletions(main, text) {
     })();
 
     if (!completionList) completionList = [];
-    completionList.sort();
+    completionList.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
 
     return {
         type: "bot-command",
@@ -100,6 +111,8 @@ async function getBotCommandCompletions(main, text) {
 async function tabComplete(main, text, timeout = "auto") {
     const { bot } = main;
     const block = bot.blockAtCursor();
+
+    const isACommand = text.startsWith("/");
 
     // Sending packet
     bot._client.write('tab_complete', {
@@ -135,13 +148,16 @@ async function tabComplete(main, text, timeout = "auto") {
     const result = await Promise.race([eventPromise, timeoutPromise]);
 
     if (result) {
+        const list = result.matches.map(entry => entry.match);
+        list.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
+
         return {
-            type: "minecraft-command",
+            type: isACommand ? "minecraft-command" : "usernames",
             start: result.start,
             length: result.length,
-            list: result.matches.map(entry => entry.match)
+            list
         };
     }
 
-    return { type: "minecraft-command", list: [] };
+    return { type: isACommand ? "minecraft-command" : "usernames", list: [] };
 }

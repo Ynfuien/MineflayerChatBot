@@ -18,7 +18,7 @@
     "express": "^4.18.2",
     "js-yaml": "^4.1.0",
     "minecraft-data": "^3.62.0",
-    "mineflayer": "^4.20.0",
+    "mineflayer": "^4.20.1",
     "mojangson": "^2.0.4",
     "nodemon": "^3.0.3",
     "prismarine-chat": "^1.10.0",

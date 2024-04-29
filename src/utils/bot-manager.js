@@ -4,6 +4,7 @@ const eventHandler = require('../handlers/event.handler.js');
 
 const { load: loadScoreboardTape } = require('../duck-tapes/scoreboard.tape.js');
 const { load: loadMapTape } = require('../duck-tapes/map.tape.js');
+const { load: loadChatSuggestionsTape } = require('../duck-tapes/chat-suggestions.tape.js');
 
 const { setLanguage } = require('./chat-message.js');
 const { updateLanguage, updateItemsData: updateItemData, sendBotStartEvent } = require('../web-panel/web-panel.js');
@@ -27,5 +28,6 @@ module.exports = {
 
         loadScoreboardTape(main.bot);
         loadMapTape(main.bot);
+        loadChatSuggestionsTape(main.bot);
     }
 }
