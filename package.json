@@ -1,6 +1,6 @@
 {
   "name": "mineflayer-chat-bot",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Chat bot for Minecraft servers",
   "main": "src/index.js",
   "scripts": {
