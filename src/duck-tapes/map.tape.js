@@ -223,6 +223,9 @@ function multiplyColor(color, multiplayer) {
 
 
 module.exports = {
+    name: "map",
+    enabled: true,
+
     /**
      * @param {import('../types.js').TapedBot} _bot
      */

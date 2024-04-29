@@ -2,6 +2,9 @@
 let bot;
 
 module.exports = {
+    name: "chat-suggestions",
+    enabled: true,
+
     /**
      * @param {import('../types.js').TapedBot} _bot
      */

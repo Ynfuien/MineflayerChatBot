@@ -196,6 +196,9 @@ class ScoreboardItem {
 
 
 module.exports = {
+    name: "scoreboard",
+    enabled: true,
+
     /**
      * @param {import('../types.js').TapedBot} _bot 
      */
