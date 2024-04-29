@@ -40,20 +40,26 @@ let devTimestamp = 0;
 
 const self = module.exports = {
     /**
+     * Logs a message/object, every X milliseconds, ignoring any messages in between.
+     * Used while developing, especially when dealing with packets or other "spammy" things. 
      * @param {any} message
      * @param {number} interval
      * @param {number} depth
      */
     devLog(message, interval = 0, depth = 2) {
-        const now = Date.now();
-        if (now - devTimestamp < interval) return;
-        devTimestamp = now;
+        if (!main.dev) return;
+
+        if (interval > 0) {
+            const now = Date.now();
+            if (now - devTimestamp < interval) return;
+            devTimestamp = now;
+        }
 
         console.dir(message, { depth });
     },
 
     /**
-     * 
+     * Logs a message to every place - console, panel and database
      * @param {ChatMessage} message
      * @param {string} type
      */
@@ -65,6 +71,10 @@ const self = module.exports = {
         logToDatabase(message, time, type);
     },
 
+    /**
+     * Logs a "bot" message, meaning information message with "[BOT]" prefix
+     * @param {string} message 
+     */
     logBot(message) {
         const chatMessage = ChatMessage.fromLegacy(message, '&');
         if (!chatMessage.color) chatMessage.color = "white";
@@ -72,6 +82,10 @@ const self = module.exports = {
         self.log(chatMessage);
     },
 
+    /**
+     * Logs a chat message sent by a player or a server
+     * @param {ChatMessage} message 
+     */
     logChatMessage(message) {
         self.log(message, "minecraft");
     },
