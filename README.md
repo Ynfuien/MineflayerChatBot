@@ -1,3 +1,6 @@
+[![Discord](https://img.shields.io/discord/1236019317208776786?style=flat&logo=discord&label=Discord&color=%235d6af2
+)](https://discord.gg/kZJhKZ48j8)
+
 # MCB - Mineflayer Chat Bot
 Minecraft bot written in Javascript using [NodeJs](https://nodejs.org) and [Mineflayer](https://www.npmjs.com/package/mineflayer). It was created mainly to help with server and plugin development, since it often requires another player in the game. It's mostly of use when dealing with the chat stuff (who would have thought), and other things requiring a non moving puppet. Also, well, it could be great just as an AFK bot.
 
