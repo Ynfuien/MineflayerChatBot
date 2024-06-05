@@ -172,11 +172,11 @@ const self = module.exports = {
                 return;
             }
 
-            // Check password
-            if (!password) {
-                logError("You must provide password for account verification!");
-                return false;
-            }
+            // // Check password
+            // if (!password) {
+            //     logError("You must provide password for account verification!");
+            //     return false;
+            // }
 
             let { auth } = options;
 
